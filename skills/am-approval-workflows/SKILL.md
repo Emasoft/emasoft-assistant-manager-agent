@@ -1,5 +1,5 @@
 ---
-name: am-approval-workflows
+name: eama-approval-workflows
 description: Standard workflows for handling approval requests from other roles
 triggers:
   - Any role sends an approval request via AI Maestro
@@ -11,7 +11,16 @@ triggers:
 
 ## Purpose
 
-This skill provides the Assistant Manager with standard workflows for handling approval requests from other roles and presenting them to the user for decision.
+This skill provides the Assistant Manager (EAMA) with standard workflows for handling approval requests from other roles and presenting them to the user for decision.
+
+## Plugin Prefix Reference
+
+| Role | Prefix | Plugin Name |
+|------|--------|-------------|
+| Assistant Manager | `eama-` | Emasoft Assistant Manager Agent |
+| Architect | `eaa-` | Emasoft Architect Agent |
+| Orchestrator | `eoa-` | Emasoft Orchestrator Agent |
+| Integrator | `eia-` | Emasoft Integrator Agent |
 
 ## Approval Types
 
@@ -20,7 +29,7 @@ This skill provides the Assistant Manager with standard workflows for handling a
 **Trigger**: Code is ready to be pushed to remote repository
 
 **Workflow**:
-1. Receive approval request from Orchestrator/Integrator
+1. Receive approval request from EOA/EIA
 2. Present to user:
    ```
    ## Push Approval Requested
@@ -43,7 +52,7 @@ This skill provides the Assistant Manager with standard workflows for handling a
 **Trigger**: PR is ready to be merged
 
 **Workflow**:
-1. Receive approval request from Integrator
+1. Receive approval request from EIA
 2. Present to user:
    ```
    ## Merge Approval Requested
@@ -60,14 +69,14 @@ This skill provides the Assistant Manager with standard workflows for handling a
    - [Request Changes] - Add comments
    ```
 3. Record user decision
-4. Send approval response to Integrator
+4. Send approval response to EIA
 
 ### 3. Publish Approval
 
 **Trigger**: Package/release is ready to be published
 
 **Workflow**:
-1. Receive approval request from Integrator
+1. Receive approval request from EIA
 2. Present to user:
    ```
    ## Publish Approval Requested
@@ -84,14 +93,14 @@ This skill provides the Assistant Manager with standard workflows for handling a
    - [Review] - Show release notes
    ```
 3. Record user decision
-4. Send approval response to Integrator
+4. Send approval response to EIA
 
 ### 4. Security Approval
 
 **Trigger**: Action with security implications requires authorization
 
 **Workflow**:
-1. Receive approval request from any role
+1. Receive approval request from any role (EAA/EOA/EIA)
 2. Present to user:
    ```
    ## Security Approval Required
@@ -112,10 +121,10 @@ This skill provides the Assistant Manager with standard workflows for handling a
 
 ### 5. Design Approval
 
-**Trigger**: Architect has completed design document
+**Trigger**: EAA (Architect) has completed design document
 
 **Workflow**:
-1. Receive completion signal from Architect
+1. Receive completion signal from EAA
 2. Present to user:
    ```
    ## Design Approval Requested
@@ -127,11 +136,11 @@ This skill provides the Assistant Manager with standard workflows for handling a
 
    Review the design document and approve to proceed with implementation.
    - [Approve] - Proceed to orchestration
-   - [Request Changes] - Send back to Architect
+   - [Request Changes] - Send back to EAA
    - [Discuss] - I have questions
    ```
 3. Record user decision
-4. If approved, create handoff to Orchestrator
+4. If approved, create handoff to EOA
 
 ## Approval State Tracking
 
@@ -141,7 +150,7 @@ All approvals are tracked in state file:
 approvals:
   - id: "approval-{uuid}"
     type: "merge"
-    requested_by: "integrator"
+    requested_by: "eia"
     requested_at: "ISO-8601"
     status: "pending" | "approved" | "rejected"
     user_decision: null | "approve" | "reject" | "request_changes"

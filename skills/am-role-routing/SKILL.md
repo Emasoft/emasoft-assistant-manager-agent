@@ -1,5 +1,5 @@
 ---
-name: am-role-routing
+name: eama-role-routing
 description: Decision logic for routing user requests to appropriate specialist roles
 triggers:
   - User submits a new request or task
@@ -11,73 +11,85 @@ triggers:
 
 ## Purpose
 
-This skill provides the Assistant Manager with decision logic for routing user requests to the appropriate specialist role (Architect, Orchestrator, or Integrator).
+This skill provides the Assistant Manager (EAMA) with decision logic for routing user requests to the appropriate specialist role:
+- **EAA** - Architect Agent
+- **EOA** - Orchestrator Agent
+- **EIA** - Integrator Agent
+
+## Plugin Prefix Reference
+
+| Role | Prefix | Plugin Name |
+|------|--------|-------------|
+| Assistant Manager | `eama-` | Emasoft Assistant Manager Agent |
+| Architect | `eaa-` | Emasoft Architect Agent |
+| Orchestrator | `eoa-` | Emasoft Orchestrator Agent |
+| Integrator | `eia-` | Emasoft Integrator Agent |
 
 ## Routing Decision Matrix
 
 | User Intent Pattern | Route To | Handoff Type |
 |---------------------|----------|--------------|
-| "design", "plan", "architect", "spec", "requirements" | ARCHITECT | task_assignment |
-| "build", "implement", "create", "develop", "code" | ORCHESTRATOR | task_assignment |
-| "review", "test", "merge", "release", "deploy", "quality" | INTEGRATOR | task_assignment |
+| "design", "plan", "architect", "spec", "requirements" | EAA (Architect) | task_assignment |
+| "build", "implement", "create", "develop", "code" | EOA (Orchestrator) | task_assignment |
+| "review", "test", "merge", "release", "deploy", "quality" | EIA (Integrator) | task_assignment |
 | "status", "progress", "update" | Handle directly | none |
 | "approve", "reject", "confirm" | Handle directly | approval_response |
 
 ## Detailed Routing Rules
 
-### Route to ARCHITECT when:
+### Route to EAA (Architect) when:
 
 1. **New project/feature design needed**
    - User says: "Design a...", "Plan how to...", "Create architecture for..."
-   - Action: Create handoff with requirements, route to architect
+   - Action: Create handoff with requirements, route to eaa
 
 2. **Requirements analysis required**
    - User says: "What do we need for...", "Analyze requirements for..."
-   - Action: Create handoff with context, route to architect
+   - Action: Create handoff with context, route to eaa
 
 3. **Technical specification needed**
    - User says: "Spec out...", "Document how...", "Define the API for..."
-   - Action: Create handoff, route to architect
+   - Action: Create handoff, route to eaa
 
 4. **Module planning required**
    - User says: "Break down...", "Modularize...", "Plan implementation of..."
-   - Action: Create handoff, route to architect
+   - Action: Create handoff, route to eaa
 
-### Route to ORCHESTRATOR when:
+### Route to EOA (Orchestrator) when:
 
 1. **Implementation ready to start**
    - Condition: Approved design/plan exists
-   - Action: Create handoff with design docs, route to orchestrator
+   - Action: Create handoff with design docs, route to eoa
 
 2. **Task coordination needed**
    - User says: "Build...", "Implement...", "Start development..."
-   - Action: Create handoff with requirements, route to orchestrator
+   - Action: Create handoff with requirements, route to eoa
 
 3. **Multi-agent work coordination**
    - Condition: Work requires multiple parallel agents
-   - Action: Create handoff with task breakdown, route to orchestrator
+   - Action: Create handoff with task breakdown, route to eoa
 
 4. **Progress monitoring required**
    - Condition: Orchestration in progress, need intervention
-   - Action: Forward message to orchestrator
+   - Action: Forward message to eoa
 
-### Route to INTEGRATOR when:
+### Route to EIA (Integrator) when:
 
 1. **Work ready for integration**
    - Condition: Orchestrator signals completion
-   - Action: Create handoff with completion report, route to integrator
+   - Action: Create handoff with completion report, route to eia
 
 2. **Code review requested**
    - User says: "Review...", "Check the PR...", "Evaluate changes..."
-   - Action: Create handoff with PR details, route to integrator
+   - Action: Create handoff with PR details, route to eia
 
 3. **Quality gates needed**
    - User says: "Test...", "Validate...", "Run quality checks..."
-   - Action: Create handoff, route to integrator
+   - Action: Create handoff, route to eia
 
 4. **Release preparation**
    - User says: "Prepare release...", "Merge...", "Deploy..."
-   - Action: Create handoff, route to integrator
+   - Action: Create handoff, route to eia
 
 ### Handle Directly (no routing):
 
@@ -100,12 +112,12 @@ This skill provides the Assistant Manager with decision logic for routing user r
 ## Communication Hierarchy
 
 ```
-USER <-> ASSISTANT-MANAGER <-> ARCHITECT
-                           <-> ORCHESTRATOR
-                           <-> INTEGRATOR
+USER <-> EAMA (Assistant Manager) <-> EAA (Architect)
+                                  <-> EOA (Orchestrator)
+                                  <-> EIA (Integrator)
 ```
 
-**CRITICAL**: Architect, Orchestrator, and Integrator do NOT communicate directly with each other. All communication flows through Assistant Manager.
+**CRITICAL**: EAA, EOA, and EIA do NOT communicate directly with each other. All communication flows through EAMA.
 
 ## Handoff Protocol
 
@@ -116,7 +128,7 @@ Parse user message -> Identify primary intent -> Match to routing rule
 
 ### Step 2: Create Handoff Document
 ```
-Generate UUID -> Create handoff-{uuid}-am-to-{role}.md -> Save to docs_dev/handoffs/
+Generate UUID -> Create handoff-{uuid}-eama-to-{role}.md -> Save to docs_dev/handoffs/
 ```
 
 ### Step 3: Send via AI Maestro
@@ -140,9 +152,11 @@ Confirm routing -> Provide tracking info -> Set expectation for response
 handoff-{uuid}-{from}-to-{to}.md
 
 Examples:
-- handoff-a1b2c3d4-am-to-arch.md
-- handoff-e5f6g7h8-arch-to-am.md
-- handoff-i9j0k1l2-am-to-orch.md
+- handoff-a1b2c3d4-eama-to-eaa.md    # AM assigns to Architect
+- handoff-e5f6g7h8-eaa-to-eama.md    # Architect reports to AM
+- handoff-i9j0k1l2-eama-to-eoa.md    # AM assigns to Orchestrator
+- handoff-m3n4o5p6-eoa-to-eama.md    # Orchestrator reports to AM
+- handoff-q7r8s9t0-eama-to-eia.md    # AM assigns to Integrator
 ```
 
 ## Storage Location
