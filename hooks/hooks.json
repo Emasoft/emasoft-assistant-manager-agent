@@ -1,0 +1,30 @@
+{
+  "description": "Assistant Manager hooks - session memory persistence and user communication",
+  "_note": "Hook data is passed via stdin as JSON. Scripts read from stdin, not env vars.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "_id": "am-memory-load",
+        "_description": "Load session memory and context at startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/am_session_start.py"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "_id": "am-memory-save",
+        "_description": "Save session memory and context on exit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/am_session_end.py"
+          }
+        ]
+      }
+    ]
+  }
+}
