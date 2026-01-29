@@ -1,4 +1,5 @@
 ---
+name: eama-user-communication
 description: User communication patterns and clarification protocols
 context: fork
 agent: eama-main

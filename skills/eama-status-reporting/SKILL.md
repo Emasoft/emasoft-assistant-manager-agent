@@ -1,4 +1,5 @@
 ---
+name: eama-status-reporting
 description: Status report generation for cross-role coordination
 context: fork
 agent: eama-report-generator

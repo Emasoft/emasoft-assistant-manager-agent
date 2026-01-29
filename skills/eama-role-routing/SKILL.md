@@ -1,6 +1,7 @@
 ---
 name: eama-role-routing
 description: Decision logic for routing user requests to appropriate specialist roles
+context: fork
 triggers:
   - User submits a new request or task
   - Assistant Manager needs to delegate work

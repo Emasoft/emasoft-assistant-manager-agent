@@ -1,6 +1,7 @@
 ---
 name: eama-approval-workflows
 description: Standard workflows for handling approval requests from other roles
+context: fork
 triggers:
   - Any role sends an approval request via AI Maestro
   - User needs to make a decision about code, releases, or security
