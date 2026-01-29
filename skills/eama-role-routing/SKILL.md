@@ -164,7 +164,111 @@ Examples:
 
 All handoff files are stored in: `docs_dev/handoffs/`
 
+## GitHub Operations Routing
+
+### Route to EIA (Integrator) for:
+
+| Operation | User Intent Pattern | Handoff Content |
+|-----------|---------------------|-----------------|
+| Issue creation | "create issue", "open bug", "file ticket" | Issue title, body, labels |
+| Issue update | "update issue", "change status", "add label" | Issue number, changes |
+| PR operations | "create PR", "merge PR", "review PR" | PR details, branch info |
+| Kanban sync | "sync kanban", "update board", "move card" | Project ID, item updates |
+| Release management | "release", "tag version", "publish" | Version, changelog |
+
+### Route to EAA (Architect) for:
+
+| Operation | User Intent Pattern | Handoff Content |
+|-----------|---------------------|-----------------|
+| Issue-to-design linking | "link issue to design", "connect to spec" | Issue number, design UUID |
+| Design from issue | "design for issue #X", "spec from requirement" | Issue number, scope |
+
+### Route to EOA (Orchestrator) for:
+
+| Operation | User Intent Pattern | Handoff Content |
+|-----------|---------------------|-----------------|
+| Module issues | "module implementation issue", "task tracking" | Module UUID, task breakdown |
+| Implementation issues | "development issue", "coding task" | Design UUID, module list |
+
+**Cross-reference**: See [eama-github-routing SKILL](../eama-github-routing/SKILL.md) for complete GitHub decision trees.
+
+## Design Document Routing
+
+### Handle Locally (EAMA):
+
+| Operation | Tool | Details |
+|-----------|------|---------|
+| Search designs by UUID | `eama_design_search.py --uuid` | Returns matching design docs |
+| Search designs by keyword | `eama_design_search.py --keyword` | Full-text search in design/* |
+| Search designs by status | `eama_design_search.py --status` | Filter by draft/approved/deprecated |
+| List all designs | `eama_design_search.py --list` | Catalog of all design documents |
+
+### Route to EAA (Architect) for:
+
+| Operation | User Intent Pattern | Handoff Content |
+|-----------|---------------------|-----------------|
+| Create new design | "design", "create spec", "architect solution" | Requirements, constraints |
+| Update design | "modify design", "update spec", "revise architecture" | Design UUID, changes |
+| Review design | "review design", "validate architecture" | Design UUID, review criteria |
+
+### Search Before Route Decision Tree
+
+```
+User mentions design/spec/architecture
+          │
+          ▼
+    ┌─────────────────┐
+    │ Does user give  │
+    │ UUID or path?   │
+    └────────┬────────┘
+             │
+     ┌───────┴───────┐
+     │ YES           │ NO
+     ▼               ▼
+┌────────────┐  ┌─────────────────┐
+│ Search by  │  │ Search by       │
+│ UUID/path  │  │ keyword/context │
+└─────┬──────┘  └────────┬────────┘
+      │                  │
+      ▼                  ▼
+┌───────────────────────────────────┐
+│   Design found?                   │
+└────────────────┬──────────────────┘
+         ┌───────┴───────┐
+         │ YES           │ NO
+         ▼               ▼
+┌────────────────┐  ┌─────────────────┐
+│ Include design │  │ Route to EAA to │
+│ context in     │  │ create new      │
+│ routing        │  │ design          │
+└────────────────┘  └─────────────────┘
+```
+
+## Module Orchestration Routing
+
+### Route to EOA (Orchestrator) for:
+
+| Operation | User Intent Pattern | Handoff Content |
+|-----------|---------------------|-----------------|
+| Start module implementation | "implement module", "build component" | Module UUID from design |
+| Coordinate parallel work | "parallelize", "split tasks" | Task breakdown, dependencies |
+| Resume orchestration | "continue building", "resume work" | Orchestration state, progress |
+| Replan modules | "reorganize tasks", "reprioritize" | Current state, new priorities |
+
+### Orchestration Handoff Checklist
+
+When routing to EOA, handoff MUST include:
+
+1. **Design Reference**: UUID of approved design
+2. **Module List**: Modules to implement (from design)
+3. **Priority Order**: Which modules first
+4. **Dependencies**: Inter-module dependencies
+5. **Constraints**: Time, resources, technical limits
+6. **Success Criteria**: What defines "done"
+
 ## References
 
 - [Handoff Template](../../shared/handoff_template.md)
 - [Message Templates](../../shared/message_templates.md)
+- [GitHub Routing SKILL](../eama-github-routing/SKILL.md)
+- [Proactive Handoff Protocol](../eama-shared/references/proactive-handoff-protocol.md)

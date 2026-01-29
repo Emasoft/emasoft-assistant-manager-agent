@@ -67,3 +67,271 @@ Before sending handoff:
 - [ ] Current state is specific (not "almost done")
 - [ ] Next steps are actionable (first action is clear)
 - [ ] AI Maestro notification prepared
+
+## Protocol for Handing Off GitHub Operations
+
+### When to Hand Off GitHub Operations
+
+GitHub operations require handoff when:
+1. **Issue creation/update** involving multiple agents' domains
+2. **PR operations** requiring design validation or implementation verification
+3. **Kanban sync** affecting tracked designs or modules
+4. **Release preparation** requiring multi-agent coordination
+
+### GitHub Handoff Template
+
+```yaml
+---
+uuid: <generated-uuid>
+from: <agent-name>
+to: <target-agent>
+timestamp: <ISO-8601>
+priority: normal|high|urgent
+operation_type: github
+github_type: issue|pr|kanban|release
+---
+
+## GitHub Operation Context
+
+**Repository**: <owner/repo>
+**Target**: <issue number, PR number, or project ID>
+**Action**: <create|update|close|merge|sync|etc.>
+
+## Linked References
+
+### Design Links (if applicable)
+- Design UUID: <uuid>
+- Design Path: <path>
+- Relevant Section: <section heading or line range>
+
+### Module Links (if applicable)
+- Module UUID: <uuid>
+- Parent Design: <design UUID>
+- Implementation Status: <not started|in progress|complete>
+
+## Operation Details
+
+<Specific details of the GitHub operation>
+
+## Expected Outcome
+
+<What success looks like>
+
+## UUID Tracking Note
+
+Include in GitHub item body:
+<!-- EAMA-LINK: handoff-uuid=<this-handoff-uuid> -->
+<!-- EAMA-LINK: design-uuid=<design-uuid-if-applicable> -->
+<!-- EAMA-LINK: module-uuid=<module-uuid-if-applicable> -->
+```
+
+### GitHub Handoff Decision Flow
+
+```
+GitHub operation requested
+         │
+         ▼
+┌─────────────────────────┐
+│ Search for linked       │
+│ design/module using     │
+│ eama_design_search.py   │
+└───────────┬─────────────┘
+            │
+    ┌───────┴───────┐
+    │ Found?        │
+    ▼               ▼
+   YES              NO
+    │               │
+    ▼               ▼
+┌──────────┐  ┌──────────────┐
+│ Include  │  │ Route to EIA │
+│ UUIDs in │  │ directly     │
+│ handoff  │  └──────────────┘
+└────┬─────┘
+     │
+     ▼
+┌──────────────────────────┐
+│ Determine target agent   │
+│ based on operation type  │
+│ (see GitHub routing)     │
+└──────────────────────────┘
+```
+
+## Protocol for Handing Off Design Operations
+
+### When to Hand Off Design Operations
+
+Design operations require handoff when:
+1. **Creating new design** from user requirements
+2. **Updating existing design** with changes
+3. **Linking design to GitHub** items
+4. **Starting implementation** from approved design
+
+### Design Handoff Template
+
+```yaml
+---
+uuid: <generated-uuid>
+from: <agent-name>
+to: EAA
+timestamp: <ISO-8601>
+priority: normal|high|urgent
+operation_type: design
+design_action: create|update|review|link|implement
+---
+
+## Design Context
+
+**Design UUID**: <existing-uuid or "NEW">
+**Design Path**: <path or "TBD">
+**Design Title**: <title>
+**Current Status**: <draft|review|approved|deprecated>
+
+## Request Details
+
+### For New Design
+- **Requirements**: <what needs to be designed>
+- **Constraints**: <technical/business constraints>
+- **Scope**: <what's in/out of scope>
+
+### For Update
+- **Reason for Update**: <why change is needed>
+- **Affected Sections**: <which parts change>
+- **Change Summary**: <brief description>
+
+### For Linking
+- **GitHub Target**: <issue/PR/card number>
+- **Link Type**: <implements|tracks|relates-to>
+- **Link Context**: <why this link exists>
+
+## Pre-Handoff Search Results
+
+Before creating this handoff, EAMA searched for existing designs:
+```
+Search command: eama_design_search.py --keyword "<keywords>"
+Results: <number> documents found
+Relevant matches:
+- <path> (UUID: <uuid>, status: <status>)
+```
+
+## Expected Deliverable
+
+<What the receiving agent should produce>
+
+## UUID Tracking
+
+This handoff UUID: <uuid>
+Related design UUIDs: <list>
+Related module UUIDs: <list>
+Related GitHub items: <list>
+```
+
+### Design Handoff Decision Flow
+
+```
+User requests design-related work
+              │
+              ▼
+┌───────────────────────────────┐
+│ Run eama_design_search.py    │
+│ with relevant keywords       │
+└─────────────┬─────────────────┘
+              │
+      ┌───────┴───────┐
+      │ Existing      │
+      │ design found? │
+      └───────┬───────┘
+              │
+      ┌───────┴───────┐
+      ▼               ▼
+     YES              NO
+      │               │
+      ▼               ▼
+┌───────────────┐ ┌───────────────┐
+│ Is it update  │ │ Create NEW    │
+│ or link?      │ │ design        │
+└───────┬───────┘ │ handoff       │
+        │         └───────────────┘
+    ┌───┴───┐
+    ▼       ▼
+ UPDATE   LINK
+    │       │
+    ▼       ▼
+┌────────────────────────────┐
+│ Include existing design    │
+│ UUID in handoff            │
+└────────────────────────────┘
+```
+
+## UUID Tracking Across Handoffs
+
+### UUID Chain Concept
+
+Every handoff creates a chain of UUIDs that enables:
+1. **Traceability**: Follow work from request to completion
+2. **Recovery**: Resume work after session loss
+3. **Audit**: Review decision history
+4. **Linking**: Connect related GitHub items and designs
+
+### UUID Format Standards
+
+| Type | Format | Example |
+|------|--------|---------|
+| Handoff UUID | `hoff-{timestamp}-{random}` | `hoff-20250129-a1b2c3` |
+| Design UUID | `dsgn-{project}-{random}` | `dsgn-skillf-x4y5z6` |
+| Module UUID | `mod-{design}-{random}` | `mod-dsgn-a1b2c3-m7n8` |
+
+### UUID Registry Location
+
+All UUIDs are registered in: `$CLAUDE_PROJECT_DIR/docs_dev/.uuid-registry.json`
+
+```json
+{
+  "handoffs": {
+    "hoff-20250129-a1b2c3": {
+      "from": "eama",
+      "to": "eaa",
+      "timestamp": "2025-01-29T10:00:00Z",
+      "type": "design",
+      "related_uuids": ["dsgn-skillf-x4y5z6"]
+    }
+  },
+  "designs": {
+    "dsgn-skillf-x4y5z6": {
+      "path": "design/feature-x/DESIGN.md",
+      "status": "approved",
+      "created": "2025-01-29T10:00:00Z",
+      "modules": ["mod-dsgn-a1b2c3-m7n8"]
+    }
+  },
+  "modules": {
+    "mod-dsgn-a1b2c3-m7n8": {
+      "design_uuid": "dsgn-skillf-x4y5z6",
+      "name": "component-a",
+      "status": "in_progress"
+    }
+  }
+}
+```
+
+### UUID Propagation Rules
+
+1. **Handoff creates new UUID**: Every handoff gets a unique UUID
+2. **Include parent UUIDs**: Reference triggering handoff UUID
+3. **Include sibling UUIDs**: Reference related designs/modules
+4. **Update registry**: Register new UUIDs immediately
+5. **Cross-reference in GitHub**: Include UUIDs in GitHub item bodies
+
+### UUID Lookup Before Handoff
+
+Before creating any handoff:
+
+```bash
+# Search for related designs
+python scripts/eama_design_search.py --keyword "feature-name" --json
+
+# Check existing UUIDs in registry
+cat docs_dev/.uuid-registry.json | jq '.designs | keys'
+```
+
+Include search results in handoff to prevent duplicate work.
