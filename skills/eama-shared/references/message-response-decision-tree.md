@@ -2,6 +2,16 @@
 
 ## Step 1: Priority Triage
 
+## Table of Contents
+
+1. [Step 1: Priority Triage](#step-1-priority-triage)
+2. [Step 2: Message Type Routing](#step-2-message-type-routing)
+3. [Step 3: Response Actions](#step-3-response-actions)
+4. [Step 4: ACK Protocol](#step-4-ack-protocol)
+
+---
+
+
 | Priority | Action |
 |----------|--------|
 | URGENT | Interrupt current task, process immediately |

@@ -2,6 +2,31 @@
 
 ## Automatic Handoff Triggers
 
+## Table of Contents
+
+1. [Automatic Handoff Triggers](#automatic-handoff-triggers)
+2. [Handoff Document Location](#handoff-document-location)
+3. [Mandatory Handoff Sections](#mandatory-handoff-sections)
+4. [Proactive Writing Rules](#proactive-writing-rules)
+5. [Handoff Quality Checklist](#handoff-quality-checklist)
+6. [Protocol for Handing Off GitHub Operations](#protocol-for-handing-off-github-operations)
+   - 6.1 [When to Hand Off GitHub Operations](#when-to-hand-off-github-operations)
+   - 6.2 [GitHub Handoff Template](#github-handoff-template)
+   - 6.3 [GitHub Handoff Decision Flow](#github-handoff-decision-flow)
+7. [Protocol for Handing Off Design Operations](#protocol-for-handing-off-design-operations)
+   - 7.1 [When to Hand Off Design Operations](#when-to-hand-off-design-operations)
+   - 7.2 [Design Handoff Template](#design-handoff-template)
+   - 7.3 [Design Handoff Decision Flow](#design-handoff-decision-flow)
+8. [UUID Tracking Across Handoffs](#uuid-tracking-across-handoffs)
+   - 8.1 [UUID Chain Concept](#uuid-chain-concept)
+   - 8.2 [UUID Format Standards](#uuid-format-standards)
+   - 8.3 [UUID Registry Location](#uuid-registry-location)
+   - 8.4 [UUID Propagation Rules](#uuid-propagation-rules)
+   - 8.5 [UUID Lookup Before Handoff](#uuid-lookup-before-handoff)
+
+---
+
+
 This agent MUST automatically write a handoff document when:
 
 1. **Task Completion**: Before reporting task done

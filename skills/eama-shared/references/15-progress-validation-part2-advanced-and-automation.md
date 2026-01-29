@@ -325,7 +325,7 @@ if __name__ == "__main__":
 ### Usage
 
 ```bash
-python scripts/validate_progress.py .eama/memory/progress.md
+python scripts/validate_progress.py design/memory/progress.md
 ```
 
 ---
@@ -339,16 +339,16 @@ python scripts/validate_progress.py .eama/memory/progress.md
 **Validation steps:**
 ```bash
 # 1. Check task moved to completed section
-grep -A 5 "## Completed Tasks" .eama/memory/progress.md | grep "Implement login"
+grep -A 5 "## Completed Tasks" design/memory/progress.md | grep "Implement login"
 
 # 2. Check task has completion timestamp
-grep "Implement login.*completed.*2025" .eama/memory/progress.md
+grep "Implement login.*completed.*2025" design/memory/progress.md
 
 # 3. Check task removed from todo section
-! grep -A 100 "## Todo List" .eama/memory/progress.md | grep -v "^#" | grep "Implement login"
+! grep -A 100 "## Todo List" design/memory/progress.md | grep -v "^#" | grep "Implement login"
 
 # 4. Check dependent tasks are unblocked
-python scripts/validate_progress.py .eama/memory/progress.md
+python scripts/validate_progress.py design/memory/progress.md
 ```
 
 **Expected output:**

@@ -2,6 +2,21 @@
 
 ## Before Reporting Task Complete
 
+## Table of Contents
+
+1. [Before Reporting Task Complete](#before-reporting-task-complete)
+   - 1.1 [Acceptance Criteria Met](#1-acceptance-criteria-met)
+   - 1.2 [Quality Gates Passed](#2-quality-gates-passed)
+   - 1.3 [Memory Management Verification](#3-memory-management-verification)
+   - 1.4 [Documentation Updated](#4-documentation-updated)
+   - 1.5 [Handoff Prepared](#5-handoff-prepared)
+   - 1.6 [GitHub Updated (if applicable)](#6-github-updated-if-applicable)
+   - 1.7 [Session Memory Updated](#7-session-memory-updated)
+2. [Verification Loop](#verification-loop)
+
+---
+
+
 STOP and verify ALL of the following:
 
 ### 1. Acceptance Criteria Met

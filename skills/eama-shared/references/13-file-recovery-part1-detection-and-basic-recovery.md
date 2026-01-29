@@ -143,22 +143,22 @@ Missing closing quote: "incomplete string
 
 1. **Check file existence**
    ```bash
-   ls -la .eama/memory/*.md
+   ls -la design/memory/*.md
    ```
    If any file is missing, proceed to PROCEDURE 2
 
 2. **Check file size**
    ```bash
-   du -h .eama/memory/*.md
+   du -h design/memory/*.md
    ```
    If any file is 0 bytes, it is corrupted
 
 3. **Validate Markdown syntax**
    ```bash
    # Using a Markdown validator
-   mdl .eama/memory/activeContext.md
-   mdl .eama/memory/patterns.md
-   mdl .eama/memory/progress.md
+   mdl design/memory/activeContext.md
+   mdl design/memory/patterns.md
+   mdl design/memory/progress.md
    ```
 
 4. **Check for required sections**
@@ -179,7 +179,7 @@ Missing closing quote: "incomplete string
 **Example validation check:**
 ```bash
 #!/bin/bash
-for file in .eama/memory/{activeContext,patterns,progress}.md; do
+for file in design/memory/{activeContext,patterns,progress}.md; do
   if [ ! -f "$file" ]; then
     echo "ERROR: $file is missing"
   elif [ ! -s "$file" ]; then
@@ -205,13 +205,13 @@ done
 
 1. **Locate backup files**
    ```bash
-   ls -lt .eama/memory/backups/
+   ls -lt design/memory/backups/
    ```
    Backups should be named: `activeContext.md.backup.TIMESTAMP`
 
 2. **Identify most recent backup**
    ```bash
-   latest_backup=$(ls -t .eama/memory/backups/activeContext.md.backup.* | head -1)
+   latest_backup=$(ls -t design/memory/backups/activeContext.md.backup.* | head -1)
    echo "Most recent backup: $latest_backup"
    ```
 
@@ -224,24 +224,24 @@ done
 
 4. **Restore from backup**
    ```bash
-   cp "$latest_backup" .eama/memory/activeContext.md
+   cp "$latest_backup" design/memory/activeContext.md
    ```
 
 5. **Verify restoration**
    ```bash
    # Re-run validation from PROCEDURE 1
-   mdl .eama/memory/activeContext.md
+   mdl design/memory/activeContext.md
    ```
 
 6. **Repeat for other corrupted files**
    ```bash
    # Restore patterns.md if needed
-   latest_patterns=$(ls -t .eama/memory/backups/patterns.md.backup.* | head -1)
-   cp "$latest_patterns" .eama/memory/patterns.md
+   latest_patterns=$(ls -t design/memory/backups/patterns.md.backup.* | head -1)
+   cp "$latest_patterns" design/memory/patterns.md
 
    # Restore progress.md if needed
-   latest_progress=$(ls -t .eama/memory/backups/progress.md.backup.* | head -1)
-   cp "$latest_progress" .eama/memory/progress.md
+   latest_progress=$(ls -t design/memory/backups/progress.md.backup.* | head -1)
+   cp "$latest_progress" design/memory/progress.md
    ```
 
 7. **Update session state**
@@ -254,11 +254,11 @@ done
 ```bash
 #!/bin/bash
 for file in activeContext patterns progress; do
-  if [ ! -s ".eama/memory/$file.md" ]; then
-    latest=$(ls -t .eama/memory/backups/$file.md.backup.* 2>/dev/null | head -1)
+  if [ ! -s "design/memory/$file.md" ]; then
+    latest=$(ls -t design/memory/backups/$file.md.backup.* 2>/dev/null | head -1)
     if [ -n "$latest" ]; then
       echo "Restoring $file.md from $latest"
-      cp "$latest" ".eama/memory/$file.md"
+      cp "$latest" "design/memory/$file.md"
     else
       echo "ERROR: No backup found for $file.md"
     fi
@@ -306,7 +306,7 @@ done
 6. **Write reconstructed files**
    ```bash
    # Create new activeContext.md with extracted info
-   cat > .eama/memory/activeContext.md << 'EOF'
+   cat > design/memory/activeContext.md << 'EOF'
    # Active Context
 
    **Last Updated:** [current timestamp]

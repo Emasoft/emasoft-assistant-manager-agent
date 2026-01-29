@@ -37,8 +37,8 @@
 2. **Backup current snapshot**
    ```bash
    timestamp=$(date +%Y%m%d-%H%M%S)
-   cp .eama/memory/config-snapshot.md \
-      .eama/memory/backups/config-snapshot.md.backup.$timestamp
+   cp design/memory/config-snapshot.md \
+      design/memory/backups/config-snapshot.md.backup.$timestamp
    ```
 
 3. **Create new snapshot (same as PROCEDURE 1)**
@@ -85,7 +85,7 @@
 
 1. **Check snapshot file exists**
    ```bash
-   if [ ! -f .eama/memory/config-snapshot.md ]; then
+   if [ ! -f design/memory/config-snapshot.md ]; then
      echo "ERROR: Config snapshot missing"
      exit 1
    fi
@@ -170,7 +170,7 @@
    Config Snapshot Validation Report
    ==================================
 
-   File: .eama/memory/config-snapshot.md
+   File: design/memory/config-snapshot.md
    Size: 45 KB
 
    Structure:
@@ -262,7 +262,7 @@ Reading design/config/standards.md... Done     # (OPTIONAL: If Atlas Orchestrato
 Reading design/config/environment.md... Done   # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 Reading design/config/decisions.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 
-Writing snapshot to .eama/memory/config-snapshot.md... Done
+Writing snapshot to design/memory/config-snapshot.md... Done
 Validating snapshot... PASSED
 
 Config snapshot created successfully.
@@ -354,14 +354,14 @@ ls -la design/config/
 **Solution:**
 ```bash
 # Check for backup
-ls .eama/memory/backups/config-snapshot.md.backup.*
+ls design/memory/backups/config-snapshot.md.backup.*
 
 # If backup exists, restore it
-cp .eama/memory/backups/config-snapshot.md.backup.LATEST \
-   .eama/memory/config-snapshot.md
+cp design/memory/backups/config-snapshot.md.backup.LATEST \
+   design/memory/config-snapshot.md
 
 # If no backup, recreate snapshot
-rm .eama/memory/config-snapshot.md
+rm design/memory/config-snapshot.md
 # Then run PROCEDURE 1 to create fresh snapshot
 ```
 

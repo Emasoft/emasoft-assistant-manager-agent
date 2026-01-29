@@ -170,7 +170,7 @@ Compaction integration is the set of procedures that ensure session memory survi
 
 3. **Check when memory was last saved**
    ```bash
-   last_save=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" .eama/memory/activeContext.md)
+   last_save=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" design/memory/activeContext.md)
    echo "Memory last saved: $last_save"
 
    # If last save > 5 minutes ago, update needed
@@ -233,13 +233,13 @@ Compaction integration is the set of procedures that ensure session memory survi
 
 2. **Create pre-compaction checkpoint**
    ```bash
-   checkpoint_dir=".eama/memory/checkpoints/pre-compaction-$(date +%Y%m%d-%H%M%S)"
+   checkpoint_dir="design/memory/checkpoints/pre-compaction-$(date +%Y%m%d-%H%M%S)"
    mkdir -p "$checkpoint_dir"
 
-   cp .eama/memory/activeContext.md "$checkpoint_dir/"
-   cp .eama/memory/patterns.md "$checkpoint_dir/"
-   cp .eama/memory/progress.md "$checkpoint_dir/"
-   cp .eama/memory/config-snapshot.md "$checkpoint_dir/" 2>/dev/null || true
+   cp design/memory/activeContext.md "$checkpoint_dir/"
+   cp design/memory/patterns.md "$checkpoint_dir/"
+   cp design/memory/progress.md "$checkpoint_dir/"
+   cp design/memory/config-snapshot.md "$checkpoint_dir/" 2>/dev/null || true
    ```
 
 3. **Verify all critical state is captured**
@@ -281,12 +281,12 @@ Compaction integration is the set of procedures that ensure session memory survi
    sync
 
    # Verify files are on disk
-   ls -lh .eama/memory/*.md
+   ls -lh design/memory/*.md
    ```
 
 6. **Create recovery instructions**
    ```markdown
-   # In .eama/memory/RECOVERY.md
+   # In design/memory/RECOVERY.md
 
    # Post-Compaction Recovery
 

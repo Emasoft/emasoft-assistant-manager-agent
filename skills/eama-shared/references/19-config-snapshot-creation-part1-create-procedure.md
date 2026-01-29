@@ -15,7 +15,7 @@
 
 1. **Check if snapshot already exists**
    ```bash
-   if [ -f .eama/memory/config-snapshot.md ]; then
+   if [ -f design/memory/config-snapshot.md ]; then
      echo "WARNING: Snapshot already exists"
      echo "This should only happen if resuming session"
      # Use existing snapshot, do not recreate
@@ -97,7 +97,7 @@
        snapshot_content.append("\n```\n\n")
 
    # Write snapshot
-   with open('.eama/memory/config-snapshot.md', 'w') as f:
+   with open('design/memory/config-snapshot.md', 'w') as f:
        f.write(''.join(snapshot_content))
    ```
 
@@ -106,20 +106,20 @@
    ## Config Snapshot
    **Created:** 2025-12-31 10:23:47
    **Configs Captured:** toolchain, standards, environment, decisions
-   **Location:** .eama/memory/config-snapshot.md
+   **Location:** design/memory/config-snapshot.md
    ```
 
 7. **Validate snapshot**
    ```bash
    # Verify snapshot file exists
-   if [ ! -f .eama/memory/config-snapshot.md ]; then
+   if [ ! -f design/memory/config-snapshot.md ]; then
      echo "ERROR: Snapshot creation failed"
      exit 1
    fi
 
    # Verify snapshot contains all configs
    for config in toolchain standards environment decisions; do
-     if ! grep -q "### ${config}.md" .eama/memory/config-snapshot.md; then
+     if ! grep -q "### ${config}.md" design/memory/config-snapshot.md; then
        echo "ERROR: Snapshot missing $config"
        exit 1
      fi

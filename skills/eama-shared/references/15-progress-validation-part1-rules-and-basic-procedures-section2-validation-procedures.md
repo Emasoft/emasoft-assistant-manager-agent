@@ -22,13 +22,13 @@
 1. **Extract all tasks from progress.md**
    ```bash
    # Extract todo tasks
-   todo_tasks=$(sed -n '/## Todo List/,/## /p' .eama/memory/progress.md | grep '- \[')
+   todo_tasks=$(sed -n '/## Todo List/,/## /p' design/memory/progress.md | grep '- \[')
 
    # Extract completed tasks
-   completed_tasks=$(sed -n '/## Completed Tasks/,/## /p' .eama/memory/progress.md | grep '- \[x\]')
+   completed_tasks=$(sed -n '/## Completed Tasks/,/## /p' design/memory/progress.md | grep '- \[x\]')
 
    # Extract blocked tasks
-   blocked_tasks=$(sed -n '/## Blocked Tasks/,/## /p' .eama/memory/progress.md | grep '- \[!\]')
+   blocked_tasks=$(sed -n '/## Blocked Tasks/,/## /p' design/memory/progress.md | grep '- \[!\]')
    ```
 
 2. **Check for duplicate task names**

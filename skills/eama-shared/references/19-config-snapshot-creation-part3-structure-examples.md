@@ -72,7 +72,7 @@ Reading design/config/standards.md... Done     # (OPTIONAL: If Atlas Orchestrato
 Reading design/config/environment.md... Done   # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 Reading design/config/decisions.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 
-Writing snapshot to .eama/memory/config-snapshot.md... Done
+Writing snapshot to design/memory/config-snapshot.md... Done
 Validating snapshot... PASSED
 
 Config snapshot created successfully.
@@ -160,20 +160,20 @@ cat design/config/toolchain.md | wc -c
 
 **Symptoms:**
 - Snapshot creation fails with permission error
-- Cannot write to .eama/memory/
+- Cannot write to design/memory/
 
 **Cause:** Directory permissions or disk full
 
 **Solution:**
 ```bash
 # Check directory permissions
-ls -la .eama/memory/
+ls -la design/memory/
 
 # Check disk space
 df -h .
 
 # Fix permissions if needed
-chmod 755 .eama/memory/
+chmod 755 design/memory/
 ```
 
 ---

@@ -134,8 +134,8 @@ Context synchronization is the process of ensuring that the session memory files
 
 1. **Load current memory state**
    ```bash
-   active_task=$(grep "**Current Task:**" .eama/memory/activeContext.md | cut -d: -f2-)
-   active_file=$(grep "**Current File:**" .eama/memory/activeContext.md | cut -d: -f2-)
+   active_task=$(grep "**Current Task:**" design/memory/activeContext.md | cut -d: -f2-)
+   active_file=$(grep "**Current File:**" design/memory/activeContext.md | cut -d: -f2-)
    ```
 
 2. **Check if current task is still valid**
@@ -152,7 +152,7 @@ Context synchronization is the process of ensuring that the session memory files
 
 4. **Check if current line is still valid**
    ```bash
-   active_line=$(grep "**Current Line:**" .eama/memory/activeContext.md | cut -d: -f2-)
+   active_line=$(grep "**Current Line:**" design/memory/activeContext.md | cut -d: -f2-)
    total_lines=$(wc -l < "$active_file")
    if [ "$active_line" -gt "$total_lines" ]; then
      echo "DRIFT: Current line beyond file end"
@@ -320,10 +320,10 @@ progress.md:
 6. **Write synchronized activeContext.md**
    ```bash
    # Atomic write to prevent corruption
-   cat > .eama/memory/activeContext.md.tmp << 'EOF'
+   cat > design/memory/activeContext.md.tmp << 'EOF'
    [updated content with new file]
    EOF
-   mv .eama/memory/activeContext.md.tmp .eama/memory/activeContext.md
+   mv design/memory/activeContext.md.tmp design/memory/activeContext.md
    ```
 
 ---

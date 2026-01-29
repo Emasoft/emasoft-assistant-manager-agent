@@ -39,13 +39,13 @@
 1. **Identify corrupted sections**
    ```bash
    # Open file and scan for corruption
-   cat .eama/memory/activeContext.md
+   cat design/memory/activeContext.md
    ```
 
 2. **Extract valid sections**
    ```bash
    # Copy file to temp location
-   cp .eama/memory/activeContext.md /tmp/activeContext.partial
+   cp design/memory/activeContext.md /tmp/activeContext.partial
    ```
 
 3. **Remove corrupted sections**
@@ -77,7 +77,7 @@
 
 6. **Validate merged file**
    ```bash
-   mdl .eama/memory/activeContext.md
+   mdl design/memory/activeContext.md
    ```
 
 7. **Document recovery process**
@@ -163,9 +163,9 @@
 6. **Create backup of reconstructed files**
    ```bash
    timestamp=$(date +%Y%m%d-%H%M%S)
-   cp .eama/memory/activeContext.md .eama/memory/backups/activeContext.md.backup.$timestamp
-   cp .eama/memory/patterns.md .eama/memory/backups/patterns.md.backup.$timestamp
-   cp .eama/memory/progress.md .eama/memory/backups/progress.md.backup.$timestamp
+   cp design/memory/activeContext.md design/memory/backups/activeContext.md.backup.$timestamp
+   cp design/memory/patterns.md design/memory/backups/patterns.md.backup.$timestamp
+   cp design/memory/progress.md design/memory/backups/progress.md.backup.$timestamp
    ```
 
 ---
@@ -184,7 +184,7 @@ backup_before_write() {
 }
 
 # Use in update procedures
-backup_before_write .eama/memory/activeContext.md
+backup_before_write design/memory/activeContext.md
 # Then write new content
 ```
 
@@ -268,7 +268,7 @@ manage_backups() {
 
 **Detection:**
 ```bash
-$ cat .eama/memory/activeContext.md
+$ cat design/memory/activeContext.md
 # Active Context
 
 **Current Task:** Implement authentication system
@@ -283,15 +283,15 @@ $ cat .eama/memory/activeContext.md
 ```bash
 # File ends abruptly - truncation detected
 # Find backup
-$ ls -t .eama/memory/backups/activeContext.md.backup.* | head -1
-.eama/memory/backups/activeContext.md.backup.20251231-102300
+$ ls -t design/memory/backups/activeContext.md.backup.* | head -1
+design/memory/backups/activeContext.md.backup.20251231-102300
 
 # Restore
-$ cp .eama/memory/backups/activeContext.md.backup.20251231-102300 \
-     .eama/memory/activeContext.md
+$ cp design/memory/backups/activeContext.md.backup.20251231-102300 \
+     design/memory/activeContext.md
 
 # Verify
-$ tail -20 .eama/memory/activeContext.md
+$ tail -20 design/memory/activeContext.md
 # Should show complete file
 ```
 
@@ -353,13 +353,13 @@ Valid content here about using SQLAlchemy
 **Recovery:**
 ```bash
 # Keep valid sections
-valid_decisions=$(sed -n '/## Recent Decisions/,/## /p' .eama/memory/activeContext.md)
+valid_decisions=$(sed -n '/## Recent Decisions/,/## /p' design/memory/activeContext.md)
 
 # Reconstruct corrupted sections from conversation
 current_task="Implement user CRUD endpoints"
 
 # Merge
-cat > .eama/memory/activeContext.md << EOF
+cat > design/memory/activeContext.md << EOF
 # Active Context
 
 **Last Updated:** $(date -Iseconds)

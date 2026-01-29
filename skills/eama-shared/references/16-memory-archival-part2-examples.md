@@ -18,10 +18,10 @@
 
 **Before archival:**
 ```bash
-$ du -h .eama/memory/progress.md
-245K    .eama/memory/progress.md
+$ du -h design/memory/progress.md
+245K    design/memory/progress.md
 
-$ grep -c "^- \[x\]" .eama/memory/progress.md
+$ grep -c "^- \[x\]" design/memory/progress.md
 78
 ```
 
@@ -32,7 +32,7 @@ $ python scripts/archive-memory.py --type completed-tasks --cutoff-days 30
 Analyzing completed tasks...
 Found 78 completed tasks
 45 tasks are older than 30 days
-Creating archive: .eama/memory/archive/2025/completed-tasks-202512.md
+Creating archive: design/memory/archive/2025/completed-tasks-202512.md
 Writing 45 tasks to archive...
 Removing archived tasks from progress.md...
 Done.
@@ -44,13 +44,13 @@ Space saved: 123KB
 
 **After archival:**
 ```bash
-$ du -h .eama/memory/progress.md
-122K    .eama/memory/progress.md
+$ du -h design/memory/progress.md
+122K    design/memory/progress.md
 
-$ grep -c "^- \[x\]" .eama/memory/progress.md
+$ grep -c "^- \[x\]" design/memory/progress.md
 33
 
-$ ls -lh .eama/memory/archive/2025/completed-tasks-202512.md
+$ ls -lh design/memory/archive/2025/completed-tasks-202512.md
 -rw-r--r--  1 user  staff   98K Dec 31 16:30 completed-tasks-202512.md
 ```
 
@@ -65,7 +65,7 @@ $ ls -lh .eama/memory/archive/2025/completed-tasks-202512.md
 $ python scripts/snapshot-memory.py --reason "Phase 1 completion"
 
 Creating snapshot...
-Snapshot directory: .eama/memory/snapshots/20251231-163000
+Snapshot directory: design/memory/snapshots/20251231-163000
 Copying activeContext.md... Done
 Copying patterns.md... Done
 Copying progress.md... Done
@@ -77,7 +77,7 @@ Snapshot created: 20251231-163000.tar.gz (156KB)
 
 **Snapshot contents:**
 ```bash
-$ tar tzf .eama/memory/snapshots/20251231-163000.tar.gz
+$ tar tzf design/memory/snapshots/20251231-163000.tar.gz
 20251231-163000/
 20251231-163000/activeContext.md
 20251231-163000/patterns.md

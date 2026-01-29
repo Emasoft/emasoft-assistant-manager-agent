@@ -2,6 +2,43 @@
 
 This protocol defines standards for creating, validating, and searching design documents in the `design/` folder structure.
 
+## Table of Contents
+
+1. [Document UUID Format (GUUID)](#1-document-uuid-format-guuid)
+2. [Required Frontmatter Schema](#2-required-frontmatter-schema)
+3. [Document Lifecycle](#3-document-lifecycle)
+4. [Validation Procedures](#4-validation-procedures)
+   - 4.1 [Pre-Save Validation (REQUIRED)](#41-pre-save-validation-required)
+   - 4.2 [Post-Save Validation (REQUIRED)](#42-post-save-validation-required)
+   - 4.3 [Validation Script Usage](#43-validation-script-usage)
+5. [Search Procedures](#5-search-procedures)
+   - 5.1 [Search by UUID](#51-search-by-uuid)
+   - 5.2 [Search by Type](#52-search-by-type)
+   - 5.3 [Search by Status](#53-search-by-status)
+   - 5.4 [Search by Keyword](#54-search-by-keyword)
+   - 5.5 [Combined Search](#55-combined-search)
+6. [GitHub Integration](#6-github-integration)
+   - 6.1 [Creating GitHub Issue from Design Document](#61-creating-github-issue-from-design-document)
+   - 6.2 [Syncing Status](#62-syncing-status)
+   - 6.3 [Linking Existing Issue](#63-linking-existing-issue)
+7. [Edge Cases and Error Handling](#7-edge-cases-and-error-handling)
+   - 7.1 [Duplicate UUID](#71-duplicate-uuid)
+   - 7.2 [Malformed Frontmatter](#72-malformed-frontmatter)
+   - 7.3 [Missing Required Fields](#73-missing-required-fields)
+   - 7.4 [Invalid Status Transition](#74-invalid-status-transition)
+   - 7.5 [GitHub CLI Not Available](#75-github-cli-not-available)
+   - 7.6 [Empty Search Results](#76-empty-search-results)
+   - 7.7 [Design Folder Not Initialized](#77-design-folder-not-initialized)
+8. [File Naming Convention](#8-file-naming-convention)
+9. [Cross-Plugin Protocol](#9-cross-plugin-protocol)
+10. [Quick Reference](#10-quick-reference)
+    - 10.1 [Create Document](#create-document)
+    - 10.2 [Search Documents](#search-documents)
+    - 10.3 [Validate Document](#validate-document)
+
+---
+
+
 ## 1. Document UUID Format (GUUID)
 
 All design documents MUST have a globally unique identifier (GUUID) in this format:
@@ -125,13 +162,13 @@ After saving ANY design document:
 
 ```bash
 # Validate a single document
-uv run python scripts/eoa_design_validate.py design/requirements/REQ-20260129-0001.md
+uv run python scripts/eama_design_validate.py design/requirements/REQ-20260129-0001.md
 
 # Validate all documents in a folder
-uv run python scripts/eoa_design_validate.py design/requirements/
+uv run python scripts/eama_design_validate.py design/requirements/
 
 # Validate entire design folder
-uv run python scripts/eoa_design_validate.py design/
+uv run python scripts/eama_design_validate.py design/
 ```
 
 ## 5. Search Procedures
@@ -139,33 +176,33 @@ uv run python scripts/eoa_design_validate.py design/
 ### 5.1 Search by UUID
 
 ```bash
-uv run python scripts/eoa_design_search.py --uuid REQ-20260129-0001
+uv run python scripts/eama_design_search.py --uuid REQ-20260129-0001
 ```
 
 ### 5.2 Search by Type
 
 ```bash
-uv run python scripts/eoa_design_search.py --type requirement
-uv run python scripts/eoa_design_search.py --type handoff
+uv run python scripts/eama_design_search.py --type requirement
+uv run python scripts/eama_design_search.py --type handoff
 ```
 
 ### 5.3 Search by Status
 
 ```bash
-uv run python scripts/eoa_design_search.py --status APPROVED
-uv run python scripts/eoa_design_search.py --status IMPLEMENTING
+uv run python scripts/eama_design_search.py --status APPROVED
+uv run python scripts/eama_design_search.py --status IMPLEMENTING
 ```
 
 ### 5.4 Search by Keyword
 
 ```bash
-uv run python scripts/eoa_design_search.py --keyword "authentication"
+uv run python scripts/eama_design_search.py --keyword "authentication"
 ```
 
 ### 5.5 Combined Search
 
 ```bash
-uv run python scripts/eoa_design_search.py --type requirement --status DRAFT --keyword "API"
+uv run python scripts/eama_design_search.py --type requirement --status DRAFT --keyword "API"
 ```
 
 ## 6. GitHub Integration
@@ -250,7 +287,7 @@ To link a document to an existing issue:
 
 **Detection:** `design/` folder or subfolders don't exist
 **Resolution:**
-1. Run `eoa_init_design_folders.py` to create structure
+1. Run `eama_init_design_folders.py` to create structure
 2. Retry operation
 
 ## 8. File Naming Convention
@@ -292,7 +329,7 @@ When handing off documents between plugins:
 ### Create Document
 
 ```python
-from eoa_design_create import create_design_document
+from eama_design_create import create_design_document
 
 doc = create_design_document(
     doc_type="requirement",
@@ -305,7 +342,7 @@ print(f"Created: {doc['uuid']}")
 ### Search Documents
 
 ```python
-from eoa_design_search import search_documents
+from eama_design_search import search_documents
 
 results = search_documents(
     doc_type="requirement",
@@ -318,7 +355,7 @@ for doc in results:
 ### Validate Document
 
 ```python
-from eoa_design_validate import validate_document
+from eama_design_validate import validate_document
 
 errors = validate_document("design/requirements/REQ-20260129-0001.md")
 if errors:

@@ -51,7 +51,7 @@ A config snapshot is a point-in-time capture of all central configuration files 
 ### Location
 
 ```
-.eama/memory/config-snapshot.md
+design/memory/config-snapshot.md
 ```
 
 This file is SEPARATE from authoritative configs in `design/config/` (OPTIONAL: If Atlas Orchestrator plugin is installed). It's a **read-only capture** for comparison purposes.

@@ -37,8 +37,8 @@
 
    def detect_compaction():
        # Check if recovery file exists
-       if file_exists('.eama/memory/RECOVERY.md'):
-           recovery_time = get_file_timestamp('.eama/memory/RECOVERY.md')
+       if file_exists('design/memory/RECOVERY.md'):
+           recovery_time = get_file_timestamp('design/memory/RECOVERY.md')
            current_time = datetime.now()
 
            # If recovery file is recent, compaction likely occurred
@@ -50,9 +50,9 @@
 
 2. **Load all memory files**
    ```python
-   active_context = load_file('.eama/memory/activeContext.md')
-   patterns = load_file('.eama/memory/patterns.md')
-   progress = load_file('.eama/memory/progress.md')
+   active_context = load_file('design/memory/activeContext.md')
+   patterns = load_file('design/memory/patterns.md')
+   progress = load_file('design/memory/progress.md')
    ```
 
 3. **Validate loaded memory**
@@ -233,27 +233,27 @@
 2. **Minor Recovery: Restore from recent checkpoint**
    ```bash
    # Find most recent pre-compaction checkpoint
-   latest_checkpoint=$(ls -t .eama/memory/checkpoints/pre-compaction-* | head -1)
+   latest_checkpoint=$(ls -t design/memory/checkpoints/pre-compaction-* | head -1)
 
    # Restore files
-   cp "$latest_checkpoint/activeContext.md" .eama/memory/
-   cp "$latest_checkpoint/patterns.md" .eama/memory/
-   cp "$latest_checkpoint/progress.md" .eama/memory/
+   cp "$latest_checkpoint/activeContext.md" design/memory/
+   cp "$latest_checkpoint/patterns.md" design/memory/
+   cp "$latest_checkpoint/progress.md" design/memory/
    ```
 
 3. **Major Recovery: Restore from archive**
    ```bash
    # If checkpoints are also corrupted, restore from archive
-   latest_snapshot=$(ls -t .eama/memory/snapshots/*.tar.gz | head -1)
+   latest_snapshot=$(ls -t design/memory/snapshots/*.tar.gz | head -1)
 
    # Extract snapshot
    restore_dir="/tmp/memory-restore"
    tar xzf "$latest_snapshot" -C "$restore_dir"
 
    # Restore files
-   cp "$restore_dir/*/activeContext.md" .eama/memory/
-   cp "$restore_dir/*/patterns.md" .eama/memory/
-   cp "$restore_dir/*/progress.md" .eama/memory/
+   cp "$restore_dir/*/activeContext.md" design/memory/
+   cp "$restore_dir/*/patterns.md" design/memory/
+   cp "$restore_dir/*/progress.md" design/memory/
    ```
 
 4. **Critical Recovery: Reconstruct from user input**
@@ -292,7 +292,7 @@
    Historical data before {datetime.now().isoformat()} may be incomplete.
    """
 
-   write_file('.eama/memory/activeContext.md', new_active_context)
+   write_file('design/memory/activeContext.md', new_active_context)
    ```
 
 6. **Document recovery event**

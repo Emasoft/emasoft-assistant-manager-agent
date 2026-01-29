@@ -9,6 +9,34 @@ triggers:
 ---
 
 # GitHub Operation Routing Skill
+## Table of Contents
+
+1. [Purpose](#purpose)
+2. [Primary Routing Principle](#primary-routing-principle)
+3. [Master Decision Tree](#master-decision-tree)
+4. [Issue Operations Decision Tree](#issue-operations-decision-tree)
+   - 4.1 [Issue Routing Matrix](#issue-routing-matrix)
+5. [Pull Request Operations Decision Tree](#pull-request-operations-decision-tree)
+   - 5.1 [PR Routing Matrix](#pr-routing-matrix)
+6. [Kanban/Projects Operations Decision Tree](#kanbanprojects-operations-decision-tree)
+   - 6.1 [Kanban Routing Matrix](#kanban-routing-matrix)
+7. [Release Operations Decision Tree](#release-operations-decision-tree)
+   - 7.1 [Release Routing Matrix](#release-routing-matrix)
+8. [Handoff Content Requirements](#handoff-content-requirements)
+   - 8.1 [For EIA (Integrator) GitHub Handoffs](#for-eia-integrator-github-handoffs)
+   - 8.2 [For EAA (Architect) Design-GitHub Handoffs](#for-eaa-architect-design-github-handoffs)
+   - 8.3 [For EOA (Orchestrator) Module-GitHub Handoffs](#for-eoa-orchestrator-module-github-handoffs)
+9. [UUID Tracking Across GitHub Operations](#uuid-tracking-across-github-operations)
+   - 9.1 [UUID Reference Format in GitHub](#uuid-reference-format-in-github)
+   - 9.2 [Searching by UUID](#searching-by-uuid)
+10. [Error Handling](#error-handling)
+    - 10.1 [Ambiguous Routing](#ambiguous-routing)
+    - 10.2 [Missing Context](#missing-context)
+    - 10.3 [Agent Unavailable](#agent-unavailable)
+11. [References](#references)
+
+---
+
 
 ## Purpose
 

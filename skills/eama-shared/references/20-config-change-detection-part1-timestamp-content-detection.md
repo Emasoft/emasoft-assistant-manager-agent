@@ -63,7 +63,7 @@
 
 3. **Compare timestamps**
    ```python
-   snapshot_timestamps = extract_snapshot_timestamps('.eama/memory/config-snapshot.md')
+   snapshot_timestamps = extract_snapshot_timestamps('design/memory/config-snapshot.md')
    current_timestamps = extract_current_timestamps()
 
    changes_detected = []
@@ -154,7 +154,7 @@
    ```python
    import difflib
 
-   snapshot_content = extract_snapshot_config('.eama/memory/config-snapshot.md', 'toolchain')
+   snapshot_content = extract_snapshot_config('design/memory/config-snapshot.md', 'toolchain')
    current_content = read_current_config('toolchain')
 
    diff = list(difflib.unified_diff(

@@ -52,7 +52,7 @@ python scripts/archive-memory.py --type all --cutoff-days 30
 python scripts/validate-memory.py --fix
 
 # 3. Check file sizes
-du -h .eama/memory/*.md
+du -h design/memory/*.md
 ```
 
 ---

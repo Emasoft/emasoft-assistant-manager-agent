@@ -25,7 +25,7 @@
 
 1. **Create archive directory if needed**
    ```bash
-   mkdir -p .eama/memory/archive/$(date +%Y)
+   mkdir -p design/memory/archive/$(date +%Y)
    ```
 
 2. **Extract tasks to archive**
@@ -43,7 +43,7 @@
 
 3. **Create archive file with metadata**
    ```bash
-   archive_file=".eama/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
+   archive_file="design/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Completed Tasks
@@ -91,11 +91,11 @@
    ls -lh "$archive_file"
 
    # Check tasks were removed from progress.md
-   new_count=$(grep -c "^- \[x\]" .eama/memory/progress.md)
+   new_count=$(grep -c "^- \[x\]" design/memory/progress.md)
    echo "Completed tasks remaining: $new_count"
 
    # Check file size reduced
-   du -h .eama/memory/progress.md
+   du -h design/memory/progress.md
    ```
 
 **Example archived file:**
@@ -158,7 +158,7 @@
 
 3. **Create pattern archive**
    ```bash
-   archive_file=".eama/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
+   archive_file="design/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Patterns
@@ -209,10 +209,10 @@
    ls -lh "$archive_file"
 
    # Check file size reduced
-   du -h .eama/memory/patterns.md
+   du -h design/memory/patterns.md
 
    # Check pattern count
-   grep -c "^### Pattern:" .eama/memory/patterns.md
+   grep -c "^### Pattern:" design/memory/patterns.md
    ```
 
 ---
@@ -247,7 +247,7 @@
 
 3. **Create decision archive**
    ```bash
-   archive_file=".eama/memory/archive/$(date +%Y)/decisions-$(date +%Y%m).md"
+   archive_file="design/memory/archive/$(date +%Y)/decisions-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Decisions
@@ -294,7 +294,7 @@
 6. **Verify consolidation**
    ```bash
    # Check file size reduced
-   du -h .eama/memory/activeContext.md
+   du -h design/memory/activeContext.md
 
    # Should be under 50KB
    ```
@@ -314,16 +314,16 @@
 1. **Create snapshot directory**
    ```bash
    snapshot_date=$(date +%Y%m%d-%H%M%S)
-   snapshot_dir=".eama/memory/snapshots/$snapshot_date"
+   snapshot_dir="design/memory/snapshots/$snapshot_date"
    mkdir -p "$snapshot_dir"
    ```
 
 2. **Copy all current memory files**
    ```bash
-   cp .eama/memory/activeContext.md "$snapshot_dir/"
-   cp .eama/memory/patterns.md "$snapshot_dir/"
-   cp .eama/memory/progress.md "$snapshot_dir/"
-   cp .eama/memory/config-snapshot.md "$snapshot_dir/" 2>/dev/null || true
+   cp design/memory/activeContext.md "$snapshot_dir/"
+   cp design/memory/patterns.md "$snapshot_dir/"
+   cp design/memory/progress.md "$snapshot_dir/"
+   cp design/memory/config-snapshot.md "$snapshot_dir/" 2>/dev/null || true
    ```
 
 3. **Create snapshot metadata**
@@ -352,7 +352,7 @@
 
 4. **Create compressed archive**
    ```bash
-   cd .eama/memory/snapshots
+   cd design/memory/snapshots
    tar czf "$snapshot_date.tar.gz" "$snapshot_date/"
    ```
 
@@ -377,15 +377,15 @@
 1. **Locate relevant archive**
    ```bash
    # List available archives
-   ls -lh .eama/memory/archive/2025/
+   ls -lh design/memory/archive/2025/
 
    # List available snapshots
-   ls -lh .eama/memory/snapshots/
+   ls -lh design/memory/snapshots/
    ```
 
 2. **Extract snapshot if needed**
    ```bash
-   snapshot=".eama/memory/snapshots/20251201-153000.tar.gz"
+   snapshot="design/memory/snapshots/20251201-153000.tar.gz"
    extract_dir="/tmp/snapshot-restore"
 
    mkdir -p "$extract_dir"
@@ -395,32 +395,32 @@
 3. **Review archived content**
    ```bash
    # View archived completed tasks
-   cat .eama/memory/archive/2025/completed-tasks-202511.md
+   cat design/memory/archive/2025/completed-tasks-202511.md
 
    # View archived patterns
-   cat .eama/memory/archive/2025/patterns-202511.md
+   cat design/memory/archive/2025/patterns-202511.md
 
    # View archived decisions
-   cat .eama/memory/archive/2025/decisions-202511.md
+   cat design/memory/archive/2025/decisions-202511.md
    ```
 
 4. **Extract specific information if needed**
    ```bash
    # Find specific archived task
-   grep -A 5 "Implement authentication" .eama/memory/archive/2025/completed-tasks-*.md
+   grep -A 5 "Implement authentication" design/memory/archive/2025/completed-tasks-*.md
 
    # Find specific archived pattern
-   grep -A 20 "Decorator-based" .eama/memory/archive/2025/patterns-*.md
+   grep -A 20 "Decorator-based" design/memory/archive/2025/patterns-*.md
    ```
 
 5. **Restore to current memory if needed** (rarely necessary)
    ```bash
    # Only if current memory is lost and archive is most recent
    # Create backup first
-   cp .eama/memory/progress.md .eama/memory/progress.md.backup
+   cp design/memory/progress.md design/memory/progress.md.backup
 
    # Restore archived tasks to current progress.md
-   cat .eama/memory/archive/2025/completed-tasks-202512.md >> .eama/memory/progress.md
+   cat design/memory/archive/2025/completed-tasks-202512.md >> design/memory/progress.md
    ```
 
 ---

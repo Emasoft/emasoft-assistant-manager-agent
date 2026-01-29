@@ -55,7 +55,7 @@ Memory archival is the process of moving completed, outdated, or no-longer-activ
 
 **How to check:**
 ```bash
-du -k .eama/memory/*.md | while read size file; do
+du -k design/memory/*.md | while read size file; do
   if [ $size -gt 100 ]; then
     echo "Archive needed: $file is ${size}KB"
   fi
@@ -73,7 +73,7 @@ done
 
 **How to check:**
 ```bash
-completed_count=$(grep -c "^- \[x\]" .eama/memory/progress.md)
+completed_count=$(grep -c "^- \[x\]" design/memory/progress.md)
 if [ $completed_count -gt 50 ]; then
   echo "Archive needed: $completed_count completed tasks"
 fi
@@ -183,7 +183,7 @@ for pattern in patterns:
 
 1. **Create archive directory if needed**
    ```bash
-   mkdir -p .eama/memory/archive/$(date +%Y)
+   mkdir -p design/memory/archive/$(date +%Y)
    ```
 
 2. **Extract tasks to archive**
@@ -201,7 +201,7 @@ for pattern in patterns:
 
 3. **Create archive file with metadata**
    ```bash
-   archive_file=".eama/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
+   archive_file="design/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Completed Tasks
@@ -249,11 +249,11 @@ for pattern in patterns:
    ls -lh "$archive_file"
 
    # Check tasks were removed from progress.md
-   new_count=$(grep -c "^- \[x\]" .eama/memory/progress.md)
+   new_count=$(grep -c "^- \[x\]" design/memory/progress.md)
    echo "Completed tasks remaining: $new_count"
 
    # Check file size reduced
-   du -h .eama/memory/progress.md
+   du -h design/memory/progress.md
    ```
 
 **Example archived file:**
@@ -316,7 +316,7 @@ for pattern in patterns:
 
 3. **Create pattern archive**
    ```bash
-   archive_file=".eama/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
+   archive_file="design/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Patterns
@@ -367,10 +367,10 @@ for pattern in patterns:
    ls -lh "$archive_file"
 
    # Check file size reduced
-   du -h .eama/memory/patterns.md
+   du -h design/memory/patterns.md
 
    # Check pattern count
-   grep -c "^### Pattern:" .eama/memory/patterns.md
+   grep -c "^### Pattern:" design/memory/patterns.md
    ```
 
 ---
