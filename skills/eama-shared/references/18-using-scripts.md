@@ -117,5 +117,5 @@ python scripts/repair-memory.py
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (Implementation Scripts section)

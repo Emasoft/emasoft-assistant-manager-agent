@@ -32,7 +32,7 @@ python scripts/load-memory.py
 
 Output:
 ```
-Loading session memory from .atlas/memory
+Loading session memory from .eama/memory
 
 Loaded state:
   Current Task: Implement authorization middleware
@@ -96,7 +96,7 @@ python scripts/save-memory.py --backup
 Output:
 ```
 Creating backup... Done (backup.20251231-180000)
-Saving session state to .atlas/memory
+Saving session state to .eama/memory
 
 Updating activeContext.md... Done
 Updating patterns.md... Done

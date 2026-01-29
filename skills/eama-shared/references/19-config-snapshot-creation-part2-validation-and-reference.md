@@ -37,8 +37,8 @@
 2. **Backup current snapshot**
    ```bash
    timestamp=$(date +%Y%m%d-%H%M%S)
-   cp .atlas/memory/config-snapshot.md \
-      .atlas/memory/backups/config-snapshot.md.backup.$timestamp
+   cp .eama/memory/config-snapshot.md \
+      .eama/memory/backups/config-snapshot.md.backup.$timestamp
    ```
 
 3. **Create new snapshot (same as PROCEDURE 1)**
@@ -85,7 +85,7 @@
 
 1. **Check snapshot file exists**
    ```bash
-   if [ ! -f .atlas/memory/config-snapshot.md ]; then
+   if [ ! -f .eama/memory/config-snapshot.md ]; then
      echo "ERROR: Config snapshot missing"
      exit 1
    fi
@@ -170,7 +170,7 @@
    Config Snapshot Validation Report
    ==================================
 
-   File: .atlas/memory/config-snapshot.md
+   File: .eama/memory/config-snapshot.md
    Size: 45 KB
 
    Structure:
@@ -257,12 +257,12 @@ def initialize_session():
 **Snapshot creation output:**
 ```
 Creating config snapshot...
-Reading .atlas/config/toolchain.md... Done
-Reading .atlas/config/standards.md... Done
-Reading .atlas/config/environment.md... Done
-Reading .atlas/config/decisions.md... Done
+Reading design/config/toolchain.md... Done    # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/standards.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/environment.md... Done   # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/decisions.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 
-Writing snapshot to .atlas/memory/config-snapshot.md... Done
+Writing snapshot to .eama/memory/config-snapshot.md... Done
 Validating snapshot... PASSED
 
 Config snapshot created successfully.
@@ -303,8 +303,8 @@ Snapshot updated. Session now using:
 
 **Solution:**
 ```bash
-# Check which configs exist
-ls -la .atlas/config/
+# Check which configs exist (OPTIONAL: If Atlas Orchestrator plugin is installed)
+ls -la design/config/
 
 # If config is missing, cannot create valid snapshot
 # Either restore missing config or proceed without it (not recommended)
@@ -336,7 +336,7 @@ ls -la .atlas/config/
 **Cause:** Snapshot created from wrong config files or outdated copy
 
 **Solution:**
-1. Verify `.atlas/config/` contains authoritative configs
+1. Verify `design/config/` contains authoritative configs (OPTIONAL: If Atlas Orchestrator plugin is installed)
 2. Delete corrupt snapshot
 3. Recreate snapshot from correct source files
 4. Validate new snapshot immediately after creation
@@ -354,14 +354,14 @@ ls -la .atlas/config/
 **Solution:**
 ```bash
 # Check for backup
-ls .atlas/memory/backups/config-snapshot.md.backup.*
+ls .eama/memory/backups/config-snapshot.md.backup.*
 
 # If backup exists, restore it
-cp .atlas/memory/backups/config-snapshot.md.backup.LATEST \
-   .atlas/memory/config-snapshot.md
+cp .eama/memory/backups/config-snapshot.md.backup.LATEST \
+   .eama/memory/config-snapshot.md
 
 # If no backup, recreate snapshot
-rm .atlas/memory/config-snapshot.md
+rm .eama/memory/config-snapshot.md
 # Then run PROCEDURE 1 to create fresh snapshot
 ```
 
@@ -369,6 +369,6 @@ rm .atlas/memory/config-snapshot.md
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 7: Capture Config Snapshot at Session Start)
 **Previous:** [Part 1: Fundamentals and Creation](./19-config-snapshot-creation-part1-fundamentals-and-creation.md)

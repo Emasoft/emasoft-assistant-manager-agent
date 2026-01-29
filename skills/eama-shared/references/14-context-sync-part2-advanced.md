@@ -53,9 +53,9 @@
 
 3. **Snapshot current memory state**
    ```bash
-   memory_task=$(grep "**Current Task:**" .atlas/memory/activeContext.md)
-   memory_file=$(grep "**Current File:**" .atlas/memory/activeContext.md)
-   memory_progress=$(grep -A 20 "## Todo List" .atlas/memory/progress.md)
+   memory_task=$(grep "**Current Task:**" .eama/memory/activeContext.md)
+   memory_file=$(grep "**Current File:**" .eama/memory/activeContext.md)
+   memory_progress=$(grep -A 20 "## Todo List" .eama/memory/progress.md)
    ```
 
 4. **Compare and identify discrepancies**
@@ -142,15 +142,15 @@
 **How to check:**
 ```bash
 # Extract current task
-current=$(grep "**Current Task:**" .atlas/memory/activeContext.md | cut -d: -f2-)
+current=$(grep "**Current Task:**" .eama/memory/activeContext.md | cut -d: -f2-)
 
 # Check if in progress.md todo list
-if ! grep -q "$current" .atlas/memory/progress.md; then
+if ! grep -q "$current" .eama/memory/progress.md; then
   echo "INCONSISTENCY: Current task not in progress.md"
 fi
 
 # Check if in completed list
-if grep -A 100 "## Completed Tasks" .atlas/memory/progress.md | grep -q "$current"; then
+if grep -A 100 "## Completed Tasks" .eama/memory/progress.md | grep -q "$current"; then
   echo "INCONSISTENCY: Current task is marked complete"
 fi
 ```
@@ -166,7 +166,7 @@ fi
 
 **How to check:**
 ```bash
-active_file=$(grep "**Current File:**" .atlas/memory/activeContext.md | cut -d: -f2- | tr -d ' ')
+active_file=$(grep "**Current File:**" .eama/memory/activeContext.md | cut -d: -f2- | tr -d ' ')
 
 if [ ! -f "$active_file" ]; then
   echo "INCONSISTENCY: Current file does not exist"
@@ -210,7 +210,7 @@ for decision in decisions:
 **How to check:**
 ```bash
 # Check if patterns are used
-for pattern in $(grep "^### Pattern:" .atlas/memory/patterns.md); do
+for pattern in $(grep "^### Pattern:" .eama/memory/patterns.md); do
   pattern_name=${pattern#*: }
   if ! grep -r "$pattern_name" src/; then
     echo "INCONSISTENCY: Pattern '$pattern_name' not used in codebase"
@@ -414,5 +414,5 @@ Implement JWT-based authentication (changed from session-based)
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 1: Foundations and Core Procedures](14-context-sync-part1-foundations.md), SKILL.md (Phase 2: Session Execution)

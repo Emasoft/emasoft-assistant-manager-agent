@@ -73,5 +73,5 @@ Contents:
 
 **Version:** 1.0
 **Last Updated:** 2026-01-08
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 2: Advanced Validation and Automation](15-progress-validation-part2-advanced-and-automation.md)

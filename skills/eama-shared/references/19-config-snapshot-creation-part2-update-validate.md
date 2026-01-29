@@ -28,8 +28,8 @@
 2. **Backup current snapshot**
    ```bash
    timestamp=$(date +%Y%m%d-%H%M%S)
-   cp .atlas/memory/config-snapshot.md \
-      .atlas/memory/backups/config-snapshot.md.backup.$timestamp
+   cp .eama/memory/config-snapshot.md \
+      .eama/memory/backups/config-snapshot.md.backup.$timestamp
    ```
 
 3. **Create new snapshot (same as PROCEDURE 1)**
@@ -76,7 +76,7 @@
 
 1. **Check snapshot file exists**
    ```bash
-   if [ ! -f .atlas/memory/config-snapshot.md ]; then
+   if [ ! -f .eama/memory/config-snapshot.md ]; then
      echo "ERROR: Config snapshot missing"
      exit 1
    fi
@@ -161,7 +161,7 @@
    Config Snapshot Validation Report
    ==================================
 
-   File: .atlas/memory/config-snapshot.md
+   File: .eama/memory/config-snapshot.md
    Size: 45 KB
 
    Structure:

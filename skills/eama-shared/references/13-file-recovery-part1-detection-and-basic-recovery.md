@@ -143,22 +143,22 @@ Missing closing quote: "incomplete string
 
 1. **Check file existence**
    ```bash
-   ls -la .atlas/memory/*.md
+   ls -la .eama/memory/*.md
    ```
    If any file is missing, proceed to PROCEDURE 2
 
 2. **Check file size**
    ```bash
-   du -h .atlas/memory/*.md
+   du -h .eama/memory/*.md
    ```
    If any file is 0 bytes, it is corrupted
 
 3. **Validate Markdown syntax**
    ```bash
    # Using a Markdown validator
-   mdl .atlas/memory/activeContext.md
-   mdl .atlas/memory/patterns.md
-   mdl .atlas/memory/progress.md
+   mdl .eama/memory/activeContext.md
+   mdl .eama/memory/patterns.md
+   mdl .eama/memory/progress.md
    ```
 
 4. **Check for required sections**
@@ -179,7 +179,7 @@ Missing closing quote: "incomplete string
 **Example validation check:**
 ```bash
 #!/bin/bash
-for file in .atlas/memory/{activeContext,patterns,progress}.md; do
+for file in .eama/memory/{activeContext,patterns,progress}.md; do
   if [ ! -f "$file" ]; then
     echo "ERROR: $file is missing"
   elif [ ! -s "$file" ]; then
@@ -205,13 +205,13 @@ done
 
 1. **Locate backup files**
    ```bash
-   ls -lt .atlas/memory/backups/
+   ls -lt .eama/memory/backups/
    ```
    Backups should be named: `activeContext.md.backup.TIMESTAMP`
 
 2. **Identify most recent backup**
    ```bash
-   latest_backup=$(ls -t .atlas/memory/backups/activeContext.md.backup.* | head -1)
+   latest_backup=$(ls -t .eama/memory/backups/activeContext.md.backup.* | head -1)
    echo "Most recent backup: $latest_backup"
    ```
 
@@ -224,24 +224,24 @@ done
 
 4. **Restore from backup**
    ```bash
-   cp "$latest_backup" .atlas/memory/activeContext.md
+   cp "$latest_backup" .eama/memory/activeContext.md
    ```
 
 5. **Verify restoration**
    ```bash
    # Re-run validation from PROCEDURE 1
-   mdl .atlas/memory/activeContext.md
+   mdl .eama/memory/activeContext.md
    ```
 
 6. **Repeat for other corrupted files**
    ```bash
    # Restore patterns.md if needed
-   latest_patterns=$(ls -t .atlas/memory/backups/patterns.md.backup.* | head -1)
-   cp "$latest_patterns" .atlas/memory/patterns.md
+   latest_patterns=$(ls -t .eama/memory/backups/patterns.md.backup.* | head -1)
+   cp "$latest_patterns" .eama/memory/patterns.md
 
    # Restore progress.md if needed
-   latest_progress=$(ls -t .atlas/memory/backups/progress.md.backup.* | head -1)
-   cp "$latest_progress" .atlas/memory/progress.md
+   latest_progress=$(ls -t .eama/memory/backups/progress.md.backup.* | head -1)
+   cp "$latest_progress" .eama/memory/progress.md
    ```
 
 7. **Update session state**
@@ -254,11 +254,11 @@ done
 ```bash
 #!/bin/bash
 for file in activeContext patterns progress; do
-  if [ ! -s ".atlas/memory/$file.md" ]; then
-    latest=$(ls -t .atlas/memory/backups/$file.md.backup.* 2>/dev/null | head -1)
+  if [ ! -s ".eama/memory/$file.md" ]; then
+    latest=$(ls -t .eama/memory/backups/$file.md.backup.* 2>/dev/null | head -1)
     if [ -n "$latest" ]; then
       echo "Restoring $file.md from $latest"
-      cp "$latest" ".atlas/memory/$file.md"
+      cp "$latest" ".eama/memory/$file.md"
     else
       echo "ERROR: No backup found for $file.md"
     fi
@@ -306,7 +306,7 @@ done
 6. **Write reconstructed files**
    ```bash
    # Create new activeContext.md with extracted info
-   cat > .atlas/memory/activeContext.md << 'EOF'
+   cat > .eama/memory/activeContext.md << 'EOF'
    # Active Context
 
    **Last Updated:** [current timestamp]
@@ -354,5 +354,5 @@ write_progress_md(tasks)
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 2: Advanced Recovery and Prevention](13-file-recovery-part2-advanced-recovery-and-prevention.md)

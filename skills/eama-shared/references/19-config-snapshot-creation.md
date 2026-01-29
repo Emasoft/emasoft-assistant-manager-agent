@@ -51,10 +51,10 @@ A config snapshot is a point-in-time capture of all central configuration files 
 ### Location
 
 ```
-.atlas/memory/config-snapshot.md
+.eama/memory/config-snapshot.md
 ```
 
-This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **read-only capture** for comparison purposes.
+This file is SEPARATE from authoritative configs in `design/config/` (OPTIONAL: If Atlas Orchestrator plugin is installed). It's a **read-only capture** for comparison purposes.
 
 ### Purpose
 
@@ -180,5 +180,5 @@ For troubleshooting guidance, see [Part 3 - Structure, Examples, Troubleshooting
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 7: Capture Config Snapshot at Session Start)

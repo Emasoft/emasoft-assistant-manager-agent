@@ -38,10 +38,10 @@ A config snapshot is a point-in-time capture of all central configuration files 
 ### Location
 
 ```
-.atlas/memory/config-snapshot.md
+.eama/memory/config-snapshot.md
 ```
 
-This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **read-only capture** for comparison purposes.
+This file is SEPARATE from authoritative configs in `design/config/` (OPTIONAL: If Atlas Orchestrator plugin is installed). It's a **read-only capture** for comparison purposes.
 
 ### Purpose
 
@@ -99,7 +99,7 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
 
 1. **Check if snapshot already exists**
    ```bash
-   if [ -f .atlas/memory/config-snapshot.md ]; then
+   if [ -f .eama/memory/config-snapshot.md ]; then
      echo "WARNING: Snapshot already exists"
      echo "This should only happen if resuming session"
      # Use existing snapshot, do not recreate
@@ -107,13 +107,13 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
    fi
    ```
 
-2. **Read all central config files**
+2. **Read all central config files** (OPTIONAL: If Atlas Orchestrator plugin is installed)
    ```bash
    configs=(
-     ".atlas/config/toolchain.md"
-     ".atlas/config/standards.md"
-     ".atlas/config/environment.md"
-     ".atlas/config/decisions.md"
+     "design/config/toolchain.md"
+     "design/config/standards.md"
+     "design/config/environment.md"
+     "design/config/decisions.md"
    )
 
    for config in "${configs[@]}"; do
@@ -168,9 +168,9 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
    snapshot_content.append(f"**Session ID:** {session_id}\n")
    snapshot_content.append(f"**Snapshot Created:** {datetime.now().isoformat()}\n\n")
 
-   # Each config
+   # Each config (OPTIONAL: If Atlas Orchestrator plugin is installed)
    for config_name in ['toolchain', 'standards', 'environment', 'decisions']:
-       config_file = f".atlas/config/{config_name}.md"
+       config_file = f"design/config/{config_name}.md"  # Atlas Orchestrator config path
        metadata = extract_config_metadata(config_file)
 
        snapshot_content.append(f"### {config_name}.md\n")
@@ -181,7 +181,7 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
        snapshot_content.append("\n```\n\n")
 
    # Write snapshot
-   with open('.atlas/memory/config-snapshot.md', 'w') as f:
+   with open('.eama/memory/config-snapshot.md', 'w') as f:
        f.write(''.join(snapshot_content))
    ```
 
@@ -190,20 +190,20 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
    ## Config Snapshot
    **Created:** 2025-12-31 10:23:47
    **Configs Captured:** toolchain, standards, environment, decisions
-   **Location:** .atlas/memory/config-snapshot.md
+   **Location:** .eama/memory/config-snapshot.md
    ```
 
 7. **Validate snapshot**
    ```bash
    # Verify snapshot file exists
-   if [ ! -f .atlas/memory/config-snapshot.md ]; then
+   if [ ! -f .eama/memory/config-snapshot.md ]; then
      echo "ERROR: Snapshot creation failed"
      exit 1
    fi
 
    # Verify snapshot contains all configs
    for config in toolchain standards environment decisions; do
-     if ! grep -q "### ${config}.md" .atlas/memory/config-snapshot.md; then
+     if ! grep -q "### ${config}.md" .eama/memory/config-snapshot.md; then
        echo "ERROR: Snapshot missing $config"
        exit 1
      fi
@@ -266,6 +266,6 @@ This file is SEPARATE from authoritative configs in `.atlas/config/`. It's a **r
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 7: Capture Config Snapshot at Session Start)
 **Next:** [Part 2: Validation and Reference](./19-config-snapshot-creation-part2-validation-and-reference.md)

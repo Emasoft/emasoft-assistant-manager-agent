@@ -182,7 +182,7 @@ python scripts/archive-memory.py --type all --cutoff-days 30
 python scripts/validate-memory.py --fix
 
 # 3. Check file sizes
-du -h .atlas/memory/*.md
+du -h .eama/memory/*.md
 ```
 
 ---
@@ -288,5 +288,5 @@ python scripts/validate-memory.py
 
 **Version:** 1.0
 **Last Updated:** 2026-01-08
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 1: Basic Scripts](18-using-scripts-part1-basic-scripts.md), SKILL.md (Implementation Scripts section)

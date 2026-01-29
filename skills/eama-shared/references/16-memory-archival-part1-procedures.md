@@ -25,7 +25,7 @@
 
 1. **Create archive directory if needed**
    ```bash
-   mkdir -p .atlas/memory/archive/$(date +%Y)
+   mkdir -p .eama/memory/archive/$(date +%Y)
    ```
 
 2. **Extract tasks to archive**
@@ -43,7 +43,7 @@
 
 3. **Create archive file with metadata**
    ```bash
-   archive_file=".atlas/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
+   archive_file=".eama/memory/archive/$(date +%Y)/completed-tasks-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Completed Tasks
@@ -91,11 +91,11 @@
    ls -lh "$archive_file"
 
    # Check tasks were removed from progress.md
-   new_count=$(grep -c "^- \[x\]" .atlas/memory/progress.md)
+   new_count=$(grep -c "^- \[x\]" .eama/memory/progress.md)
    echo "Completed tasks remaining: $new_count"
 
    # Check file size reduced
-   du -h .atlas/memory/progress.md
+   du -h .eama/memory/progress.md
    ```
 
 **Example archived file:**
@@ -158,7 +158,7 @@
 
 3. **Create pattern archive**
    ```bash
-   archive_file=".atlas/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
+   archive_file=".eama/memory/archive/$(date +%Y)/patterns-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Patterns
@@ -209,10 +209,10 @@
    ls -lh "$archive_file"
 
    # Check file size reduced
-   du -h .atlas/memory/patterns.md
+   du -h .eama/memory/patterns.md
 
    # Check pattern count
-   grep -c "^### Pattern:" .atlas/memory/patterns.md
+   grep -c "^### Pattern:" .eama/memory/patterns.md
    ```
 
 ---
@@ -247,7 +247,7 @@
 
 3. **Create decision archive**
    ```bash
-   archive_file=".atlas/memory/archive/$(date +%Y)/decisions-$(date +%Y%m).md"
+   archive_file=".eama/memory/archive/$(date +%Y)/decisions-$(date +%Y%m).md"
 
    cat > "$archive_file" << 'EOF'
    # Archived Decisions
@@ -294,7 +294,7 @@
 6. **Verify consolidation**
    ```bash
    # Check file size reduced
-   du -h .atlas/memory/activeContext.md
+   du -h .eama/memory/activeContext.md
 
    # Should be under 50KB
    ```
@@ -314,16 +314,16 @@
 1. **Create snapshot directory**
    ```bash
    snapshot_date=$(date +%Y%m%d-%H%M%S)
-   snapshot_dir=".atlas/memory/snapshots/$snapshot_date"
+   snapshot_dir=".eama/memory/snapshots/$snapshot_date"
    mkdir -p "$snapshot_dir"
    ```
 
 2. **Copy all current memory files**
    ```bash
-   cp .atlas/memory/activeContext.md "$snapshot_dir/"
-   cp .atlas/memory/patterns.md "$snapshot_dir/"
-   cp .atlas/memory/progress.md "$snapshot_dir/"
-   cp .atlas/memory/config-snapshot.md "$snapshot_dir/" 2>/dev/null || true
+   cp .eama/memory/activeContext.md "$snapshot_dir/"
+   cp .eama/memory/patterns.md "$snapshot_dir/"
+   cp .eama/memory/progress.md "$snapshot_dir/"
+   cp .eama/memory/config-snapshot.md "$snapshot_dir/" 2>/dev/null || true
    ```
 
 3. **Create snapshot metadata**
@@ -352,7 +352,7 @@
 
 4. **Create compressed archive**
    ```bash
-   cd .atlas/memory/snapshots
+   cd .eama/memory/snapshots
    tar czf "$snapshot_date.tar.gz" "$snapshot_date/"
    ```
 
@@ -377,15 +377,15 @@
 1. **Locate relevant archive**
    ```bash
    # List available archives
-   ls -lh .atlas/memory/archive/2025/
+   ls -lh .eama/memory/archive/2025/
 
    # List available snapshots
-   ls -lh .atlas/memory/snapshots/
+   ls -lh .eama/memory/snapshots/
    ```
 
 2. **Extract snapshot if needed**
    ```bash
-   snapshot=".atlas/memory/snapshots/20251201-153000.tar.gz"
+   snapshot=".eama/memory/snapshots/20251201-153000.tar.gz"
    extract_dir="/tmp/snapshot-restore"
 
    mkdir -p "$extract_dir"
@@ -395,32 +395,32 @@
 3. **Review archived content**
    ```bash
    # View archived completed tasks
-   cat .atlas/memory/archive/2025/completed-tasks-202511.md
+   cat .eama/memory/archive/2025/completed-tasks-202511.md
 
    # View archived patterns
-   cat .atlas/memory/archive/2025/patterns-202511.md
+   cat .eama/memory/archive/2025/patterns-202511.md
 
    # View archived decisions
-   cat .atlas/memory/archive/2025/decisions-202511.md
+   cat .eama/memory/archive/2025/decisions-202511.md
    ```
 
 4. **Extract specific information if needed**
    ```bash
    # Find specific archived task
-   grep -A 5 "Implement authentication" .atlas/memory/archive/2025/completed-tasks-*.md
+   grep -A 5 "Implement authentication" .eama/memory/archive/2025/completed-tasks-*.md
 
    # Find specific archived pattern
-   grep -A 20 "Decorator-based" .atlas/memory/archive/2025/patterns-*.md
+   grep -A 20 "Decorator-based" .eama/memory/archive/2025/patterns-*.md
    ```
 
 5. **Restore to current memory if needed** (rarely necessary)
    ```bash
    # Only if current memory is lost and archive is most recent
    # Create backup first
-   cp .atlas/memory/progress.md .atlas/memory/progress.md.backup
+   cp .eama/memory/progress.md .eama/memory/progress.md.backup
 
    # Restore archived tasks to current progress.md
-   cat .atlas/memory/archive/2025/completed-tasks-202512.md >> .atlas/memory/progress.md
+   cat .eama/memory/archive/2025/completed-tasks-202512.md >> .eama/memory/progress.md
    ```
 
 ---

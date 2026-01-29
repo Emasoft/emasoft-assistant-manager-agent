@@ -170,7 +170,7 @@ Compaction integration is the set of procedures that ensure session memory survi
 
 3. **Check when memory was last saved**
    ```bash
-   last_save=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" .atlas/memory/activeContext.md)
+   last_save=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" .eama/memory/activeContext.md)
    echo "Memory last saved: $last_save"
 
    # If last save > 5 minutes ago, update needed
@@ -233,13 +233,13 @@ Compaction integration is the set of procedures that ensure session memory survi
 
 2. **Create pre-compaction checkpoint**
    ```bash
-   checkpoint_dir=".atlas/memory/checkpoints/pre-compaction-$(date +%Y%m%d-%H%M%S)"
+   checkpoint_dir=".eama/memory/checkpoints/pre-compaction-$(date +%Y%m%d-%H%M%S)"
    mkdir -p "$checkpoint_dir"
 
-   cp .atlas/memory/activeContext.md "$checkpoint_dir/"
-   cp .atlas/memory/patterns.md "$checkpoint_dir/"
-   cp .atlas/memory/progress.md "$checkpoint_dir/"
-   cp .atlas/memory/config-snapshot.md "$checkpoint_dir/" 2>/dev/null || true
+   cp .eama/memory/activeContext.md "$checkpoint_dir/"
+   cp .eama/memory/patterns.md "$checkpoint_dir/"
+   cp .eama/memory/progress.md "$checkpoint_dir/"
+   cp .eama/memory/config-snapshot.md "$checkpoint_dir/" 2>/dev/null || true
    ```
 
 3. **Verify all critical state is captured**
@@ -281,12 +281,12 @@ Compaction integration is the set of procedures that ensure session memory survi
    sync
 
    # Verify files are on disk
-   ls -lh .atlas/memory/*.md
+   ls -lh .eama/memory/*.md
    ```
 
 6. **Create recovery instructions**
    ```markdown
-   # In .atlas/memory/RECOVERY.md
+   # In .eama/memory/RECOVERY.md
 
    # Post-Compaction Recovery
 
@@ -346,5 +346,5 @@ def trigger_emergency_save():
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 2: Recovery & Verification](17-compaction-integration-part2-recovery-verification.md)

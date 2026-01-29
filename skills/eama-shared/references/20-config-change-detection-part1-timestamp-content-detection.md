@@ -47,7 +47,8 @@
        configs = ['toolchain', 'standards', 'environment', 'decisions']
 
        for config in configs:
-           config_file = f".atlas/config/{config}.md"
+           # OPTIONAL: If Atlas Orchestrator plugin is installed
+           config_file = f"design/config/{config}.md"
 
            with open(config_file) as f:
                content = f.read()
@@ -62,7 +63,7 @@
 
 3. **Compare timestamps**
    ```python
-   snapshot_timestamps = extract_snapshot_timestamps('.atlas/memory/config-snapshot.md')
+   snapshot_timestamps = extract_snapshot_timestamps('.eama/memory/config-snapshot.md')
    current_timestamps = extract_current_timestamps()
 
    changes_detected = []
@@ -139,10 +140,11 @@
        return None
    ```
 
-2. **Read current config content**
+2. **Read current config content** (OPTIONAL: If Atlas Orchestrator plugin is installed)
    ```python
    def read_current_config(config_name):
-       config_file = f".atlas/config/{config_name}.md"
+       # Atlas Orchestrator config path
+       config_file = f"design/config/{config_name}.md"
 
        with open(config_file) as f:
            return f.read()
@@ -152,7 +154,7 @@
    ```python
    import difflib
 
-   snapshot_content = extract_snapshot_config('.atlas/memory/config-snapshot.md', 'toolchain')
+   snapshot_content = extract_snapshot_config('.eama/memory/config-snapshot.md', 'toolchain')
    current_content = read_current_config('toolchain')
 
    diff = list(difflib.unified_diff(

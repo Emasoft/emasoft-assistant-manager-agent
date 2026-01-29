@@ -1,5 +1,5 @@
 {
-  "name": "assistant-manager-agent",
+  "name": "emasoft-assistant-manager-agent",
   "version": "1.0.0",
   "description": "User's right hand - sole interlocutor with user, directs other roles (architect, orchestrator, integrator)",
   "author": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Emasoft/assistant-manager-agent"
+    "url": "https://github.com/Emasoft/emasoft-assistant-manager-agent"
   },
   "license": "MIT",
   "engines": {

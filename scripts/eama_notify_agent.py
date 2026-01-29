@@ -18,7 +18,7 @@ from pathlib import Path
 import yaml
 
 # State file location
-EXEC_STATE_FILE = Path(".claude/orchestrator-exec-phase.local.md")
+EXEC_STATE_FILE = Path("design/exec-phase.local.md")
 
 
 def parse_frontmatter(file_path: Path) -> tuple[dict, str]:

@@ -14,7 +14,7 @@ Dependencies: Python 3.8+ stdlib only
 
 Usage (as Claude Code hook):
     Receives JSON via stdin from SessionEnd hook event.
-    Updates .claude/eama/ memory files with session context.
+    Updates design/memory/ memory files with session context.
 
 Exit codes:
     0 - Success (memory saved)
@@ -36,7 +36,7 @@ def get_memory_root(cwd: str) -> Path:
         cwd: Current working directory
 
     Returns:
-        Path to .claude/eama directory
+        Path to design/memory directory
     """
     return Path(cwd) / ".claude" / "eama"
 
@@ -74,7 +74,7 @@ def ensure_memory_files(memory_root: Path) -> bool:
     """Ensure all memory files exist with default structure.
 
     Args:
-        memory_root: Path to .claude/eama directory
+        memory_root: Path to design/memory directory
 
     Returns:
         True if successful, False otherwise
@@ -147,7 +147,7 @@ def add_session_end_progress(memory_root: Path, session_context: dict) -> bool:
     """Add a session end entry to progress.md.
 
     Args:
-        memory_root: Path to .claude/eama directory
+        memory_root: Path to design/memory directory
         session_context: Session context from hook input
 
     Returns:
@@ -192,7 +192,7 @@ def update_session_end_marker(memory_root: Path) -> bool:
     continuity checks work properly.
 
     Args:
-        memory_root: Path to .claude/eama directory
+        memory_root: Path to design/memory directory
 
     Returns:
         True if successful

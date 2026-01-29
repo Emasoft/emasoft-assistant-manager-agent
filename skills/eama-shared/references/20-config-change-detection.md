@@ -31,7 +31,7 @@ This document has been split for readability. Detailed procedures are in:
 
 ### What Is Config Change Detection?
 
-Config change detection is the process of identifying when central configuration files (in `.atlas/config/`) have been modified since the session config snapshot was created. This allows the agent to respond appropriately to config updates from the orchestrator.
+Config change detection is the process of identifying when central configuration files (in `design/config/` - OPTIONAL: If Atlas Orchestrator plugin is installed) have been modified since the session config snapshot was created. This allows the agent to respond appropriately to config updates from the orchestrator.
 
 ### Why Detection Matters
 
@@ -216,5 +216,5 @@ For troubleshooting details, see [Part 3 - Troubleshooting](./20-config-change-d
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 8: Detect Config Changes During Session)

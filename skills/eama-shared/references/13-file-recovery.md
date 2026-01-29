@@ -67,4 +67,4 @@ This document was split into multiple parts for easier navigation. Each part cov
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents

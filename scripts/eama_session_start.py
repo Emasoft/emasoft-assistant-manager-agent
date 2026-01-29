@@ -37,7 +37,7 @@ def get_memory_root(cwd: str) -> Path:
         cwd: Current working directory
 
     Returns:
-        Path to .claude/eama directory
+        Path to design/memory directory
     """
     return Path(cwd) / ".claude" / "eama"
 
@@ -232,7 +232,7 @@ def format_context_summary(
 
     lines.append("")
     lines.append("=" * 60)
-    lines.append("Review .claude/eama/ files for full context")
+    lines.append("Review design/memory/ files for full context")
     lines.append("=" * 60)
 
     return "\n".join(lines)

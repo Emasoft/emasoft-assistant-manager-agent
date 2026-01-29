@@ -325,7 +325,7 @@ if __name__ == "__main__":
 ### Usage
 
 ```bash
-python scripts/validate_progress.py .atlas/memory/progress.md
+python scripts/validate_progress.py .eama/memory/progress.md
 ```
 
 ---
@@ -339,16 +339,16 @@ python scripts/validate_progress.py .atlas/memory/progress.md
 **Validation steps:**
 ```bash
 # 1. Check task moved to completed section
-grep -A 5 "## Completed Tasks" .atlas/memory/progress.md | grep "Implement login"
+grep -A 5 "## Completed Tasks" .eama/memory/progress.md | grep "Implement login"
 
 # 2. Check task has completion timestamp
-grep "Implement login.*completed.*2025" .atlas/memory/progress.md
+grep "Implement login.*completed.*2025" .eama/memory/progress.md
 
 # 3. Check task removed from todo section
-! grep -A 100 "## Todo List" .atlas/memory/progress.md | grep -v "^#" | grep "Implement login"
+! grep -A 100 "## Todo List" .eama/memory/progress.md | grep -v "^#" | grep "Implement login"
 
 # 4. Check dependent tasks are unblocked
-python scripts/validate_progress.py .atlas/memory/progress.md
+python scripts/validate_progress.py .eama/memory/progress.md
 ```
 
 **Expected output:**
@@ -390,5 +390,5 @@ No validation errors
 
 **Version:** 1.0
 **Last Updated:** 2026-01-08
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 4: Update Task Progress), [Part 1: Rules and Basic Procedures](15-progress-validation-part1-rules-and-basic-procedures.md)

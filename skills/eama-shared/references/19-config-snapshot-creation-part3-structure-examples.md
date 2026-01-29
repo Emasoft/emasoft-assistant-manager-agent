@@ -67,12 +67,12 @@ def initialize_session():
 **Snapshot creation output:**
 ```
 Creating config snapshot...
-Reading .atlas/config/toolchain.md... Done
-Reading .atlas/config/standards.md... Done
-Reading .atlas/config/environment.md... Done
-Reading .atlas/config/decisions.md... Done
+Reading design/config/toolchain.md... Done    # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/standards.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/environment.md... Done   # (OPTIONAL: If Atlas Orchestrator plugin is installed)
+Reading design/config/decisions.md... Done     # (OPTIONAL: If Atlas Orchestrator plugin is installed)
 
-Writing snapshot to .atlas/memory/config-snapshot.md... Done
+Writing snapshot to .eama/memory/config-snapshot.md... Done
 Validating snapshot... PASSED
 
 Config snapshot created successfully.
@@ -113,8 +113,8 @@ Snapshot updated. Session now using:
 
 **Solution:**
 ```bash
-# Check which configs exist
-ls -la .atlas/config/
+# Check which configs exist (OPTIONAL: If Atlas Orchestrator plugin is installed)
+ls -la design/config/
 
 # If config is missing, cannot create valid snapshot
 # Either restore missing config or proceed without it (not recommended)
@@ -147,8 +147,8 @@ ls -la .atlas/config/
 
 **Solution:**
 ```bash
-# Check original config file
-cat .atlas/config/toolchain.md | wc -c
+# Check original config file (OPTIONAL: If Atlas Orchestrator plugin is installed)
+cat design/config/toolchain.md | wc -c
 
 # Compare with snapshot content
 # If mismatch, recreate snapshot
@@ -160,20 +160,20 @@ cat .atlas/config/toolchain.md | wc -c
 
 **Symptoms:**
 - Snapshot creation fails with permission error
-- Cannot write to .atlas/memory/
+- Cannot write to .eama/memory/
 
 **Cause:** Directory permissions or disk full
 
 **Solution:**
 ```bash
 # Check directory permissions
-ls -la .atlas/memory/
+ls -la .eama/memory/
 
 # Check disk space
 df -h .
 
 # Fix permissions if needed
-chmod 755 .atlas/memory/
+chmod 755 .eama/memory/
 ```
 
 ---

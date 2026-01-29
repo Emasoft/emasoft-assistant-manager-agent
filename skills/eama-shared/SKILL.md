@@ -1,8 +1,8 @@
 ---
 name: eama-session-memory
-description: Critical persistence mechanism for Emasoft Assistant Manager agent enabling continuity across multiple interactions, surviving context window compaction, and graceful recovery from interruptions. Structured data storage system consisting of three coordinated documents stored in .claude/eama/ directory - activeContext.md (current working state), patterns.md (learned patterns and heuristics), and progress.md (task tracking and completion state). Includes config snapshot integration for configuration drift detection and conflict resolution.
+description: Critical persistence mechanism for Emasoft Assistant Manager agent enabling continuity across multiple interactions, surviving context window compaction, and graceful recovery from interruptions. Structured data storage system consisting of three coordinated documents stored in design/memory/ directory - activeContext.md (current working state), patterns.md (learned patterns and heuristics), and progress.md (task tracking and completion state). Includes config snapshot integration for configuration drift detection and conflict resolution.
 license: Apache-2.0
-compatibility: Requires file system access to .claude/eama/ directory, Markdown parsing capabilities, and understanding of session lifecycle (initialization, execution, termination).
+compatibility: Requires file system access to design/memory/ directory, Markdown parsing capabilities, and understanding of session lifecycle (initialization, execution, termination).
 metadata:
   author: Emasoft
   version: 1.0.0
@@ -27,7 +27,7 @@ Session memory is a structured data storage system that persists an agent's work
 
 ## Session Memory Components
 
-Session memory consists of three coordinated documents stored in the `.claude/eama/` directory:
+Session memory consists of three coordinated documents stored in the `design/memory/` directory:
 
 ### 1. **activeContext.md** - Current Working State
 Captures the immediate context needed to continue work:
@@ -59,7 +59,7 @@ Maintains the complete task execution state:
 ### Phase 1: Session Initialization (Load)
 
 **Order of operations:**
-1. Check if `.atlas/memory/` directory exists
+1. Check if `design/memory/` directory exists
 2. Load `activeContext.md` if present
 3. Load `patterns.md` if present
 4. Load `progress.md` if present
@@ -228,15 +228,15 @@ Maintains the complete task execution state:
 
 Session memory captures configuration state at session start to detect drift, maintain consistency, enable conflict resolution, and support audit trails.
 
-**Config snapshot location:** `.atlas/memory/config-snapshot.md`
+**Config snapshot location:** `design/memory/config-snapshot.md`
 
-This file is separate from authoritative configs in `.atlas/config/` and serves as a point-in-time capture.
+This file is separate from authoritative configs in `design/config/` (OPTIONAL: If Atlas Orchestrator plugin is installed) and serves as a point-in-time capture.
 
 ### PROCEDURE 7: Capture Config Snapshot at Session Start
 
 **When to use:** During session initialization, after loading core memory files, before any work begins.
 
-**Steps:** Read all config files from `.atlas/config/`, create snapshot with timestamp and session ID, copy config content and metadata, save snapshot, record in activeContext.md.
+**Steps:** Read all config files from `design/config/` (OPTIONAL: If Atlas Orchestrator plugin is installed), create snapshot with timestamp and session ID, copy config content and metadata, save snapshot, record in activeContext.md.
 
 **Related documentation:**
 

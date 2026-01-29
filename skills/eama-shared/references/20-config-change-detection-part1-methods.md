@@ -23,7 +23,7 @@
 
 ### What Is Config Change Detection?
 
-Config change detection is the process of identifying when central configuration files (in `.atlas/config/`) have been modified since the session config snapshot was created. This allows the agent to respond appropriately to config updates from the orchestrator.
+Config change detection is the process of identifying when central configuration files (in `design/config/` - OPTIONAL: If Atlas Orchestrator plugin is installed) have been modified since the session config snapshot was created. This allows the agent to respond appropriately to config updates from the orchestrator.
 
 ### Why Detection Matters
 
@@ -147,7 +147,8 @@ Orchestrator sends notification when config changes.
        configs = ['toolchain', 'standards', 'environment', 'decisions']
 
        for config in configs:
-           config_file = f".atlas/config/{config}.md"
+           # OPTIONAL: If Atlas Orchestrator plugin is installed
+           config_file = f"design/config/{config}.md"
 
            with open(config_file) as f:
                content = f.read()
@@ -162,7 +163,7 @@ Orchestrator sends notification when config changes.
 
 3. **Compare timestamps**
    ```python
-   snapshot_timestamps = extract_snapshot_timestamps('.atlas/memory/config-snapshot.md')
+   snapshot_timestamps = extract_snapshot_timestamps('.eama/memory/config-snapshot.md')
    current_timestamps = extract_current_timestamps()
 
    changes_detected = []
@@ -239,10 +240,11 @@ Orchestrator sends notification when config changes.
        return None
    ```
 
-2. **Read current config content**
+2. **Read current config content** (OPTIONAL: If Atlas Orchestrator plugin is installed)
    ```python
    def read_current_config(config_name):
-       config_file = f".atlas/config/{config_name}.md"
+       # Atlas Orchestrator config path
+       config_file = f"design/config/{config_name}.md"
 
        with open(config_file) as f:
            return f.read()
@@ -252,7 +254,7 @@ Orchestrator sends notification when config changes.
    ```python
    import difflib
 
-   snapshot_content = extract_snapshot_config('.atlas/memory/config-snapshot.md', 'toolchain')
+   snapshot_content = extract_snapshot_config('.eama/memory/config-snapshot.md', 'toolchain')
    current_content = read_current_config('toolchain')
 
    diff = list(difflib.unified_diff(
@@ -316,5 +318,5 @@ Orchestrator sends notification when config changes.
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 8: Detect Config Changes During Session)

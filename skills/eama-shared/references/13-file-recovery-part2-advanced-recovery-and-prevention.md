@@ -39,13 +39,13 @@
 1. **Identify corrupted sections**
    ```bash
    # Open file and scan for corruption
-   cat .atlas/memory/activeContext.md
+   cat .eama/memory/activeContext.md
    ```
 
 2. **Extract valid sections**
    ```bash
    # Copy file to temp location
-   cp .atlas/memory/activeContext.md /tmp/activeContext.partial
+   cp .eama/memory/activeContext.md /tmp/activeContext.partial
    ```
 
 3. **Remove corrupted sections**
@@ -77,7 +77,7 @@
 
 6. **Validate merged file**
    ```bash
-   mdl .atlas/memory/activeContext.md
+   mdl .eama/memory/activeContext.md
    ```
 
 7. **Document recovery process**
@@ -163,9 +163,9 @@
 6. **Create backup of reconstructed files**
    ```bash
    timestamp=$(date +%Y%m%d-%H%M%S)
-   cp .atlas/memory/activeContext.md .atlas/memory/backups/activeContext.md.backup.$timestamp
-   cp .atlas/memory/patterns.md .atlas/memory/backups/patterns.md.backup.$timestamp
-   cp .atlas/memory/progress.md .atlas/memory/backups/progress.md.backup.$timestamp
+   cp .eama/memory/activeContext.md .eama/memory/backups/activeContext.md.backup.$timestamp
+   cp .eama/memory/patterns.md .eama/memory/backups/patterns.md.backup.$timestamp
+   cp .eama/memory/progress.md .eama/memory/backups/progress.md.backup.$timestamp
    ```
 
 ---
@@ -184,7 +184,7 @@ backup_before_write() {
 }
 
 # Use in update procedures
-backup_before_write .atlas/memory/activeContext.md
+backup_before_write .eama/memory/activeContext.md
 # Then write new content
 ```
 
@@ -268,7 +268,7 @@ manage_backups() {
 
 **Detection:**
 ```bash
-$ cat .atlas/memory/activeContext.md
+$ cat .eama/memory/activeContext.md
 # Active Context
 
 **Current Task:** Implement authentication system
@@ -283,15 +283,15 @@ $ cat .atlas/memory/activeContext.md
 ```bash
 # File ends abruptly - truncation detected
 # Find backup
-$ ls -t .atlas/memory/backups/activeContext.md.backup.* | head -1
-.atlas/memory/backups/activeContext.md.backup.20251231-102300
+$ ls -t .eama/memory/backups/activeContext.md.backup.* | head -1
+.eama/memory/backups/activeContext.md.backup.20251231-102300
 
 # Restore
-$ cp .atlas/memory/backups/activeContext.md.backup.20251231-102300 \
-     .atlas/memory/activeContext.md
+$ cp .eama/memory/backups/activeContext.md.backup.20251231-102300 \
+     .eama/memory/activeContext.md
 
 # Verify
-$ tail -20 .atlas/memory/activeContext.md
+$ tail -20 .eama/memory/activeContext.md
 # Should show complete file
 ```
 
@@ -353,13 +353,13 @@ Valid content here about using SQLAlchemy
 **Recovery:**
 ```bash
 # Keep valid sections
-valid_decisions=$(sed -n '/## Recent Decisions/,/## /p' .atlas/memory/activeContext.md)
+valid_decisions=$(sed -n '/## Recent Decisions/,/## /p' .eama/memory/activeContext.md)
 
 # Reconstruct corrupted sections from conversation
 current_task="Implement user CRUD endpoints"
 
 # Merge
-cat > .atlas/memory/activeContext.md << EOF
+cat > .eama/memory/activeContext.md << EOF
 # Active Context
 
 **Last Updated:** $(date -Iseconds)
@@ -446,5 +446,5 @@ EOF
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 1: Detection and Basic Recovery](13-file-recovery-part1-detection-and-basic-recovery.md), SKILL.md (Troubleshooting section)

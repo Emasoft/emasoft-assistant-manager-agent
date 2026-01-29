@@ -202,4 +202,4 @@ def validate_completeness(progress_md):
 
 **Version:** 1.0
 **Last Updated:** 2026-01-08
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents

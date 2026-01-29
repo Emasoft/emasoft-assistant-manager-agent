@@ -217,7 +217,7 @@
        "type": "config-conflict",
        "session_id": "orchestrator-master-20251231-102345",
        "conflict_type": "D",
-       "changed_files": [".atlas/config/toolchain.md"],
+       "changed_files": ["design/config/toolchain.md"],  // OPTIONAL: If Atlas Orchestrator plugin is installed
        "current_task": "Implement React auth component",
        "conflict_description": "Snapshot requires React 17, current config requires Vue 3",
        "options": [
@@ -436,5 +436,5 @@ Downtime: 3 minutes
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (PROCEDURE 9: Handle Config Version Conflicts)

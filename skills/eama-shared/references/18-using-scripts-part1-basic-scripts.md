@@ -60,7 +60,7 @@ python scripts/initialize-memory.py [OPTIONS]
 ```
 
 **Options:**
-- `--directory DIR` - Target directory (default: `.atlas/memory`)
+- `--directory DIR` - Target directory (default: `.eama/memory`)
 - `--force` - Overwrite existing files
 - `--template TEMPLATE` - Template to use (default: standard)
 
@@ -73,7 +73,7 @@ python scripts/initialize-memory.py
 
 Output:
 ```
-Creating memory directory: .atlas/memory
+Creating memory directory: .eama/memory
 Creating activeContext.md... Done
 Creating patterns.md... Done
 Creating progress.md... Done
@@ -130,7 +130,7 @@ python scripts/validate-memory.py
 
 Output:
 ```
-Validating session memory in .atlas/memory
+Validating session memory in .eama/memory
 
 Checking activeContext.md...
   ✓ File exists
@@ -203,7 +203,7 @@ python scripts/load-memory.py
 
 Output:
 ```
-Loading session memory from .atlas/memory
+Loading session memory from .eama/memory
 
 Loaded state:
   Current Task: Implement authorization middleware
@@ -267,7 +267,7 @@ python scripts/save-memory.py --backup
 Output:
 ```
 Creating backup... Done (backup.20251231-180000)
-Saving session state to .atlas/memory
+Saving session state to .eama/memory
 
 Updating activeContext.md... Done
 Updating patterns.md... Done
@@ -291,5 +291,5 @@ python scripts/save-memory.py --state /tmp/state.json
 
 **Version:** 1.0
 **Last Updated:** 2026-01-08
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 2: Advanced Scripts & Workflows](18-using-scripts-part2-advanced-workflows.md)

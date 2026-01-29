@@ -38,7 +38,7 @@ from eama_memory_operations import (
 class MemoryConfig:
     """Configuration for memory file locations."""
 
-    memory_root: Path = field(default_factory=lambda: Path(".claude/eama"))
+    memory_root: Path = field(default_factory=lambda: Path("design/memory"))
     active_context_file: str = "activeContext.md"
     progress_file: str = "progress.md"
     patterns_file: str = "patterns.md"
@@ -244,7 +244,7 @@ Always log errors immediately to In-Flight Errors.
 def _create_parser() -> argparse.ArgumentParser:
     """Create argument parser for CLI."""
     parser = argparse.ArgumentParser(description="Emasoft Assistant Manager Memory File Management")
-    parser.add_argument("--memory-root", type=Path, default=Path(".claude/eama"))
+    parser.add_argument("--memory-root", type=Path, default=Path("design/memory"))
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("add-decision", help="Add decision")

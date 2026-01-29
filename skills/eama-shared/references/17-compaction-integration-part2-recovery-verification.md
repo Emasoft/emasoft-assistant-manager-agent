@@ -37,8 +37,8 @@
 
    def detect_compaction():
        # Check if recovery file exists
-       if file_exists('.atlas/memory/RECOVERY.md'):
-           recovery_time = get_file_timestamp('.atlas/memory/RECOVERY.md')
+       if file_exists('.eama/memory/RECOVERY.md'):
+           recovery_time = get_file_timestamp('.eama/memory/RECOVERY.md')
            current_time = datetime.now()
 
            # If recovery file is recent, compaction likely occurred
@@ -50,9 +50,9 @@
 
 2. **Load all memory files**
    ```python
-   active_context = load_file('.atlas/memory/activeContext.md')
-   patterns = load_file('.atlas/memory/patterns.md')
-   progress = load_file('.atlas/memory/progress.md')
+   active_context = load_file('.eama/memory/activeContext.md')
+   patterns = load_file('.eama/memory/patterns.md')
+   progress = load_file('.eama/memory/progress.md')
    ```
 
 3. **Validate loaded memory**
@@ -233,27 +233,27 @@
 2. **Minor Recovery: Restore from recent checkpoint**
    ```bash
    # Find most recent pre-compaction checkpoint
-   latest_checkpoint=$(ls -t .atlas/memory/checkpoints/pre-compaction-* | head -1)
+   latest_checkpoint=$(ls -t .eama/memory/checkpoints/pre-compaction-* | head -1)
 
    # Restore files
-   cp "$latest_checkpoint/activeContext.md" .atlas/memory/
-   cp "$latest_checkpoint/patterns.md" .atlas/memory/
-   cp "$latest_checkpoint/progress.md" .atlas/memory/
+   cp "$latest_checkpoint/activeContext.md" .eama/memory/
+   cp "$latest_checkpoint/patterns.md" .eama/memory/
+   cp "$latest_checkpoint/progress.md" .eama/memory/
    ```
 
 3. **Major Recovery: Restore from archive**
    ```bash
    # If checkpoints are also corrupted, restore from archive
-   latest_snapshot=$(ls -t .atlas/memory/snapshots/*.tar.gz | head -1)
+   latest_snapshot=$(ls -t .eama/memory/snapshots/*.tar.gz | head -1)
 
    # Extract snapshot
    restore_dir="/tmp/memory-restore"
    tar xzf "$latest_snapshot" -C "$restore_dir"
 
    # Restore files
-   cp "$restore_dir/*/activeContext.md" .atlas/memory/
-   cp "$restore_dir/*/patterns.md" .atlas/memory/
-   cp "$restore_dir/*/progress.md" .atlas/memory/
+   cp "$restore_dir/*/activeContext.md" .eama/memory/
+   cp "$restore_dir/*/patterns.md" .eama/memory/
+   cp "$restore_dir/*/progress.md" .eama/memory/
    ```
 
 4. **Critical Recovery: Reconstruct from user input**
@@ -292,7 +292,7 @@
    Historical data before {datetime.now().isoformat()} may be incomplete.
    """
 
-   write_file('.atlas/memory/activeContext.md', new_active_context)
+   write_file('.eama/memory/activeContext.md', new_active_context)
    ```
 
 6. **Document recovery event**
@@ -418,5 +418,5 @@ Agent: Thank you. Session memory restored successfully.
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** [Part 1: Concepts & Preparation](17-compaction-integration-part1-concepts-preparation.md), SKILL.md (PROCEDURE 6: Prepare for Context Compaction)

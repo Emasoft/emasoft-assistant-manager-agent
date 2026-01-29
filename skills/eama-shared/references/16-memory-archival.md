@@ -85,7 +85,7 @@ Memory archival is the process of moving completed, outdated, or no-longer-activ
 
 **How to check:**
 ```bash
-du -k .atlas/memory/*.md | while read size file; do
+du -k .eama/memory/*.md | while read size file; do
   if [ $size -gt 100 ]; then
     echo "Archive needed: $file is ${size}KB"
   fi
@@ -103,7 +103,7 @@ done
 
 **How to check:**
 ```bash
-completed_count=$(grep -c "^- \[x\]" .atlas/memory/progress.md)
+completed_count=$(grep -c "^- \[x\]" .eama/memory/progress.md)
 if [ $completed_count -gt 50 ]; then
   echo "Archive needed: $completed_count completed tasks"
 fi
@@ -223,7 +223,7 @@ Quick reference:
 ### Directory Structure
 
 ```
-.atlas/memory/
+.eama/memory/
 ├── activeContext.md
 ├── patterns.md
 ├── progress.md
@@ -271,5 +271,5 @@ For troubleshooting guide, see **[16-memory-archival-part2-examples.md](16-memor
 
 **Version:** 1.0
 **Last Updated:** 2026-01-01
-**Target Audience:** Atlas Orchestrator Agents
+**Target Audience:** Assistant Manager Agents
 **Related:** SKILL.md (Troubleshooting - Memory files grow too large)
