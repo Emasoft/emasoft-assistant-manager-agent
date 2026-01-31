@@ -54,3 +54,23 @@ When routing work:
 3. Send via AI Maestro message
 4. Track handoff status
 5. Report completion to user
+
+---
+
+## Examples
+
+<example>
+user: I need to implement a new authentication module for the project. It should support OAuth2 and JWT tokens.
+
+assistant: I understand you need a new authentication module with OAuth2 and JWT support. Let me route this to the Orchestrator for implementation.
+
+Creating handoff file and routing to Orchestrator agent to coordinate the implementation of the authentication module with the specified requirements.
+</example>
+
+<example>
+user: Can you give me a status update on the current sprint progress?
+
+assistant: I'll request a progress report from the Report Generator agent.
+
+Requesting status report covering all active tasks, completion percentages, blockers, and next actions for the current sprint.
+</example>

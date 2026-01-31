@@ -362,3 +362,35 @@ All generated reports MUST include a Requirement Compliance section:
 - ✅ "Implementation matches REQ-001: [user quote]"
 - ✅ "Deviation detected: REQ-003 not fully implemented. See Requirement Issue Report."
 - ✅ Full requirement traceability matrix
+
+---
+
+## Examples
+
+<example>
+user: Generate a progress report for the authentication module implementation.
+
+assistant: [DONE] report-generator: progress report generated
+
+Summary: Authentication module 8/12 tasks complete (67%)
+Output: docs_dev/reports/progress-auth-module-2026-01-31-143022.md
+Health: Green
+Issues: 1 blocker (OAuth2 provider config)
+
+🚨 BLOCKER: OAuth2 provider configuration requires API keys from DevOps team
+
+Queried GitHub Issues API for task status, parsed TODO.md checklist, verified test coverage metrics, formatted results into structured markdown with completion percentages and blockers table.
+</example>
+
+<example>
+user: I need a quality report before we release version 2.0.
+
+assistant: [DONE] report-generator: quality report generated
+
+Summary: Test coverage 87%, 3 lint warnings, docs 92% complete
+Output: docs_dev/reports/quality-v2.0-release-2026-01-31-143545.md
+Health: Yellow
+Issues: 3 minor lint warnings, 2 missing docstrings
+
+Collected coverage data from pytest reports, ran ruff linter, analyzed documentation completeness, calculated quality metrics, and generated comprehensive quality assessment with recommendations for pre-release fixes.
+</example>
