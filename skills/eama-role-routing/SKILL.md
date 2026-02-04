@@ -1,7 +1,9 @@
 ---
 name: eama-role-routing
-description: Use when routing user requests to appropriate specialist roles (Architect, Orchestrator, or Integrator)
+description: Use when routing user requests to appropriate specialist roles (Architect, Orchestrator, or Integrator). Trigger with role routing requests.
+compatibility: Requires AI Maestro installed.
 context: fork
+agent: eama-main
 triggers:
   - User submits a new request or task
   - Assistant Manager needs to delegate work
@@ -35,11 +37,23 @@ This skill provides the Assistant Manager (EAMA) with decision logic for routing
 - **EOA** - Orchestrator Agent
 - **EIA** - Integrator Agent
 
+## Output
+
+| Routing Decision | Action Taken | Handoff File | Message Sent |
+|------------------|--------------|--------------|--------------|
+| Route to ECOS | Create handoff document | `handoff-{uuid}-eama-to-ecos.md` | AI Maestro message to Chief of Staff |
+| Route to EAA | Create handoff document | `handoff-{uuid}-eama-to-eaa.md` | AI Maestro message to Architect |
+| Route to EOA | Create handoff document | `handoff-{uuid}-eama-to-eoa.md` | AI Maestro message to Orchestrator |
+| Route to EIA | Create handoff document | `handoff-{uuid}-eama-to-eia.md` | AI Maestro message to Integrator |
+| Handle Directly | Respond to user | None | None |
+| Ambiguous Intent | Request clarification | None | None |
+
 ## Plugin Prefix Reference
 
 | Role | Prefix | Plugin Name |
 |------|--------|-------------|
 | Assistant Manager | `eama-` | Emasoft Assistant Manager Agent |
+| Chief of Staff | `ecos-` | Emasoft Chief of Staff |
 | Architect | `eaa-` | Emasoft Architect Agent |
 | Orchestrator | `eoa-` | Emasoft Orchestrator Agent |
 | Integrator | `eia-` | Emasoft Integrator Agent |
@@ -51,6 +65,7 @@ This skill provides the Assistant Manager (EAMA) with decision logic for routing
 | "design", "plan", "architect", "spec", "requirements" | EAA (Architect) | task_assignment |
 | "build", "implement", "create", "develop", "code" | EOA (Orchestrator) | task_assignment |
 | "review", "test", "merge", "release", "deploy", "quality" | EIA (Integrator) | task_assignment |
+| "spawn agent", "terminate agent", "restart session", "agent health" | ECOS (Chief of Staff) | agent_lifecycle |
 | "status", "progress", "update" | Handle directly | none |
 | "approve", "reject", "confirm" | Handle directly | approval_response |
 
@@ -110,6 +125,32 @@ This skill provides the Assistant Manager (EAMA) with decision logic for routing
    - User says: "Prepare release...", "Merge...", "Deploy..."
    - Action: Create handoff, route to eia
 
+### Route to ECOS (Chief of Staff) when:
+
+1. **Agent lifecycle operations needed**
+   - User says: "Spawn a new agent", "Create agent for...", "Start new session"
+   - Action: Create handoff with agent requirements, route to ecos
+
+2. **Agent termination required**
+   - User says: "Terminate agent", "Stop session", "Kill agent"
+   - Action: Create handoff with agent ID, route to ecos
+
+3. **Session management needed**
+   - User says: "Restart agent", "Check agent health", "Agent status"
+   - Action: Create handoff with session details, route to ecos
+
+4. **Permission management required**
+   - Condition: Sensitive operation requires elevated permissions
+   - Action: Create handoff with permission request, route to ecos
+
+5. **Failure recovery needed**
+   - Condition: Agent failure detected, escalation required
+   - Action: Create handoff with failure details, route to ecos
+
+6. **Approval requests from ECOS**
+   - Condition: ECOS requests user approval for agent operations
+   - Action: Present approval request to user, forward decision to ecos
+
 ### Handle Directly (no routing):
 
 1. **Status requests**
@@ -131,12 +172,16 @@ This skill provides the Assistant Manager (EAMA) with decision logic for routing
 ## Communication Hierarchy
 
 ```
-USER <-> EAMA (Assistant Manager) <-> EAA (Architect)
-                                  <-> EOA (Orchestrator)
-                                  <-> EIA (Integrator)
+USER <-> EAMA (Assistant Manager) <-> ECOS (Chief of Staff) <-> EAA (Architect)
+                                                            <-> EOA (Orchestrator)
+                                                            <-> EIA (Integrator)
 ```
 
-**CRITICAL**: EAA, EOA, and EIA do NOT communicate directly with each other. All communication flows through EAMA.
+**CRITICAL**:
+- EAMA is the ONLY role that communicates directly with the USER
+- ECOS manages agent lifecycle and sits between EAMA and specialist agents
+- EAA, EOA, and EIA do NOT communicate directly with each other or with EAMA
+- All specialist agent operations flow through ECOS
 
 ## Handoff Protocol
 
@@ -145,22 +190,65 @@ USER <-> EAMA (Assistant Manager) <-> EAA (Architect)
 Parse user message -> Identify primary intent -> Match to routing rule
 ```
 
-### Step 2: Create Handoff Document
+### Step 2: Validate Handoff (CRITICAL)
+
+Before creating and sending any handoff, complete this validation checklist:
+
+#### Handoff Validation Checklist
+
+Before sending handoff to ECOS or specialists:
+
+- [ ] **All required fields present** - Verify handoff contains: from, to, type, UUID, task description
+- [ ] **UUID is unique** - Check against existing handoffs in `docs_dev/handoffs/` to prevent collisions
+  ```bash
+  # Verify UUID uniqueness
+  ! grep -r "UUID: <new-uuid>" docs_dev/handoffs/ && echo "UUID is unique"
+  ```
+- [ ] **Target agent exists and is alive** - Send health ping before handoff
+  ```bash
+  curl -s "$AIMAESTRO_API/api/messages?agent=<target-agent>&action=health"
+  ```
+- [ ] **File is valid markdown** - No syntax errors, proper structure
+- [ ] **File is readable by target agent** - Verify file permissions and path accessibility
+- [ ] **No [TBD] placeholders** - All placeholder text must be replaced with actual values
+  ```bash
+  # Check for placeholder text
+  ! grep -E "\[TBD\]|\[TODO\]|\[PLACEHOLDER\]|<fill-in>" handoff-file.md && echo "No placeholders found"
+  ```
+- [ ] **Task description is actionable** - Contains clear success criteria
+- [ ] **Dependencies documented** - Any blocked-by or blocks relationships noted
+
+#### Validation Failure Handling
+
+If any validation check fails:
+
+| Failure | Resolution |
+|---------|------------|
+| Missing required field | Add missing field before proceeding |
+| UUID collision | Generate new UUID |
+| Target agent unavailable | Queue handoff, notify user, retry in 5 minutes |
+| Invalid markdown | Fix syntax errors |
+| Contains placeholders | Replace all [TBD] with actual values |
+| Unclear task | Request clarification from user |
+
+**NEVER send an invalid handoff.** An invalid handoff wastes agent resources and delays work.
+
+### Step 3: Create Handoff Document
 ```
 Generate UUID -> Create handoff-{uuid}-eama-to-{role}.md -> Save to docs_dev/handoffs/
 ```
 
-### Step 3: Send via AI Maestro
+### Step 4: Send via AI Maestro
 ```
 Compose message -> Set appropriate priority -> Send to role session
 ```
 
-### Step 4: Track Handoff
+### Step 5: Track Handoff
 ```
 Log handoff in state -> Set status to "pending" -> Monitor for acknowledgment
 ```
 
-### Step 5: Report to User
+### Step 6: Report to User
 ```
 Confirm routing -> Provide tracking info -> Set expectation for response
 ```
@@ -208,7 +296,7 @@ All handoff files are stored in: `docs_dev/handoffs/`
 | Module issues | "module implementation issue", "task tracking" | Module UUID, task breakdown |
 | Implementation issues | "development issue", "coding task" | Design UUID, module list |
 
-**Cross-reference**: See [eama-github-routing SKILL](../eama-github-routing/SKILL.md) for complete GitHub decision trees.
+**Cross-reference**: See the eama-github-routing SKILL for complete GitHub decision trees.
 
 ## Design Document Routing
 
@@ -284,6 +372,22 @@ When routing to EOA, handoff MUST include:
 5. **Constraints**: Time, resources, technical limits
 6. **Success Criteria**: What defines "done"
 
+## Checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Parse user message to identify primary intent
+- [ ] Match intent to routing rule using decision matrix
+- [ ] Determine if handling directly or routing to specialist
+- [ ] If routing: Generate UUID for handoff
+- [ ] If routing: Create handoff document with all required fields
+- [ ] If routing: Save handoff to `docs_dev/handoffs/`
+- [ ] If routing: Send AI Maestro message to target role
+- [ ] If routing: Track handoff status (set to "pending")
+- [ ] Report routing decision to user
+- [ ] Monitor for acknowledgment from target role
+- [ ] Update handoff status when acknowledged
+
 ## Examples
 
 ### Example 1: Routing a Design Request to EAA
@@ -335,7 +439,7 @@ Design a user authentication system
 
 ## Resources
 
-- [Handoff Template](../../shared/handoff_template.md)
-- [Message Templates](../../shared/message_templates.md)
-- [GitHub Routing SKILL](../eama-github-routing/SKILL.md)
-- [Proactive Handoff Protocol](../eama-shared/references/proactive-handoff-protocol.md)
+- Handoff Template in the shared folder
+- Message Templates in the shared folder
+- GitHub Routing SKILL (eama-github-routing)
+- Proactive Handoff Protocol in eama-shared skill references

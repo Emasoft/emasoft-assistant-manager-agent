@@ -16,12 +16,13 @@ import sys
 from pathlib import Path
 
 import yaml
+from typing import Any, cast
 
 # State file location
 EXEC_STATE_FILE = Path("design/exec-phase.local.md")
 
 
-def parse_frontmatter(file_path: Path) -> tuple[dict, str]:
+def parse_frontmatter(file_path: Path) -> tuple[dict[str, Any], str]:
     """Parse YAML frontmatter and return (data, body)."""
     if not file_path.exists():
         return {}, ""
@@ -36,7 +37,7 @@ def parse_frontmatter(file_path: Path) -> tuple[dict, str]:
         return {}, content
 
     yaml_content = content[3:end_index].strip()
-    body = content[end_index + 3:].strip()
+    body = content[end_index + 3 :].strip()
 
     try:
         data = yaml.safe_load(yaml_content) or {}
@@ -45,12 +46,12 @@ def parse_frontmatter(file_path: Path) -> tuple[dict, str]:
         return {}, content
 
 
-def find_agent_session(data: dict, agent_id: str) -> str | None:
+def find_agent_session(data: dict[str, Any], agent_id: str) -> str | None:
     """Find the session name for an AI agent."""
-    agents = data.get("registered_agents", {})
+    agents: dict[str, Any] = data.get("registered_agents", {})
     for agent in agents.get("ai_agents", []):
         if agent.get("agent_id") == agent_id:
-            return agent.get("session_name")
+            return cast(str | None, agent.get("session_name"))
     return None
 
 
@@ -59,7 +60,7 @@ def send_ai_maestro_message(
     subject: str,
     message: str,
     priority: str = "normal",
-    msg_type: str = "notification"
+    msg_type: str = "notification",
 ) -> bool:
     """Send a message via AI Maestro."""
     try:
@@ -67,22 +68,30 @@ def send_ai_maestro_message(
             "to": session_name,
             "subject": subject,
             "priority": priority,
-            "content": {"type": msg_type, "message": message}
+            "content": {"type": msg_type, "message": message},
         }
 
         api_url = os.getenv("AIMAESTRO_API", "http://localhost:23000")
         result = subprocess.run(
-            ["curl", "-s", "-X", "POST", f"{api_url}/api/messages",
-             "-H", "Content-Type: application/json",
-             "-d", json.dumps(payload)],
+            [
+                "curl",
+                "-s",
+                "-X",
+                "POST",
+                f"{api_url}/api/messages",
+                "-H",
+                "Content-Type: application/json",
+                "-d",
+                json.dumps(payload),
+            ],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=10,
         )
 
         if result.returncode == 0:
-            response = json.loads(result.stdout)
-            return response.get("success", False)
+            response: dict[str, Any] = json.loads(result.stdout)
+            return cast(bool, response.get("success", False))
         return False
     except Exception as e:
         print(f"Error: {e}")
@@ -97,16 +106,18 @@ def main() -> int:
     parser.add_argument("--subject", "-s", required=True, help="Message subject")
     parser.add_argument("--message", "-m", required=True, help="Message content")
     parser.add_argument(
-        "--priority", "-p",
+        "--priority",
+        "-p",
         choices=["low", "normal", "high", "urgent"],
         default="normal",
-        help="Message priority"
+        help="Message priority",
     )
     parser.add_argument(
-        "--type", "-t",
+        "--type",
+        "-t",
         dest="msg_type",
         default="notification",
-        help="Message type (notification, task_assignment, progress_poll, etc.)"
+        help="Message type (notification, task_assignment, progress_poll, etc.)",
     )
 
     args = parser.parse_args()
@@ -138,11 +149,7 @@ def main() -> int:
     # Send message
     print(f"Sending message to {args.agent_id} ({session})...")
     sent = send_ai_maestro_message(
-        session,
-        args.subject,
-        args.message,
-        args.priority,
-        args.msg_type
+        session, args.subject, args.message, args.priority, args.msg_type
     )
 
     if sent:

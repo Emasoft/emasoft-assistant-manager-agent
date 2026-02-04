@@ -2,6 +2,19 @@
 
 This document provides combined examples and troubleshooting guidance.
 
+## Table of Contents
+
+- [Examples](#examples)
+  - [Example 1: Combined Update - Task Switch with Decision](#example-1-combined-update---task-switch-with-decision)
+  - [Example 2: Milestone with Pattern Recording](#example-2-milestone-with-pattern-recording)
+- [Troubleshooting](#troubleshooting)
+  - [Problem: Forgot to Create Snapshot Before Update](#problem-forgot-to-create-snapshot-before-update)
+  - [Problem: Context Update Interrupted](#problem-context-update-interrupted)
+  - [Problem: Multiple Updates Needed Simultaneously](#problem-multiple-updates-needed-simultaneously)
+  - [Problem: Pre-Compaction Validation Fails](#problem-pre-compaction-validation-fails)
+
+---
+
 ## Examples
 
 ### Example 1: Combined Update - Task Switch with Decision

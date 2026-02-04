@@ -1,7 +1,9 @@
 ---
 name: eama-github-routing
-description: Use when routing GitHub operations (issues, PRs, projects, releases) to the appropriate specialist agent
+description: Use when routing GitHub operations (issues, PRs, projects, releases) to the appropriate specialist agent. Trigger with GitHub-related requests.
+compatibility: Requires AI Maestro installed.
 context: fork
+agent: eama-main
 triggers:
   - User requests GitHub operation (issues, PRs, projects)
   - GitHub webhook event requires agent action
@@ -24,6 +26,21 @@ triggers:
 4. Create handoff document with required content
 5. Send handoff to the appropriate specialist via AI Maestro
 6. Track the handoff status
+
+## Checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Identify GitHub operation type (issue/PR/kanban/release)
+- [ ] Check for design or module context
+- [ ] Consult appropriate decision tree (issue/PR/kanban/release)
+- [ ] Determine target agent (EIA/EAA/EOA/EAMA)
+- [ ] Prepare handoff document with required fields
+- [ ] Include UUID tracking if design/module linked
+- [ ] Send handoff via AI Maestro
+- [ ] Log routing decision
+- [ ] Track handoff status
+- [ ] Verify operation completion
 
 ## Table of Contents
 
@@ -356,6 +373,24 @@ If target agent is not responding:
 3. Retry after configured interval
 4. Escalate to user if repeated failures
 
+## Output
+
+After routing a GitHub operation, EAMA should produce:
+
+| Output Element | Content |
+|----------------|---------|
+| **Routing Decision** | Which agent (EIA/EAA/EOA/EAMA) received the operation |
+| **Operation Type** | Issue/PR/Kanban/Release |
+| **Handoff Status** | Sent/Queued/Failed |
+| **Tracking Reference** | UUID or GitHub item number for follow-up |
+
+**Format**:
+```
+[ROUTED] GitHub {operation_type} → {target_agent}
+Handoff: {status}
+Reference: {tracking_id}
+```
+
 ## Examples
 
 ### Example 1: Routing a Bug Report Issue to EIA
@@ -401,8 +436,114 @@ If target agent is not responding:
 # Handoff includes design UUID for linking
 ```
 
+## Proactive Kanban Monitoring
+
+EAMA must proactively monitor GitHub Project boards to detect changes that may require action or notification to ECOS and the user.
+
+### Monitoring Schedule
+
+Poll the GitHub Project API every 5 minutes for changes to project cards:
+
+```bash
+# Get project items with status
+gh project item-list <PROJECT_NUMBER> --owner Emasoft --format json | jq '
+  .items[] | {
+    id: .id,
+    title: .title,
+    status: .status,
+    assignees: .assignees,
+    updated: .updatedAt
+  }
+'
+```
+
+### Changes to Monitor
+
+| Change Type | Detection Method | Action |
+|-------------|------------------|--------|
+| Status changes | Compare `status` field against previous snapshot | Notify ECOS of card movement |
+| New assignees | Compare `assignees` array against previous snapshot | Notify relevant specialist |
+| New comments | Check `comments` count increase | Fetch new comments, route to appropriate agent |
+| Card created | New `id` not in previous snapshot | Route to ECOS for triage |
+| Card archived | `id` missing from current snapshot | Update internal tracking state |
+
+### Monitoring Procedure
+
+**Step 1: Capture Snapshot**
+```bash
+# Store current state
+gh project item-list <PROJECT_NUMBER> --owner Emasoft --format json > /tmp/kanban-snapshot-$(date +%s).json
+```
+
+**Step 2: Compare with Previous Snapshot**
+```bash
+# Compare snapshots to find changes
+diff <(jq -S '.items' /tmp/kanban-snapshot-previous.json) \
+     <(jq -S '.items' /tmp/kanban-snapshot-current.json)
+```
+
+**Step 3: Process Detected Changes**
+
+For each detected change:
+
+1. **Status Change Detected**
+   ```bash
+   # Notify ECOS of status change
+   curl -X POST "$AIMAESTRO_API/api/messages" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "from": "eama-assistant-manager",
+       "to": "ecos-<project>",
+       "subject": "Kanban Card Status Changed",
+       "priority": "normal",
+       "content": {
+         "type": "kanban_update",
+         "card_id": "<card-id>",
+         "card_title": "<title>",
+         "old_status": "<previous-status>",
+         "new_status": "<current-status>",
+         "changed_at": "<ISO-8601>"
+       }
+     }'
+   ```
+
+2. **New Assignee Detected**
+   - If assignee is a known specialist agent, notify that agent
+   - If assignee is external, log for user review
+
+3. **New Comment Detected**
+   - Fetch comment content
+   - Route to appropriate agent based on card context
+   - If comment mentions user action needed, notify user
+
+**Step 4: Update Internal State**
+```bash
+# Update tracking file
+echo "Last sync: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> docs_dev/kanban/sync-log.md
+mv /tmp/kanban-snapshot-current.json /tmp/kanban-snapshot-previous.json
+```
+
+### Kanban Monitoring Checklist
+
+- [ ] GitHub CLI (`gh`) authenticated with project access
+- [ ] Previous snapshot exists for comparison
+- [ ] Current snapshot captured successfully
+- [ ] Changes detected and categorized
+- [ ] ECOS notified of relevant changes
+- [ ] Internal state updated
+- [ ] Sync log updated with timestamp
+
+### Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| `gh` command fails | Authentication expired | Re-authenticate with `gh auth login` |
+| No previous snapshot | First run or file deleted | Create initial snapshot, skip comparison |
+| Project not found | Invalid project number | Verify project exists with `gh project list --owner Emasoft` |
+| Rate limit exceeded | Too many API calls | Increase polling interval to 10 minutes |
+
 ## Resources
 
-- [Role Routing SKILL](../eama-role-routing/SKILL.md)
-- [Proactive Handoff Protocol](../eama-shared/references/proactive-handoff-protocol.md)
-- [Handoff Template](../../shared/handoff_template.md)
+- Role Routing SKILL (see eama-role-routing skill)
+- Proactive Handoff Protocol (see eama-shared references)
+- Handoff Template (see shared templates directory)

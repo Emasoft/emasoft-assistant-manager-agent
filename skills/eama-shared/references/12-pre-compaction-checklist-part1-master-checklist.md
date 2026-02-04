@@ -2,6 +2,13 @@
 
 This file contains the complete master checklist template for pre-compaction validation.
 
+## Table of Contents
+
+- [Master Checklist](#master-checklist)
+- [How to Use This Checklist](#how-to-use-this-checklist)
+
+---
+
 ## Master Checklist
 
 ```markdown

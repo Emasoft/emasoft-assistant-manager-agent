@@ -2,6 +2,20 @@
 
 This document covers the mandatory pre-compaction update pattern.
 
+## Table of Contents
+
+- [Pattern 5: Pre-Compaction Update](#pattern-5-pre-compaction-update)
+  - [When to Use](#when-to-use)
+  - [Procedure](#procedure)
+    - [Step 1: Create Full Snapshot](#step-1-create-full-snapshot)
+    - [Step 2: Validate Memory Structure](#step-2-validate-memory-structure)
+    - [Step 3: Create Pre-Compaction Archive](#step-3-create-pre-compaction-archive)
+    - [Step 4: Update Session Info](#step-4-update-session-info)
+    - [Step 5: Final Checklist](#step-5-final-checklist)
+  - [Complete Example](#complete-example)
+
+---
+
 ## Pattern 5: Pre-Compaction Update
 
 ### When to Use

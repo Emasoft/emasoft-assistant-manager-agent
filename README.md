@@ -20,12 +20,22 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 │   - Receives user requests, clarifies requirements               │
 │   - Requests user approvals (push, merge, publish, security)     │
 │   - Reports status to user                                       │
-│   - Directs ARCHITECT, ORCHESTRATOR, INTEGRATOR                 │
+│   - Coordinates with ECOS for agent lifecycle                    │
 │   - Routes handoffs between roles                                │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│      EMASOFT-CHIEF-OF-STAFF (ecos-)                              │
+│   - Agent lifecycle management (create, terminate, restart)      │
+│   - Session management and health monitoring                     │
+│   - Permission management for sensitive operations               │
+│   - Failure recovery and escalation                              │
 └──────┬─────────────────────┬─────────────────────┬──────────────┘
        │                     │                     │
        ▼                     ▼                     ▼
    ARCHITECT           ORCHESTRATOR           INTEGRATOR
+     (EAA)                (EOA)                  (EIA)
 ```
 
 ## Core Responsibilities
@@ -55,13 +65,14 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 
 ### Skills
 
-| Skill | Description |
-|-------|-------------|
-| `eama-user-communication` | User interaction patterns |
-| `eama-status-reporting` | Status report generation |
-| `eama-approval-workflows` | Approval request patterns |
-| `eama-role-routing` | Route requests to correct role |
-| `eama-shared` | Shared utilities |
+| Skill | Description | When to Use |
+|-------|-------------|-------------|
+| `eama-user-communication` | User interaction patterns | When communicating with the user |
+| `eama-status-reporting` | Status report generation | When user requests status updates |
+| `eama-approval-workflows` | Approval request patterns | When sensitive operations require user approval |
+| `eama-role-routing` | Route requests to correct role | When delegating work to EAA, EOA, or EIA |
+| `eama-ecos-coordination` | Coordinate with ECOS for approvals and agent lifecycle | When ECOS requests approval or reports agent status |
+| `eama-shared` | Shared utilities | For common utilities across EAMA skills |
 
 ### Hooks
 

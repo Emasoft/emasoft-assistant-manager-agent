@@ -1,5 +1,15 @@
 # Decision-Logic Patterns
 
+## Table of Contents
+
+- [Definition](#definition)
+- [Structure](#structure)
+- [When to Create](#when-to-create)
+- [Examples of Good Decision-Logic Patterns](#examples-of-good-decision-logic-patterns)
+- [Examples of Bad Decision-Logic Patterns](#examples-of-bad-decision-logic-patterns)
+
+---
+
 ## Definition
 
 A Decision-Logic pattern documents:

@@ -1,7 +1,7 @@
 ---
 name: eama-report-generator
 model: opus
-description: Generates status reports and project summaries
+description: Generates status reports and project summaries. Requires AI Maestro installed.
 type: local-helper
 trigger_conditions:
   - When orchestrator needs formal reports (progress, quality, test, completion, summary, integration)

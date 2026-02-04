@@ -1,7 +1,7 @@
 {
   "name": "emasoft-assistant-manager-agent",
-  "version": "1.0.0",
-  "description": "User's right hand - sole interlocutor with user, directs other roles (architect, orchestrator, integrator)",
+  "version": "1.1.0",
+  "description": "User's right hand - sole interlocutor with user, directs other roles. Requires AI Maestro for inter-agent messaging.",
   "author": {
     "name": "Emasoft",
     "email": "713559+Emasoft@users.noreply.github.com"
@@ -15,7 +15,7 @@
     "claude-code": ">=1.0.0"
   },
   "agents": [
-    "./agents/eama-main.md",
+    "./agents/eama-assistant-manager-main-agent.md",
     "./agents/eama-report-generator.md"
   ],
   "skills": "./skills/"

@@ -2,6 +2,20 @@
 
 **Parent Document:** [19-config-snapshot-creation.md](./19-config-snapshot-creation.md)
 
+## Table of Contents
+
+- [Snapshot Structure](#snapshot-structure)
+  - [File Format](#file-format)
+  - [Required Elements](#required-elements)
+- [Examples](#examples)
+  - [Example 1: Creating Initial Snapshot](#example-1-creating-initial-snapshot)
+  - [Example 2: Updating Snapshot After Config Change](#example-2-updating-snapshot-after-config-change)
+- [Troubleshooting](#troubleshooting)
+  - [Issue: Snapshot missing required config](#issue-snapshot-missing-required-config)
+  - [Issue: Snapshot has future timestamp](#issue-snapshot-has-future-timestamp)
+  - [Issue: Snapshot content appears truncated](#issue-snapshot-content-appears-truncated)
+  - [Issue: Cannot create snapshot - permission denied](#issue-cannot-create-snapshot---permission-denied)
+
 ---
 
 ## Snapshot Structure

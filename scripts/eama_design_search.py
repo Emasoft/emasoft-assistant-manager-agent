@@ -25,7 +25,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 
 @dataclass
@@ -127,7 +127,7 @@ def extract_status_from_content(content: str) -> str:
         if match:
             if isinstance(group_or_value, int):
                 return match.group(group_or_value).lower()
-            return group_or_value
+            return cast(str, group_or_value)
 
     return "unknown"
 
@@ -138,7 +138,9 @@ def extract_title_from_content(content: str, filename: str) -> str:
     frontmatter_match = re.search(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
     if frontmatter_match:
         frontmatter = frontmatter_match.group(1)
-        title_match = re.search(r'title:\s*["\']?(.+?)["\']?\s*$', frontmatter, re.MULTILINE)
+        title_match = re.search(
+            r'title:\s*["\']?(.+?)["\']?\s*$', frontmatter, re.MULTILINE
+        )
         if title_match:
             return title_match.group(1).strip()
 
@@ -153,7 +155,7 @@ def extract_title_from_content(content: str, filename: str) -> str:
 
 def extract_keywords_from_content(content: str) -> list[str]:
     """Extract keywords from document content."""
-    keywords = set()
+    keywords: set[str] = set()
 
     # Check frontmatter for keywords/tags
     frontmatter_match = re.search(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
@@ -163,11 +165,15 @@ def extract_keywords_from_content(content: str) -> list[str]:
         # keywords: [a, b, c] or keywords: - a format
         keywords_match = re.search(r"keywords:\s*\[([^\]]+)\]", frontmatter)
         if keywords_match:
-            keywords.update(k.strip().strip("'\"") for k in keywords_match.group(1).split(","))
+            keywords.update(
+                k.strip().strip("'\"") for k in keywords_match.group(1).split(",")
+            )
 
         tags_match = re.search(r"tags:\s*\[([^\]]+)\]", frontmatter)
         if tags_match:
-            keywords.update(k.strip().strip("'\"") for k in tags_match.group(1).split(","))
+            keywords.update(
+                k.strip().strip("'\"") for k in tags_match.group(1).split(",")
+            )
 
     return list(keywords)
 
@@ -178,18 +184,27 @@ def extract_summary_from_content(content: str) -> str:
     frontmatter_match = re.search(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
     if frontmatter_match:
         frontmatter = frontmatter_match.group(1)
-        desc_match = re.search(r'description:\s*["\']?(.+?)["\']?\s*$', frontmatter, re.MULTILINE)
+        desc_match = re.search(
+            r'description:\s*["\']?(.+?)["\']?\s*$', frontmatter, re.MULTILINE
+        )
         if desc_match:
             return desc_match.group(1).strip()[:200]
 
     # Get first non-heading, non-empty paragraph after frontmatter
-    content_after_frontmatter = re.sub(r"^---\s*\n.*?\n---\s*\n", "", content, flags=re.DOTALL)
+    content_after_frontmatter = re.sub(
+        r"^---\s*\n.*?\n---\s*\n", "", content, flags=re.DOTALL
+    )
     paragraphs = re.split(r"\n\n+", content_after_frontmatter)
 
     for para in paragraphs:
         para = para.strip()
         # Skip headings, lists, code blocks
-        if para and not para.startswith("#") and not para.startswith("-") and not para.startswith("```"):
+        if (
+            para
+            and not para.startswith("#")
+            and not para.startswith("-")
+            and not para.startswith("```")
+        ):
             return para[:200] + ("..." if len(para) > 200 else "")
 
     return ""
@@ -230,13 +245,17 @@ def scan_design_documents(project_dir: Path) -> list[DesignDocument]:
     return documents
 
 
-def search_by_uuid(documents: list[DesignDocument], uuid_query: str) -> list[DesignDocument]:
+def search_by_uuid(
+    documents: list[DesignDocument], uuid_query: str
+) -> list[DesignDocument]:
     """Search documents by UUID (partial match supported)."""
     uuid_query = uuid_query.lower()
     return [doc for doc in documents if doc.uuid and uuid_query in doc.uuid.lower()]
 
 
-def search_by_keyword(documents: list[DesignDocument], keyword: str) -> list[DesignDocument]:
+def search_by_keyword(
+    documents: list[DesignDocument], keyword: str
+) -> list[DesignDocument]:
     """Search documents by keyword in title, summary, or keywords list."""
     keyword = keyword.lower()
     results = []
@@ -264,13 +283,15 @@ def search_by_keyword(documents: list[DesignDocument], keyword: str) -> list[Des
     return results
 
 
-def filter_by_status(documents: list[DesignDocument], status: str) -> list[DesignDocument]:
+def filter_by_status(
+    documents: list[DesignDocument], status: str
+) -> list[DesignDocument]:
     """Filter documents by status."""
     status = status.lower()
     return [doc for doc in documents if doc.status == status]
 
 
-def document_to_dict(doc: DesignDocument) -> dict:
+def document_to_dict(doc: DesignDocument) -> dict[str, Any]:
     """Convert DesignDocument to dictionary for JSON output."""
     return {
         "path": doc.path,
@@ -307,15 +328,21 @@ Examples:
         help="Filter by document status",
     )
     parser.add_argument("--list", action="store_true", help="List all design documents")
-    parser.add_argument("--project-dir", help="Project directory (default: $CLAUDE_PROJECT_DIR or cwd)")
+    parser.add_argument(
+        "--project-dir", help="Project directory (default: $CLAUDE_PROJECT_DIR or cwd)"
+    )
     parser.add_argument("--json", action="store_true", help="Output as JSON (default)")
-    parser.add_argument("--summary", action="store_true", help="Print human-readable summary to stderr")
+    parser.add_argument(
+        "--summary", action="store_true", help="Print human-readable summary to stderr"
+    )
 
     args = parser.parse_args()
 
     # Validate arguments
     if not any([args.uuid, args.keyword, args.status, args.list]):
-        parser.error("At least one search option required: --uuid, --keyword, --status, or --list")
+        parser.error(
+            "At least one search option required: --uuid, --keyword, --status, or --list"
+        )
 
     # Get project directory
     if args.project_dir:
@@ -362,7 +389,9 @@ Examples:
         print("\n--- Design Search Results ---", file=sys.stderr)
         print(f"Found: {len(results)} of {len(documents)} documents", file=sys.stderr)
         for doc in results:
-            status_icon = {"approved": "[+]", "draft": "[.]", "deprecated": "[-]"}.get(doc.status, "[?]")
+            status_icon = {"approved": "[+]", "draft": "[.]", "deprecated": "[-]"}.get(
+                doc.status, "[?]"
+            )
             print(f"  {status_icon} {doc.title}", file=sys.stderr)
             print(f"      Path: {doc.path}", file=sys.stderr)
             if doc.uuid:

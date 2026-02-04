@@ -2,6 +2,11 @@
 
 **Parent Document:** [19-config-snapshot-creation.md](./19-config-snapshot-creation.md)
 
+## Table of Contents
+
+- [PROCEDURE 2: Update Snapshot](#procedure-2-update-snapshot)
+- [PROCEDURE 3: Validate Snapshot](#procedure-3-validate-snapshot)
+
 ---
 
 ## PROCEDURE 2: Update Snapshot

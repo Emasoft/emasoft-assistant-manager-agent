@@ -2,6 +2,27 @@
 
 This document covers the first two update patterns for context management.
 
+## Table of Contents
+
+- [Pattern 1: Task Switch Update](#pattern-1-task-switch-update)
+  - [When to Use](#when-to-use)
+  - [Procedure](#procedure)
+    - [Step 1: Create Context Snapshot](#step-1-create-context-snapshot)
+    - [Step 2: Archive Old Focus](#step-2-archive-old-focus)
+    - [Step 3: Update Current Focus](#step-3-update-current-focus)
+    - [Step 4: Update Timestamp](#step-4-update-timestamp)
+    - [Step 5: Verify Update](#step-5-verify-update)
+  - [Complete Example](#complete-example)
+- [Pattern 2: Decision Recording Update](#pattern-2-decision-recording-update)
+  - [When to Use](#when-to-use-1)
+  - [Procedure](#procedure-1)
+    - [Step 1: Document Decision](#step-1-document-decision)
+    - [Step 2: Update Affected Sections](#step-2-update-affected-sections)
+    - [Step 3: Update Timestamp](#step-3-update-timestamp)
+  - [Complete Example](#complete-example-1)
+
+---
+
 ## Pattern 1: Task Switch Update
 
 ### When to Use

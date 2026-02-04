@@ -1,8 +1,9 @@
 ---
 name: eama-status-reporting
-description: Use when generating status reports showing progress across all roles (Architect, Orchestrator, Integrator)
+description: Use when generating status reports showing progress across all roles (Architect, Orchestrator, Integrator). Trigger with status report requests.
+compatibility: Requires AI Maestro installed.
 context: fork
-agent: eama-report-generator
+agent: eama-main
 user-invocable: true
 triggers:
   - when user asks for status
@@ -49,6 +50,15 @@ Generate comprehensive status reports showing progress across all roles (Archite
 3. Read session memory files
 4. Compile into unified report
 5. Format for user consumption
+
+## Output
+
+| Report Type | Format | Location |
+|-------------|--------|----------|
+| Quick Status | Markdown summary | `docs_dev/reports/status-{date}.md` |
+| Progress Report | Markdown with sections | `docs_dev/reports/progress-{date}.md` |
+| Handoff Summary | Markdown with task lists | `docs_dev/reports/handoff-{date}.md` |
+| Blocker Report | Markdown with blocker details | `docs_dev/reports/blockers-{date}.md` |
 
 ## Report Sections
 
@@ -97,8 +107,8 @@ Reports saved to: `docs_dev/reports/status-{date}.md`
 - [EIA] Code review completed, 2 issues fixed
 
 ### Tasks In Progress
-- [EOA] Logout endpoint (ETA: 2025-01-31)
-- [EAA] Session management design (ETA: 2025-02-01)
+- [EOA] Logout endpoint (in progress)
+- [EAA] Session management design (in progress)
 
 ### Tasks Blocked
 - [EOA] Password reset - blocked by email service config
@@ -111,13 +121,28 @@ Reports saved to: `docs_dev/reports/status-{date}.md`
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| Role query timeout | Agent not responding | Mark as "status unknown" and continue |
+| Agent not responding | Agent unreachable | Mark as "status unknown" and continue |
 | GitHub API failure | Auth or rate limit | Use cached data, note staleness |
 | Memory file not found | Not initialized | Report "no session data available" |
 | Report directory missing | First report | Create `docs_dev/reports/` automatically |
 
 ## Resources
 
-- [eama-role-routing SKILL](../eama-role-routing/SKILL.md) - Role status queries
-- [eama-approval-workflows SKILL](../eama-approval-workflows/SKILL.md) - Approval status
-- [eama-shared SKILL](../eama-shared/SKILL.md) - Session memory access
+- **eama-role-routing SKILL** - Role status queries
+- **eama-approval-workflows SKILL** - Approval status
+- **eama-shared SKILL** - Session memory access
+
+## Checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Determine the type of report needed (quick status, progress, handoff summary, blocker)
+- [ ] Verify AI Maestro messaging system is running
+- [ ] Verify GitHub CLI is installed and authenticated
+- [ ] Query each role via AI Maestro for current status
+- [ ] Query GitHub for issue and PR status
+- [ ] Read session memory files for context
+- [ ] Compile all information into unified report format
+- [ ] Create `docs_dev/reports/` directory if it doesn't exist
+- [ ] Save report to `docs_dev/reports/status-{date}.md`
+- [ ] Present formatted report to user

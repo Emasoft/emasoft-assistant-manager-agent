@@ -2,6 +2,11 @@
 
 **Parent Document:** [19-config-snapshot-creation.md](./19-config-snapshot-creation.md)
 
+## Table of Contents
+
+- [PROCEDURE 1: Create Initial Snapshot](#procedure-1-create-initial-snapshot)
+- [Example Snapshot File](#example-snapshot-file)
+
 ---
 
 ## PROCEDURE 1: Create Initial Snapshot

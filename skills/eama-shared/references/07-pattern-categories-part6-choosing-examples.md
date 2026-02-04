@@ -1,5 +1,18 @@
 # Choosing the Right Category
 
+## Table of Contents
+
+- [Decision Flow](#decision-flow)
+- [Category Selection Matrix](#category-selection-matrix)
+- [Examples by Category](#examples-by-category)
+- [Pattern Examples](#pattern-examples)
+  - [Example 1: Categorizing New Pattern](#example-1-categorizing-new-pattern)
+  - [Example 2: Re-categorizing Existing Pattern](#example-2-re-categorizing-existing-pattern)
+  - [Example 3: Multi-Category Pattern](#example-3-multi-category-pattern)
+  - [Example 4: Pattern Not Fitting Any Category](#example-4-pattern-not-fitting-any-category)
+
+---
+
 ## Decision Flow
 
 ```

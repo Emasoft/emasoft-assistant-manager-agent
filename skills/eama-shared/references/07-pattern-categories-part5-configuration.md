@@ -1,5 +1,15 @@
 # Configuration Patterns
 
+## Table of Contents
+
+- [Definition](#definition)
+- [Structure](#structure)
+- [When to Create](#when-to-create)
+- [Examples of Good Configuration Patterns](#examples-of-good-configuration-patterns)
+- [Examples of Bad Configuration Patterns](#examples-of-bad-configuration-patterns)
+
+---
+
 ## Definition
 
 A Configuration pattern documents:

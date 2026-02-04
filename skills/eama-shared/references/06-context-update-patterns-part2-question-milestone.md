@@ -2,6 +2,26 @@
 
 This document covers patterns for adding questions and recording progress milestones.
 
+## Table of Contents
+
+- [Pattern 3: Question Addition Update](#pattern-3-question-addition-update)
+  - [When to Use](#when-to-use)
+  - [Procedure](#procedure)
+    - [Step 1: Add to Open Questions](#step-1-add-to-open-questions)
+    - [Step 2: Mark Blocked Tasks](#step-2-mark-blocked-tasks)
+    - [Step 3: Update Timestamp](#step-3-update-timestamp)
+  - [Complete Example](#complete-example)
+- [Pattern 4: Progress Milestone Update](#pattern-4-progress-milestone-update)
+  - [When to Use](#when-to-use-1)
+  - [Procedure](#procedure-1)
+    - [Step 1: Create Context Snapshot](#step-1-create-context-snapshot)
+    - [Step 2: Update Progress Tracker](#step-2-update-progress-tracker)
+    - [Step 3: Update Active Context](#step-3-update-active-context)
+    - [Step 4: Record Pattern (if reusable)](#step-4-record-pattern-if-reusable)
+  - [Complete Example](#complete-example-1)
+
+---
+
 ## Pattern 3: Question Addition Update
 
 ### When to Use

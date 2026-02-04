@@ -1,7 +1,9 @@
 ---
 name: eama-approval-workflows
-description: Use when handling approval requests from other roles that require user decisions on code, releases, or security gates
+description: Use when handling approval requests from other roles that require user decisions on code, releases, or security gates. Trigger with approval requests from ECOS or other agents.
+compatibility: Requires AI Maestro installed.
 context: fork
+agent: eama-main
 triggers:
   - Any role sends an approval request via AI Maestro
   - User needs to make a decision about code, releases, or security
@@ -191,11 +193,120 @@ approvals:
 - Approval request with "urgent" priority
 - Multiple failed approval attempts
 
+## Approval Expiry Workflow
+
+Approval requests that remain pending for too long must be automatically rejected to prevent stale requests from blocking workflows.
+
+### Expiry Check Schedule
+
+Check approval timestamps every hour to identify expired requests:
+
+```bash
+# Find approvals older than 24 hours
+CURRENT_TIME=$(date +%s)
+EXPIRY_THRESHOLD=$((24 * 60 * 60))  # 24 hours in seconds
+
+# Using jq to find expired approvals in state file
+cat docs_dev/approvals/approval-state.yaml | yq -r '
+  .approvals[] |
+  select(.status == "pending") |
+  select((now - (.requested_at | fromdateiso8601)) > 86400) |
+  .id
+'
+```
+
+### Expiry Workflow Steps
+
+**Step 1: Identify Expired Approvals**
+
+Every hour, scan for approvals where:
+- `status` is `pending`
+- `requested_at` is more than 24 hours ago
+
+**Step 2: Auto-Reject Expired Approvals**
+
+For each expired approval:
+
+1. **Update approval status**
+   ```yaml
+   approvals:
+     - id: "approval-{uuid}"
+       status: "rejected"
+       user_decision: "auto-rejected"
+       decided_at: "<current-ISO-8601>"
+       notes: "EXPIRED: Auto-rejected after 24 hours without response"
+   ```
+
+2. **Send rejection notice to requesting role**
+   ```bash
+   curl -X POST "$AIMAESTRO_API/api/messages" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "from": "eama-assistant-manager",
+       "to": "<requesting-role-session>",
+       "subject": "Approval Expired: <REQUEST-ID>",
+       "priority": "normal",
+       "content": {
+         "type": "approval_decision",
+         "request_id": "<REQUEST-ID>",
+         "decision": "rejected",
+         "reason": "EXPIRED: Request was pending for more than 24 hours without user response. Please resubmit if still needed.",
+         "expired_at": "<ISO-8601>",
+         "original_requested_at": "<original-timestamp>"
+       }
+     }'
+   ```
+
+3. **Log to approval-log.md**
+   ```markdown
+   ## APPROVAL-<ID> - EXPIRED
+
+   - **Request ID**: <REQUEST-ID>
+   - **From**: <requesting-role>
+   - **Requested**: <requested_at>
+   - **Expired**: <current-timestamp>
+   - **Decision**: REJECTED (EXPIRED)
+   - **Reason**: Auto-rejected after 24 hours without user response
+   - **Action Required**: Requesting role should resubmit if still needed
+   ```
+
+**Step 3: Notify User of Expirations (Optional)**
+
+If user preference is set to receive expiry notifications:
+```
+Approval Requests Expired
+
+The following approval requests were auto-rejected after 24 hours:
+
+- <REQUEST-ID-1>: <operation-summary> (from <role>)
+- <REQUEST-ID-2>: <operation-summary> (from <role>)
+
+These requests have been returned to the requesting roles. They can resubmit if still needed.
+```
+
+### Expiry Checklist
+
+- [ ] Hourly expiry check scheduled
+- [ ] Expired approvals identified (pending > 24 hours)
+- [ ] Approval status updated to "rejected" with "EXPIRED" reason
+- [ ] Rejection notice sent to requesting role via AI Maestro
+- [ ] Expiry logged in approval-log.md
+- [ ] User notified if configured to receive expiry notifications
+
+### Expiry Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `expiry_threshold_hours` | 24 | Hours before auto-reject |
+| `expiry_check_interval_minutes` | 60 | How often to check for expired |
+| `notify_user_on_expiry` | false | Send summary to user on expiry |
+| `allow_resubmission` | true | Requesting role can resubmit after expiry |
+
 ## User Notification
 
 When approval is requested:
 1. Display approval request prominently
-2. If user is idle, send reminder after 5 minutes
+2. If user is idle, send periodic reminders
 3. Block relevant workflow until decision received
 4. Log all approval requests and decisions
 
@@ -248,12 +359,35 @@ This action has security implications. Do you authorize it?
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| Approval request timeout | No user response in 24 hours | Auto-reject and notify requesting role |
+| Approval request pending | No user response | Send periodic reminders; keep request active until user responds |
 | Invalid approval type | Unknown type in request | Query sender for clarification |
 | State file write failure | Permissions or disk issue | Retry 3 times, then escalate to user |
 | Missing handoff context | Incomplete request | Return to sender with "INCOMPLETE" flag |
 
+## Output
+
+| Outcome | Status | Action |
+|---------|--------|--------|
+| User approves | `approved` | Send approval message to requesting role and update state file |
+| User rejects | `rejected` | Send rejection message to requesting role and update state file |
+| User requests changes | `request_changes` | Send feedback to requesting role with user comments |
+| User requests review | `pending` | Display requested information and re-present approval request |
+| Timeout (24 hours) | `rejected` | Auto-reject and notify requesting role |
+
+## Checklist
+
+Copy this checklist and track your progress:
+
+- [ ] Listen for approval requests via AI Maestro
+- [ ] Parse approval request to determine type (push/merge/publish/security/design)
+- [ ] Present approval request to user using appropriate template
+- [ ] Wait for user decision
+- [ ] Record user decision with timestamp in state file
+- [ ] Send approval response back to requesting role
+- [ ] Update approval state tracking file
+- [ ] Log approval request and decision
+- [ ] Handle any errors or timeouts according to escalation rules
+
 ## Resources
 
-- [Message Templates](../../shared/message_templates.md)
-- [Handoff Template](../../shared/handoff_template.md)
+For message templates, see the shared message templates reference. For handoff format, see the shared handoff template reference.

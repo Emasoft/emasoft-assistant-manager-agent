@@ -1,15 +1,35 @@
 ---
-name: eama-session-memory
-description: Use when managing session memory persistence across multiple interactions, surviving context window compaction, and recovering from interruptions
+name: eama-shared-session-memory
+description: Use when managing session memory persistence across multiple interactions, surviving context window compaction, and recovering from interruptions. Trigger with shared resource lookups.
 license: Apache-2.0
-compatibility: Requires file system access to design/memory/ directory, Markdown parsing capabilities, and understanding of session lifecycle (initialization, execution, termination).
+compatibility: Requires file system access to design/memory/ directory, Markdown parsing capabilities, and understanding of session lifecycle (initialization, execution, termination). Requires AI Maestro installed.
 metadata:
   author: Emasoft
   version: 1.0.0
 context: fork
+agent: eama-main
 ---
 
 # Emasoft Assistant Manager Session Memory Skill
+
+## Prerequisites
+
+Before using this skill, ensure:
+1. Shared reference files are accessible
+2. Pattern definitions are available
+
+## Instructions
+
+1. Identify the shared resource needed
+2. Locate in references directory
+3. Apply pattern or template
+
+## Output
+
+| Resource Type | Output |
+|---------------|--------|
+| Template | Filled template content |
+| Pattern | Pattern definition |
 
 ## Overview
 
@@ -292,6 +312,8 @@ This file is separate from authoritative configs in `design/config/` (OPTIONAL: 
 - Issues → Troubleshooting section
 
 ## Task Checklist
+
+Copy this checklist and track your progress:
 
 - [ ] Understand session memory purpose and components
 - [ ] Learn Phase 1: Initialize session memory at start
