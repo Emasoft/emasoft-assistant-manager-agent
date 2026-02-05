@@ -52,7 +52,7 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 
 | Agent | Description |
 |-------|-------------|
-| `eama-main.md` | Main assistant manager agent |
+| `eama-assistant-manager-main-agent.md` | Main assistant manager agent |
 | `eama-report-generator.md` | Generates status reports for user |
 
 ### Commands
@@ -62,6 +62,7 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 | `eama-planning-status` | Show planning phase status |
 | `eama-orchestration-status` | Show orchestration phase status |
 | `eama-approve-plan` | Approve plan for orchestration |
+| `eama-respond-to-ecos` | Respond to pending ECOS approval requests |
 
 ### Skills
 
@@ -72,6 +73,9 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 | `eama-approval-workflows` | Approval request patterns | When sensitive operations require user approval |
 | `eama-role-routing` | Route requests to correct role | When delegating work to EAA, EOA, or EIA |
 | `eama-ecos-coordination` | Coordinate with ECOS for approvals and agent lifecycle | When ECOS requests approval or reports agent status |
+| `eama-github-routing` | Route GitHub operations to appropriate specialists | When handling GitHub issues, PRs, projects, or releases |
+| `eama-label-taxonomy` | GitHub label taxonomy and management | When creating or organizing GitHub labels |
+| `eama-session-memory` | Session memory management and handoff tracking | When persisting session state or tracking handoffs |
 
 ### Hooks
 

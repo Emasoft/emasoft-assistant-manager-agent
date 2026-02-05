@@ -1,6 +1,7 @@
 ---
 name: eama-github-routing
 description: Use when routing GitHub operations (issues, PRs, projects, releases) to the appropriate specialist agent. Trigger with GitHub-related requests.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main

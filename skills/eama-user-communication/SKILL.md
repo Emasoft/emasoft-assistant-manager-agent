@@ -1,6 +1,7 @@
 ---
 name: eama-user-communication
 description: Use when communicating with users for clarification, presenting options, requesting approval, or reporting completion. Trigger with user requests or communication needs.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main

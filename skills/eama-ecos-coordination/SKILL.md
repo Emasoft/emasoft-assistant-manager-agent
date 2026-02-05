@@ -1,6 +1,7 @@
 ---
 name: eama-ecos-coordination
 description: Use when coordinating with the Chief of Staff (ECOS) for approval requests and autonomous operation delegation. Trigger with ECOS coordination requests.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main

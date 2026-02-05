@@ -1,6 +1,7 @@
 ---
 name: eama-status-reporting
 description: Use when generating status reports showing progress across all roles (Architect, Orchestrator, Integrator). Trigger with status report requests.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main

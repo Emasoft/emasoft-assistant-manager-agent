@@ -1,6 +1,7 @@
 ---
 name: eama-role-routing
 description: Use when routing user requests to appropriate specialist roles (Architect, Orchestrator, or Integrator). Trigger with role routing requests.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main

@@ -1,6 +1,7 @@
 ---
 name: eama-approval-workflows
 description: Use when handling approval requests from other roles that require user decisions on code, releases, or security gates. Trigger with approval requests from ECOS or other agents.
+version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main
