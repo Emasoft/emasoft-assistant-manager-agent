@@ -6,9 +6,8 @@ compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main
 triggers:
-  - User requests GitHub operation (issues, PRs, projects)
+  - User requests GitHub operation (issues, PRs, projects, Kanban)
   - GitHub webhook event requires agent action
-  - Kanban synchronization needed
 ---
 
 # GitHub Operation Routing Skill

@@ -11,6 +11,7 @@ skills:
   - eama-github-routing
   - eama-session-memory
   - eama-status-reporting
+  - ai-maestro-agents-management
 ---
 
 # Assistant Manager Main Agent

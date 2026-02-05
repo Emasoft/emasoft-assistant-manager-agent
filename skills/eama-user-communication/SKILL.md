@@ -120,6 +120,28 @@ Verification: [How to check]
 Next steps: [What happens now]
 ```
 
+## Blocker Communication
+
+When tasks are blocked and require user decisions, use the blocker notification templates. See [references/blocker-notification-templates.md](references/blocker-notification-templates.md):
+
+- When to notify the user about blockers (immediate vs batch vs skip)
+- Blocker notification message format (standard, urgent, cascade)
+- Handling user response to blockers (routing decisions back to agents)
+- Timeout handling when user does not respond (4h, 8h, 24h, 48h escalation)
+- Blocker resolution routing (decision tree for routing user's response)
+
+### When to Use Blocker Notifications
+
+| Blocker Type | Notification Timing | Severity |
+|--------------|---------------------|----------|
+| Critical-path task with <48h deadline | Immediate | Critical |
+| Cascade blocker (multiple tasks) | Immediate | High |
+| Requires user credentials/access | Immediate | High |
+| RULE 14 requirement conflict | Immediate | Critical |
+| Non-critical task with no deadline | Next status report | Medium |
+| External dependency | Next status report | Low |
+| Technical blocker (agents can resolve) | No notification | N/A |
+
 ## Quality Rules
 
 1. **Be Specific**: Never say "some files" - list them
@@ -336,4 +358,7 @@ The script is located at `../../scripts/eama_design_search.py` relative to this 
 
 ### Reference Documents
 
-- [references/response-templates.md](references/response-templates.md) - User communication response templates
+| Reference | Description |
+|-----------|-------------|
+| [response-templates.md](references/response-templates.md) | User communication response templates |
+| [blocker-notification-templates.md](references/blocker-notification-templates.md) | Templates for communicating task blockers to the user and handling their responses |
