@@ -272,31 +272,7 @@ All handoff files are stored in: `docs_dev/handoffs/`
 
 ## GitHub Operations Routing
 
-### Route to EIA (Integrator) for:
-
-| Operation | User Intent Pattern | Handoff Content |
-|-----------|---------------------|-----------------|
-| Issue creation | "create issue", "open bug", "file ticket" | Issue title, body, labels |
-| Issue update | "update issue", "change status", "add label" | Issue number, changes |
-| PR operations | "create PR", "merge PR", "review PR" | PR details, branch info |
-| Kanban sync | "sync kanban", "update board", "move card" | Project ID, item updates |
-| Release management | "release", "tag version", "publish" | Version, changelog |
-
-### Route to EAA (Architect) for:
-
-| Operation | User Intent Pattern | Handoff Content |
-|-----------|---------------------|-----------------|
-| Issue-to-design linking | "link issue to design", "connect to spec" | Issue number, design UUID |
-| Design from issue | "design for issue #X", "spec from requirement" | Issue number, scope |
-
-### Route to EOA (Orchestrator) for:
-
-| Operation | User Intent Pattern | Handoff Content |
-|-----------|---------------------|-----------------|
-| Module issues | "module implementation issue", "task tracking" | Module UUID, task breakdown |
-| Implementation issues | "development issue", "coding task" | Design UUID, module list |
-
-**Cross-reference**: See the eama-github-routing SKILL for complete GitHub decision trees.
+> For GitHub operations routing, see the **eama-github-routing** skill.
 
 ## Design Document Routing
 
