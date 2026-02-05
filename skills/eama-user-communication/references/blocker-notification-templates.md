@@ -12,27 +12,32 @@
 
 ## 1. When to notify the user about blockers
 
-### 1.1 Immediate notification required
+### 1.1 ALL blockers require IMMEDIATE user notification
 
-Notify the user immediately when:
-- A critical-path task is blocked and has a deadline within 48 hours
-- Multiple tasks are blocked by the same issue (cascade blocker)
-- The blocker requires user credentials, access, or authorization
-- A RULE 14 requirement conflict is detected (requirement cannot be met as specified)
+**IRON RULE**: Every blocker must be communicated to the user IMMEDIATELY upon receipt
+from EOA or ECOS. There are no blockers that should be "batched" or "held" for the next
+status report. The user may have the solution ready in minutes — but only if they know
+about the problem.
 
-### 1.2 Batch notification (include in next status report)
+A task is BLOCKED when an agent cannot continue working on it and must wait for an
+external resolution before resuming. Categories of blockers:
 
-Include in the next scheduled status report when:
-- A non-critical task is blocked with no near-term deadline
-- The blocker is a dependency on external work (another team, service, etc.)
-- The blocker has been escalated but resolution is in progress
+| Category | Description | Examples |
+|----------|-------------|---------|
+| **Task Dependency** | Waiting for another task to complete | Feature B depends on Feature A's API |
+| **Problem Resolution** | Waiting for architect or user solution | Design decision needed; requirement unclear |
+| **Missing Resource** | Lacking a resource to be provided or set up | Library to install; server to set up; Docker container to build |
+| **Access or Credentials** | Missing keys, tokens, or permissions | API key not configured; GitHub secret not set; password needed |
+| **Missing Approval** | Waiting for user approval | Deployment approval; budget decision; scope change |
+| **External Dependency** | Waiting for external party or system | Third-party API unavailable; upstream service outage |
 
-### 1.3 Do not notify
+### 1.2 Do NOT notify for non-blockers
 
-Do not notify the user when:
-- The blocker is purely technical and agents can resolve it (retry, workaround)
-- ECOS is handling agent replacement for a blocked agent
-- EOA is coordinating between agents to resolve the blocker
+Do NOT notify the user for issues agents can resolve themselves:
+- Test failures (agents fix the code)
+- Merge conflicts (agents resolve them)
+- Linting errors (agents fix formatting)
+- Transient errors (agents retry)
 
 ---
 
@@ -46,6 +51,7 @@ When communicating a blocker to the user, use this format:
 ## Blocked Task Alert
 
 **Task**: [Task title] (Issue #[number])
+**Blocker Issue**: #[blocker issue number] (tracking the blocking problem)
 **Blocked Since**: [date/time]
 **Severity**: [Critical/High/Medium]
 
@@ -146,6 +152,15 @@ If the user needs more details before deciding:
 2. Await their response
 3. Relay the additional information to the user
 4. Do NOT make decisions on behalf of the user
+
+### 3.4 After unblocking
+
+When the user provides a resolution and it's routed back to EOA:
+- EOA will close the blocker issue (the separate GitHub issue tracking the blocking problem)
+- EOA will move the blocked task back to the column it was in BEFORE being blocked
+  (e.g., if it was in "Testing" when blocked, it returns to "Testing", not "In Progress")
+- The assigned agent resumes work on the task
+- Include the unblocking update in the next status report to the user
 
 ---
 

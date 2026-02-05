@@ -44,6 +44,11 @@ Generate comprehensive status reports showing progress across all roles (Archite
 | Handoff Summary | On transition | What was handed to whom |
 | Blocker Report | As needed | What's blocking progress |
 
+**Note**: Blockers are reported to the user IMMEDIATELY when received, not held for
+the next scheduled status report. Status reports should include a summary of
+currently blocked tasks and their status (waiting for user, waiting for resource, etc.)
+but the initial notification always happens immediately.
+
 ## Report Generation Workflow
 
 1. Query each role via AI Maestro for current status
