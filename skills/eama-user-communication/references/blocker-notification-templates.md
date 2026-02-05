@@ -222,6 +222,45 @@ I'll include the update in the next status report.
 
 ---
 
+## 6. Checklists
+
+### 6.1 Checklist: Receiving a Blocker Escalation from EOA or ECOS
+
+Copy this checklist and track your progress:
+
+- [ ] Read the blocker-escalation message from EOA or ECOS
+- [ ] Identify the blocked task (issue number) and the blocker issue (blocker issue number)
+- [ ] Determine the blocker category (Task Dependency, Problem Resolution, Missing Resource, Access/Credentials, Missing Approval, External Dependency)
+- [ ] Compose user notification using the appropriate template (section 2.1, 2.2, or 2.3)
+- [ ] Include the Blocker Issue number in the notification so the user can track it
+- [ ] Present options to the user if available (from the escalation message)
+- [ ] Deliver the notification to the user IMMEDIATELY (do not batch or delay)
+
+### 6.2 Checklist: When User Provides a Decision for a Blocked Task
+
+Copy this checklist and track your progress:
+
+- [ ] Acknowledge the user's response immediately
+- [ ] Determine who escalated the blocker (EOA or ECOS)
+- [ ] Compose blocker-resolution AI Maestro message (section 3.2 template)
+- [ ] Include the user's exact words (do NOT paraphrase — RULE 14)
+- [ ] Include the selected option if options were presented
+- [ ] Send the resolution message to the original escalator (EOA or ECOS)
+- [ ] Confirm to the user that the resolution has been routed
+- [ ] Note: EOA will close the blocker issue and restore the task to its previous column
+
+### 6.3 Checklist: When User Does Not Respond to a Blocker (Timeout)
+
+Copy this checklist and track your progress:
+
+- [ ] After 4 hours: Send a gentle reminder with the original blocker summary
+- [ ] After 8 hours: Send an urgent reminder highlighting deadline impact
+- [ ] After 24 hours (non-critical): Note in status report that task remains blocked
+- [ ] After 24 hours (critical): Escalate urgency, highlight what will be missed
+- [ ] After 48 hours: Mark task as deferred, notify agents to work on other tasks
+
+---
+
 ## See Also
 
 - [ai-maestro-message-templates.md](../../eama-ecos-coordination/references/ai-maestro-message-templates.md) - Inter-agent message templates
