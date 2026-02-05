@@ -332,3 +332,12 @@ If no ACK after retry:
 **Related Documentation:**
 - AI Maestro message templates in plugin shared directory
 - ECOS role boundaries documentation
+
+### Reference Documents
+
+- [references/ai-maestro-message-templates.md](references/ai-maestro-message-templates.md) - AI Maestro inter-agent message templates
+- [references/success-criteria.md](references/success-criteria.md) - ECOS coordination success criteria
+- [references/workflow-checklists.md](references/workflow-checklists.md) - ECOS coordination checklists
+- [references/creating-ecos-procedure.md](references/creating-ecos-procedure.md) - Creating ECOS procedure
+- [references/workflow-examples.md](references/workflow-examples.md) - End-to-end workflow examples
+- [references/spawn-failure-recovery.md](references/spawn-failure-recovery.md) - Agent spawn failure recovery

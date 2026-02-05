@@ -391,3 +391,8 @@ Copy this checklist and track your progress:
 ## Resources
 
 For message templates, see the shared message templates reference. For handoff format, see the shared handoff template reference.
+
+### Reference Documents
+
+- [references/rule-14-enforcement.md](references/rule-14-enforcement.md) - RULE 14: User Requirements Are Immutable
+- [references/best-practices.md](references/best-practices.md) - Approval workflow best practices

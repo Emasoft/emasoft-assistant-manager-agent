@@ -332,3 +332,7 @@ The script is located at `../../scripts/eama_design_search.py` relative to this 
 - See eama-approval-workflows skill - Approval communication patterns
 - See eama-role-routing skill - Routing communication patterns
 - See shared/message_templates.md in plugin root
+
+### Reference Documents
+
+- [references/response-templates.md](references/response-templates.md) - User communication response templates

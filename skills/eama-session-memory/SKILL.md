@@ -479,6 +479,10 @@ Would you like to address the pending items, or continue with something else?
 - **eama-role-routing** - Role handoff patterns
 - **eama-status-reporting** - Status report generation
 
+### Reference Documents
+
+- [references/record-keeping-formats.md](references/record-keeping-formats.md) - Session record-keeping formats
+
 ---
 
 **Version**: 1.0.0
