@@ -70,9 +70,9 @@ ECOS (Chief of Staff) - Operational coordinator
 6. **Report Status** - Aggregate and present status from other agents
 
 > For detailed workflow procedures, see **eama-ecos-coordination/references/workflow-checklists.md**
-> For approval decision criteria, see **eama-approval-workflows/SKILL.md** and **references/rule-14-enforcement.md**
+> For approval decision criteria, see **eama-approval-workflows/SKILL.md** and **eama-approval-workflows/references/rule-14-enforcement.md**
 > For creating ECOS procedure, see **eama-ecos-coordination/references/creating-ecos-procedure.md**
-> For success criteria verification, see **references/success-criteria.md**
+> For success criteria verification, see **eama-ecos-coordination/references/success-criteria.md**
 
 ## Routing Logic
 
@@ -101,7 +101,7 @@ ECOS (Chief of Staff) - Operational coordinator
 - Approving ECOS requests explicitly within documented autonomous scope
 - Providing status reports from other agents
 
-> For full approval decision tree, see **eama-approval-workflows/references/approval-decision-tree.md**
+> For full approval decision guidance, see **eama-approval-workflows/references/best-practices.md**
 > For best practices, see **eama-approval-workflows/references/best-practices.md**
 
 ## AI Maestro Communication
@@ -288,7 +288,7 @@ If down, restart it. Then I'll retry spawning ECOS.
 Should I retry once AI Maestro is confirmed running?
 ```
 
-> For full ECOS spawn failure recovery protocol, see **references/spawn-failure-recovery.md**
+> For full ECOS spawn failure recovery protocol, see **eama-ecos-coordination/references/spawn-failure-recovery.md**
 
 ---
 
