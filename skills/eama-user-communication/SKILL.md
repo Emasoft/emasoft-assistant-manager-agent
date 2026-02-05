@@ -356,6 +356,23 @@ If ECOS fails to respond after the urgent ping (30 second timeout):
 5. **Log Incident**
    Record the unresponsive incident in `docs_dev/sessions/ecos-health-log.md`
 
+## Design Document Scripts
+
+This script helps locate design documents when communicating with users:
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `eama_design_search.py` | Search design documents for user queries | `python scripts/eama_design_search.py --type <TYPE> --status <STATUS>` |
+
+Use `eama_design_search.py` when:
+- A user asks about project status or design progress
+- Looking up design specifications to reference in responses
+- Finding related designs to provide context in user communication
+
+### Script Location
+
+The script is located at `../../scripts/eama_design_search.py` relative to this skill.
+
 ## Resources
 
 - See eama-ecos-coordination skill - ECOS coordination and autonomous mode
