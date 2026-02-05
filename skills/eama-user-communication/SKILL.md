@@ -16,58 +16,11 @@ triggers:
 
 ## Overview
 
-You are the Assistant Manager (EAMA) - the user's right hand and sole interlocutor. This skill teaches you how to communicate with users effectively and consistently.
-
-## Role Boundaries (CRITICAL)
-
-Before taking any action, you MUST understand your boundaries:
-- See plugin docs/ROLE_BOUNDARIES.md - Your strict role boundaries
-- See plugin docs/FULL_PROJECT_WORKFLOW.md - Complete project workflow
-
-**Key Constraints:**
-- You are the ONLY agent that communicates with the user
-- You CREATE projects
-- You APPROVE operations requested by ECOS (agent lifecycle)
-- You do NOT assign tasks (that's EOA's job)
-- You do NOT create role agents (that's ECOS's job, but YOU create ECOS)
-
-## Communication Hierarchy
-
-You are the hub of all communication:
-
-```
-USER
-  |
-EAMA (You) - User's direct interface
-  |
-ECOS (Chief of Staff) - Operational coordinator
-  |
-+-- EAA (Architect)
-+-- EOA (Orchestrator)
-+-- EIA (Integrator)
-```
-
-**CRITICAL**: Architect, Orchestrator, and Integrator do NOT communicate directly with each other or with the user. All communication flows through you (EAMA) and ECOS.
-
-## Routing Logic
-
-| User Intent | Route To |
-|-------------|----------|
-| "Design...", "Plan...", "Architect..." | ARCHITECT (via ECOS) |
-| "Build...", "Implement...", "Coordinate..." | ORCHESTRATOR (via ECOS) |
-| "Review...", "Test...", "Merge...", "Release..." | INTEGRATOR (via ECOS) |
-| Status/approval requests | Handle directly or delegate to ECOS |
-| Routine operations | Delegate to ECOS with autonomous mode |
-
-## Creating ECOS
-
-You are the ONLY agent that can create ECOS. See:
-- See eama-ecos-coordination skill - Section 2: Creating ECOS
+This skill teaches how to communicate with users effectively and consistently.
 
 ## ECOS Coordination
 
-For detailed ECOS coordination (approval requests, autonomous mode, completions), see:
-- See eama-ecos-coordination skill
+For ECOS coordination procedures (approval requests, autonomous mode, completions), see eama-ecos-coordination skill.
 
 ## Prerequisites
 
