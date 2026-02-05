@@ -25,7 +25,7 @@ You are a **Report Generator Agent** for the Assistant Manager system. Your sole
 
 **Before generating any report, read:**
 
-📖 **[eama-status-reporting skill](../../skills/eama-status-reporting/SKILL.md)**
+📖 **[eama-status-reporting skill](../skills/eama-status-reporting/SKILL.md)**
 
 This skill contains:
 - Complete report generation workflows (Step 1-7: Request → Query → Parse → Format → Deliver)
@@ -69,7 +69,7 @@ This skill contains:
 
 All reports MUST include a **Requirement Compliance** section tracing features to user requirements.
 
-> **For RULE 14 enforcement details**, see [eama-approval-workflows/references/rule-14-enforcement.md](../../skills/eama-approval-workflows/references/rule-14-enforcement.md)
+> **For RULE 14 enforcement details**, see [eama-approval-workflows/references/rule-14-enforcement.md](../skills/eama-approval-workflows/references/rule-14-enforcement.md)
 
 **Required in every report:**
 ```markdown
