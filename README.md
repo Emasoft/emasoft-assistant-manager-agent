@@ -72,7 +72,6 @@ The Emasoft Assistant Manager Agent (EAMA) is the **user's right hand** - the so
 | `eama-approval-workflows` | Approval request patterns | When sensitive operations require user approval |
 | `eama-role-routing` | Route requests to correct role | When delegating work to EAA, EOA, or EIA |
 | `eama-ecos-coordination` | Coordinate with ECOS for approvals and agent lifecycle | When ECOS requests approval or reports agent status |
-| `eama-shared` | Shared utilities | For common utilities across EAMA skills |
 
 ### Hooks
 

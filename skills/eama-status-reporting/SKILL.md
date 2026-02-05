@@ -130,7 +130,7 @@ Reports saved to: `docs_dev/reports/status-{date}.md`
 
 - **eama-role-routing SKILL** - Role status queries
 - **eama-approval-workflows SKILL** - Approval status
-- **eama-shared SKILL** - Session memory access
+- **eama-session-memory SKILL** - Session memory access
 
 ## Checklist
 

@@ -8,6 +8,9 @@ skills:
   - eama-approval-workflows
   - eama-role-routing
   - eama-label-taxonomy
+  - eama-github-routing
+  - eama-session-memory
+  - eama-status-reporting
 ---
 
 # Assistant Manager Main Agent

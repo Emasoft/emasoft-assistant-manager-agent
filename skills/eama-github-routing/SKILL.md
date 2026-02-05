@@ -545,5 +545,5 @@ mv /tmp/kanban-snapshot-current.json /tmp/kanban-snapshot-previous.json
 ## Resources
 
 - Role Routing SKILL (see eama-role-routing skill)
-- Proactive Handoff Protocol (see eama-shared references)
+- Proactive Handoff Protocol (see eama-session-memory references)
 - Handoff Template (see shared templates directory)

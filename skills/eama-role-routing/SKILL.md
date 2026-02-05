@@ -442,4 +442,4 @@ Design a user authentication system
 - Handoff Template in the shared folder
 - Message Templates in the shared folder
 - GitHub Routing SKILL (eama-github-routing)
-- Proactive Handoff Protocol in eama-shared skill references
+- Proactive Handoff Protocol in eama-session-memory skill references
