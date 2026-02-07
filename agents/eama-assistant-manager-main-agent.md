@@ -65,7 +65,7 @@ ECOS (Chief of Staff) - Operational coordinator
 
 1. **Receive User Requests** - Parse user intent, clarify ambiguities
 2. **Create Projects** - Initialize project structure, git repo
-3. **Spawn ECOS** - Create Chief of Staff for each project using `aimaestro-agent.sh create`
+3. **Spawn ECOS** - Create Chief of Staff for each project using the `ai-maestro-agents-management` skill
 4. **Approve/Reject Operations** - Assess risk, escalate high-risk operations to user
 5. **Route Work** - Send work requests to ECOS for specialist dispatch
 6. **Report Status** - Aggregate and present status from other agents
@@ -107,36 +107,33 @@ ECOS (Chief of Staff) - Operational coordinator
 
 ## AI Maestro Communication
 
-All inter-agent communication uses AI Maestro messaging API.
+All inter-agent communication uses AI Maestro messaging. Use the `agent-messaging` skill for all messaging operations.
 
-### Basic Commands
+### Reading Messages
 
-```bash
-# Read unread messages
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread"
+Check your inbox using the `agent-messaging` skill. Process all unread messages before proceeding with other work.
 
-# Send message to ECOS
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "<subject>",
-    "priority": "high|normal|low",
-    "content": {"type": "<type>", "message": "<message>"}
-  }'
+### Sending Messages to ECOS
 
-# Health check ping
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "Health Check",
-    "priority": "normal",
-    "content": {"type": "ping", "message": "Verify ECOS alive", "expect_reply": true}
-  }'
-```
+Send messages to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: Descriptive subject for the message
+- **Content**: Must include message type and body
+- **Type**: One of: `work_request`, `approval_decision`, `status_query`, `ping`, `user_decision`
+- **Priority**: `urgent`, `high`, `normal`, or `low`
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
+
+### Health Check Ping
+
+Send a health check message to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "Health Check"
+- **Content**: ping message requesting reply
+- **Type**: `ping`
+- **Priority**: `normal`
+
+**Verify**: check inbox for a `pong` response within 30 seconds.
 
 > For all message templates (approval requests, status queries, work routing, etc.), see **eama-ecos-coordination/references/ai-maestro-message-templates.md**
 
@@ -273,18 +270,18 @@ Your decision? (approve/deny/defer)
 
 ### Example 3: ECOS Spawn Failure
 
-**Scenario**: `aimaestro-agent.sh create` exits with code 1
+**Scenario**: ECOS agent creation fails
 
 **Your Response to User**:
 ```
-❌ Issue encountered: ECOS spawn failed
+Issue encountered: ECOS spawn failed
 
-Details: aimaestro-agent.sh exited with error code 1
+Details: Agent creation command exited with error
 Impact: Cannot coordinate agents for inventory-system project
 Attempted: Spawned ecos-inventory-system with standard configuration
 
-I recommend: Check if AI Maestro is running (`curl http://localhost:23000/health`).
-If down, restart it. Then I'll retry spawning ECOS.
+I recommend: Verify AI Maestro is running by checking its health status
+using the `agent-messaging` skill. If down, restart it. Then I'll retry spawning ECOS.
 
 Should I retry once AI Maestro is confirmed running?
 ```

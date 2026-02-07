@@ -111,13 +111,11 @@ ECOS will revise the request and resubmit.
 
 ## Listing Pending Requests
 
-Before responding, you may want to see pending requests:
+Before responding, you may want to see pending requests.
 
-```bash
-# Check for unread messages from ECOS
-curl -s "http://localhost:23000/api/messages?agent=eama&action=list&status=unread" | \
-  jq '.messages[] | select(.from | contains("ecos"))'
-```
+Check your inbox using the `agent-messaging` skill. Filter for messages from ECOS-prefixed senders to find approval requests.
+
+**Verify**: confirm you have reviewed all unread ECOS messages before proceeding.
 
 ## Message Format Sent
 
@@ -152,19 +150,13 @@ The command sends the following message to ECOS:
 ## Prerequisites
 
 1. **AI Maestro must be running**
-   ```bash
-   curl -s "http://localhost:23000/api/health" | jq .
-   ```
+   Verify AI Maestro health using the `agent-messaging` skill's health check feature.
 
 2. **ECOS must be registered**
-   ```bash
-   curl -s "http://localhost:23000/api/agents" | jq '.[] | select(.name | contains("ecos"))'
-   ```
+   Use the `ai-maestro-agents-management` skill to list agents and confirm an ECOS agent is registered and active.
 
 3. **Pending request must exist**
-   ```bash
-   curl -s "http://localhost:23000/api/messages?agent=eama&action=list&status=unread"
-   ```
+   Check your inbox using the `agent-messaging` skill and filter for unread ECOS messages.
 
 ## Related Commands
 

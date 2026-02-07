@@ -14,11 +14,7 @@ When ECOS spawn fails, follow this recovery procedure systematically before esca
 
 #### Step 1: Verify AI Maestro is Running
 
-```bash
-# Check AI Maestro health
-curl -s "$AIMAESTRO_API/health"
-# Expected: {"status":"ok"} or similar
-```
+Check AI Maestro health using the `agent-messaging` skill's health check feature.
 
 If AI Maestro is down:
 - Alert user: "AI Maestro service is not responding. Please restart it."
@@ -38,18 +34,16 @@ If session name collision detected:
 - Use alternative session name with numeric suffix: `ecos-<project-name>-2`
 - Document the collision in session log
 
-#### Step 3: Retry Spawn with Different Session Name
+#### Step 3: Retry with Different Session Name
 
-```bash
-# Retry with incremented session name
-SESSION_NAME="ecos-<project-name>-$(date +%s)"
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents for <project-name>" \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+Use the `ai-maestro-agents-management` skill to create the agent with an incremented session name:
+- **Agent name**: `ecos-<project-name>-<timestamp>` (use timestamp to ensure uniqueness)
+- **Working directory**: `~/agents/<new-session-name>/`
+- **Task**: "Coordinate agents for <project-name>"
+- **Plugin**: load `emasoft-chief-of-staff` using the skill's plugin management features
+- **Main agent**: `ecos-chief-of-staff-main-agent`
+
+**Verify**: confirm the agent appears in the agent list with correct status.
 
 #### Step 4: If 3 Retries Fail
 
@@ -148,17 +142,13 @@ When ECOS or other agents fail to respond to messages.
    - ECOS may be busy with approval workflow
 
 2. **Retry health ping once**
-   ```bash
-   curl -X POST "$AIMAESTRO_API/messages" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "from": "eama-assistant-manager",
-       "to": "ecos-<project-name>",
-       "subject": "Health Check",
-       "priority": "normal",
-       "content": {"type": "health_check", "message": "Are you alive?"}
-     }'
-   ```
+   Send a health check message using the `agent-messaging` skill:
+   - **Recipient**: `ecos-<project-name>`
+   - **Subject**: "Health Check"
+   - **Type**: `health_check`
+   - **Priority**: `normal`
+
+   **Verify**: check inbox for response within 30 seconds.
 
 3. **If still no response, report to user**
    ```
@@ -219,20 +209,14 @@ When approval workflow encounters errors.
    - Never guess user intent
 
 2. **Request clarification from ECOS**
-   ```bash
-   curl -X POST "$AIMAESTRO_API/messages" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "from": "eama-assistant-manager",
-       "to": "ecos-<project-name>",
-       "subject": "Approval Clarification Needed",
-       "priority": "high",
-       "content": {
-         "type": "clarification_request",
-         "message": "Approval request incomplete. Missing: <field1>, <field2>. Please resend with full context."
-       }
-     }'
-   ```
+   Send a clarification request using the `agent-messaging` skill:
+   - **Recipient**: `ecos-<project-name>`
+   - **Subject**: "Approval Clarification Needed"
+   - **Content**: clarification_request type, message "Approval request incomplete. Missing: <field1>, <field2>. Please resend with full context."
+   - **Type**: `clarification_request`
+   - **Priority**: `high`
+
+   **Verify**: confirm message delivery via the skill's sent messages feature.
 
 3. **If still unclear, escalate to user**
    ```
@@ -303,9 +287,9 @@ When spawning specialist agents (EOA, EAA, EIA) fails.
 
 ### Symptoms
 
-- `aimaestro-agent.sh create` exits with non-zero code
+- Agent creation command exits with non-zero code
 - Session created but agent doesn't respond
-- Plugin loading errors in spawn output
+- Plugin loading errors in creation output
 
 ### Recovery Procedure
 
@@ -418,7 +402,7 @@ All failures MUST be logged for debugging and audit purposes.
 
 ### Example 1: ECOS Spawn Fails (AI Maestro Down)
 
-**Scenario**: `aimaestro-agent.sh create` exits with code 1
+**Scenario**: ECOS agent creation fails with exit code 1
 
 **Your Action**: Diagnose and report to user
 
@@ -426,13 +410,14 @@ All failures MUST be logged for debugging and audit purposes.
 ```
 Issue encountered: ECOS spawn failed
 
-Details: aimaestro-agent.sh exited with error code 1
+Details: Agent creation command exited with error code 1
 Impact: Cannot coordinate agents for inventory-system project
 Attempted: Spawned ecos-inventory-system with standard configuration
 
 Error output: [paste relevant error]
 
-I recommend: Check if AI Maestro is running (`curl http://localhost:23000/health`). If down, restart it. Then I'll retry spawning ECOS.
+I recommend: Verify AI Maestro is running by checking its health status
+using the `agent-messaging` skill. If down, restart it. Then I'll retry spawning ECOS.
 
 Should I retry once AI Maestro is confirmed running?
 ```

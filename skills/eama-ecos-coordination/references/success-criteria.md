@@ -48,8 +48,9 @@ User notified: "Routing your request to ECOS, who will coordinate with EOA to im
 ```bash
 ls -la /path/to/new-project  # Directory exists
 cd /path/to/new-project && git status  # Git initialized
-curl -X POST "$AIMAESTRO_API/api/messages?agent=ecos-new-project&action=health"  # ECOS alive
 ```
+
+Verify ECOS is alive by sending a health check ping using the `agent-messaging` skill and confirming a `pong` response.
 
 **Self-Check Questions:**
 - Does the project directory exist at the agreed location?
@@ -65,9 +66,9 @@ curl -X POST "$AIMAESTRO_API/api/messages?agent=ecos-new-project&action=health" 
 
 **Completion Checklist:**
 
-- [ ] `aimaestro-agent.sh create` command succeeded (exit code 0)
-- [ ] ECOS session registered in AI Maestro (visible in session list)
-- [ ] ECOS main agent loaded via `--agent` flag
+- [ ] Agent creation command succeeded (exit code 0) via the `ai-maestro-agents-management` skill
+- [ ] ECOS session registered in AI Maestro (visible in agent list)
+- [ ] ECOS main agent loaded with correct role constraints
 - [ ] ECOS plugins loaded (verify via plugin list if possible)
 - [ ] ECOS working directory set correctly
 - [ ] ECOS health check ping successful
@@ -75,14 +76,12 @@ curl -X POST "$AIMAESTRO_API/api/messages?agent=ecos-new-project&action=health" 
 
 **Verification Evidence:**
 
-```bash
-tmux list-sessions | grep "ecos-projectname"  # Session exists
-curl "$AIMAESTRO_API/api/messages?agent=ecos-projectname&action=unread-count"  # Responds
-```
+Verify session exists using the `ai-maestro-agents-management` skill's agent listing feature.
+Verify ECOS responds by sending a health check ping using the `agent-messaging` skill.
 
 **Self-Check Questions:**
-- Did the spawn command exit with code 0?
-- Is the ECOS session visible in tmux and AI Maestro?
+- Did the agent creation succeed (exit code 0)?
+- Is the ECOS session visible in the agent list via the `ai-maestro-agents-management` skill?
 - Are all required plugins loaded?
 - Is the working directory correctly set?
 - Did ECOS respond to the health check ping within 30 seconds?
@@ -107,9 +106,9 @@ curl "$AIMAESTRO_API/api/messages?agent=ecos-projectname&action=unread-count"  #
 ```bash
 # Check approval log contains this approval
 grep "ECOS-REQUEST-12345" docs_dev/approvals/approval-log.md
-# Check response was sent
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=sent" | jq '.[] | select(.subject | contains("ECOS-REQUEST-12345"))'
 ```
+
+Verify the response was sent by checking sent messages using the `agent-messaging` skill, filtering for subjects containing the request ID.
 
 **Self-Check Questions:**
 - Did I correctly assess the risk level of the operation?

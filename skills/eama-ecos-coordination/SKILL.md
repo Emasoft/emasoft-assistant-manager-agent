@@ -272,23 +272,14 @@ ECOS must respond with an ACK message within the timeout period:
 - Check inbox for ACK message at timeout
 
 **Step 2: Retry Once**
-```bash
-# Resend message with retry flag
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "RETRY: <original-subject>",
-    "priority": "high",
-    "content": {
-      "type": "<original-type>",
-      "retry_of": "<original-message-id>",
-      "retry_count": 1,
-      ...original content...
-    }
-  }'
-```
+
+Resend the original message with a retry flag using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "RETRY: <original-subject>"
+- **Content**: Same as original message, plus `retry_of` (original message ID) and `retry_count` (1)
+- **Priority**: `high`
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
 
 **Step 3: Escalate if Still No ACK**
 If no ACK after retry:

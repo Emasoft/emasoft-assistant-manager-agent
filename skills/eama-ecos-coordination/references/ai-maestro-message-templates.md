@@ -2,7 +2,7 @@
 
 **Reference for**: `eama-ecos-coordination` skill
 
-This document provides all curl command templates and message formats for AI Maestro inter-agent communication between EAMA and other agents (ECOS, EAA, EOA, EIA).
+This document provides all message templates and formats for AI Maestro inter-agent communication between EAMA and other agents (ECOS, EAA, EOA, EIA). Use the `agent-messaging` skill to send and receive all messages described here.
 
 ---
 
@@ -56,9 +56,7 @@ This document provides all curl command templates and message formats for AI Mae
 ```
 
 **How to read it**:
-```bash
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread" | jq '.[] | select(.content.type == "approval_request")'
-```
+Check your inbox using the `agent-messaging` skill. Filter for messages with content type `approval_request`.
 
 **Response actions**:
 - Assess risk level
@@ -95,9 +93,7 @@ curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&statu
 ```
 
 **How to read it**:
-```bash
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread" | jq '.[] | select(.content.type == "status_report")'
-```
+Check your inbox using the `agent-messaging` skill. Filter for messages with content type `status_report`.
 
 **Response actions**:
 - Parse status information
@@ -126,9 +122,7 @@ curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&statu
 ```
 
 **How to read it**:
-```bash
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread" | jq '.[] | select(.content.type == "pong")'
-```
+Check your inbox using the `agent-messaging` skill. Filter for messages with content type `pong`.
 
 **Response actions**:
 - Verify "status": "alive"
@@ -143,70 +137,39 @@ curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&statu
 
 **Use this when**: Responding to ECOS approval request
 
-**Outgoing message format** (your response to ECOS):
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "Approval Decision: <REQUEST-ID>",
-    "priority": "high",
-    "content": {
-      "type": "approval_decision",
-      "request_id": "<same-id-from-request>",
-      "decision": "approve|deny|defer",
-      "reason": "<explanation of decision>",
-      "conditions": "<any conditions for approval, if applicable>",
-      "approved_by": "eama|user",
-      "user_quote": "<exact user statement if user approved>"
-    }
-  }'
-```
+Send an approval decision to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "Approval Decision: <REQUEST-ID>"
+- **Content**: Must include the fields below
+- **Type**: `approval_decision`
+- **Priority**: `high`
+
+**Required content fields**:
+- `request_id`: Same ID from the incoming request
+- `decision`: `approve`, `deny`, or `defer`
+- `reason`: Explanation of the decision
+- `conditions`: Any conditions for approval (if applicable)
+- `approved_by`: `eama` (autonomous) or `user` (escalated)
+- `user_quote`: Exact user statement (only when user approved/denied)
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
 
 **Decision values**:
 - `approve`: Operation authorized, proceed
 - `deny`: Operation rejected, do not proceed
 - `defer`: Need more information, request clarification
 
-**Example (autonomous approval)**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "Approval Decision: RUN-TESTS-001",
-    "priority": "high",
-    "content": {
-      "type": "approval_decision",
-      "request_id": "RUN-TESTS-001",
-      "decision": "approve",
-      "reason": "Routine operation, low risk, aligns with testing workflow",
-      "approved_by": "eama"
-    }
-  }'
-```
+**Example (autonomous approval)**: Send an approval decision using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "Approval Decision: RUN-TESTS-001"
+- **Content**: approval_decision type, request_id "RUN-TESTS-001", decision "approve", reason "Routine operation, low risk, aligns with testing workflow", approved_by "eama"
+- **Priority**: `high`
 
-**Example (user-escalated denial)**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "Approval Decision: DELETE-DATA-002",
-    "priority": "high",
-    "content": {
-      "type": "approval_decision",
-      "request_id": "DELETE-DATA-002",
-      "decision": "deny",
-      "reason": "User denied: operation is destructive and irreversible",
-      "approved_by": "user",
-      "user_quote": "No, do not delete. Archive instead."
-    }
-  }'
-```
+**Example (user-escalated denial)**: Send an approval decision using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "Approval Decision: DELETE-DATA-002"
+- **Content**: approval_decision type, request_id "DELETE-DATA-002", decision "deny", reason "User denied: operation is destructive and irreversible", approved_by "user", user_quote "No, do not delete. Archive instead."
+- **Priority**: `high`
 
 ---
 
@@ -214,44 +177,27 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: You escalated a request to the user and got their decision
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "User Decision: <REQUEST-ID>",
-    "priority": "urgent",
-    "content": {
-      "type": "user_decision",
-      "request_id": "<REQUEST-ID>",
-      "decision": "approve|deny",
-      "user_statement": "<exact quote from user>",
-      "timestamp": "<ISO-8601 timestamp>",
-      "context": "<any additional context from user>"
-    }
-  }'
-```
+Send a user decision notification to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "User Decision: <REQUEST-ID>"
+- **Content**: Must include the fields below
+- **Type**: `user_decision`
+- **Priority**: `urgent`
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "User Decision: DEPLOY-PROD-001",
-    "priority": "urgent",
-    "content": {
-      "type": "user_decision",
-      "request_id": "DEPLOY-PROD-001",
-      "decision": "approve",
-      "user_statement": "Yes, deploy to production",
-      "timestamp": "2026-02-05T14:30:00Z",
-      "context": "User verified all tests passing and code review complete"
-    }
-  }'
-```
+**Required content fields**:
+- `request_id`: The request being decided upon
+- `decision`: `approve` or `deny`
+- `user_statement`: Exact quote from the user
+- `timestamp`: ISO-8601 timestamp of the user's decision
+- `context`: Any additional context from the user
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
+
+**Example**: Send a user decision using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "User Decision: DEPLOY-PROD-001"
+- **Content**: user_decision type, request_id "DEPLOY-PROD-001", decision "approve", user_statement "Yes, deploy to production", timestamp "2026-02-05T14:30:00Z", context "User verified all tests passing and code review complete"
+- **Priority**: `urgent`
 
 ---
 
@@ -261,42 +207,26 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: User asks for project status
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "Status Query",
-    "priority": "normal",
-    "content": {
-      "type": "status_query",
-      "scope": "full|milestone|task",
-      "details": "<what user asked for>",
-      "format": "summary|detailed",
-      "timeout": 30
-    }
-  }'
-```
+Send a status query to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "Status Query"
+- **Content**: Must include the fields below
+- **Type**: `status_query`
+- **Priority**: `normal`
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "Status Query",
-    "priority": "normal",
-    "content": {
-      "type": "status_query",
-      "scope": "full",
-      "details": "User asked: What is the status of the API implementation?",
-      "format": "summary",
-      "timeout": 30
-    }
-  }'
-```
+**Required content fields**:
+- `scope`: `full`, `milestone`, or `task`
+- `details`: What the user asked for
+- `format`: `summary` or `detailed`
+- `timeout`: Response timeout in seconds (default: 30)
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
+
+**Example**: Send a status query using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "Status Query"
+- **Content**: status_query type, scope "full", details "User asked: What is the status of the API implementation?", format "summary", timeout 30
+- **Priority**: `normal`
 
 **Expected response**: See section 1.2 (Receiving status reports from ECOS)
 
@@ -306,40 +236,25 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: Verifying ECOS is responsive (after spawn, periodically, before delegating work)
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "Health Check",
-    "priority": "normal",
-    "content": {
-      "type": "ping",
-      "message": "Verify ECOS alive",
-      "expect_reply": true,
-      "timeout": 10
-    }
-  }'
-```
+Send a health check ping using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "Health Check"
+- **Content**: ping type, requesting reply, with timeout
+- **Type**: `ping`
+- **Priority**: `normal`
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "Health Check",
-    "priority": "normal",
-    "content": {
-      "type": "ping",
-      "message": "Verify ECOS alive",
-      "expect_reply": true,
-      "timeout": 10
-    }
-  }'
-```
+**Required content fields**:
+- `message`: "Verify ECOS alive"
+- `expect_reply`: true
+- `timeout`: 10 (seconds)
+
+**Verify**: check inbox for a `pong` response within the timeout period using the `agent-messaging` skill.
+
+**Example**: Send a health check using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "Health Check"
+- **Content**: ping type, message "Verify ECOS alive", expect_reply true, timeout 10
+- **Priority**: `normal`
 
 **Expected response**: See section 1.3 (Receiving health check responses)
 
@@ -351,45 +266,28 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: User gives a work request that should be handled by a specialist (EOA, EAA, EIA) via ECOS
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "User Request: <brief summary>",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EOA|EAA|EIA",
-      "task": "<detailed task description>",
-      "user_context": "<relevant background>",
-      "priority": "high|normal|low",
-      "deadline": "<if specified>",
-      "success_criteria": "<user expectations>"
-    }
-  }'
-```
+Send a work request to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "User Request: <brief summary>"
+- **Content**: Must include the fields below
+- **Type**: `work_request`
+- **Priority**: `normal` (or `high` for urgent requests)
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "User Request: Implement REST API",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EOA",
-      "task": "Build a REST API for inventory management with CRUD operations",
-      "user_context": "User wants full inventory tracking system with authentication",
-      "priority": "high",
-      "success_criteria": "REST API with all CRUD endpoints, authentication, tests passing"
-    }
-  }'
-```
+**Required content fields**:
+- `specialist`: `EOA`, `EAA`, or `EIA` (which specialist should handle the work)
+- `task`: Detailed task description
+- `user_context`: Relevant background information
+- `priority`: `high`, `normal`, or `low`
+- `deadline`: If specified by the user
+- `success_criteria`: What the user expects as the outcome
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
+
+**Example**: Send a work request using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "User Request: Implement REST API"
+- **Content**: work_request type, specialist "EOA", task "Build a REST API for inventory management with CRUD operations", user_context "User wants full inventory tracking system with authentication", priority "high", success_criteria "REST API with all CRUD endpoints, authentication, tests passing"
+- **Priority**: `normal`
 
 ---
 
@@ -397,46 +295,20 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: User requests architecture/design work
 
-**Specialist routing**: `"specialist": "EAA"` (Architect)
+**Specialist routing**: Set specialist to `EAA` (Architect)
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "User Request: <design task summary>",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EAA",
-      "task": "<architecture/design task>",
-      "user_context": "<relevant requirements>",
-      "priority": "normal",
-      "success_criteria": "<design deliverables expected>"
-    }
-  }'
-```
+Send a design work request to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "User Request: <design task summary>"
+- **Content**: work_request type with specialist "EAA", task description, user_context, priority, success_criteria
+- **Type**: `work_request`
+- **Priority**: `normal`
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-data-pipeline",
-    "subject": "User Request: Design data pipeline architecture",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EAA",
-      "task": "Design architecture for real-time data pipeline processing 1M events/day",
-      "user_context": "Need to process IoT sensor data from 10k devices, store in time-series DB, expose via API",
-      "priority": "high",
-      "success_criteria": "Architecture document with component diagrams, data flow, scalability plan"
-    }
-  }'
-```
+**Example**: Send a design work request using the `agent-messaging` skill:
+- **Recipient**: `ecos-data-pipeline`
+- **Subject**: "User Request: Design data pipeline architecture"
+- **Content**: work_request type, specialist "EAA", task "Design architecture for real-time data pipeline processing 1M events/day", user_context "Need to process IoT sensor data from 10k devices, store in time-series DB, expose via API", priority "high", success_criteria "Architecture document with component diagrams, data flow, scalability plan"
+- **Priority**: `normal`
 
 ---
 
@@ -444,46 +316,20 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: User requests building/implementing features
 
-**Specialist routing**: `"specialist": "EOA"` (Orchestrator)
+**Specialist routing**: Set specialist to `EOA` (Orchestrator)
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "User Request: <implementation task summary>",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EOA",
-      "task": "<implementation task>",
-      "user_context": "<relevant requirements>",
-      "priority": "high",
-      "success_criteria": "<working implementation expected>"
-    }
-  }'
-```
+Send an implementation work request to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "User Request: <implementation task summary>"
+- **Content**: work_request type with specialist "EOA", task description, user_context, priority, success_criteria
+- **Type**: `work_request`
+- **Priority**: `normal` (or `high` if urgent)
 
-**Example**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "User Request: Build REST API",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EOA",
-      "task": "Implement REST API with CRUD operations for inventory items",
-      "user_context": "Database schema already designed. Need endpoints for: create item, update item, delete item, list items, search items.",
-      "priority": "high",
-      "success_criteria": "All endpoints working, tests passing, documented with OpenAPI spec"
-    }
-  }'
-```
+**Example**: Send an implementation work request using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "User Request: Build REST API"
+- **Content**: work_request type, specialist "EOA", task "Implement REST API with CRUD operations for inventory items", user_context "Database schema already designed. Need endpoints for: create item, update item, delete item, list items, search items.", priority "high", success_criteria "All endpoints working, tests passing, documented with OpenAPI spec"
+- **Priority**: `normal`
 
 ---
 
@@ -491,88 +337,36 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 **Use this when**: User requests code review, testing, merging, or release
 
-**Specialist routing**: `"specialist": "EIA"` (Integrator)
+**Specialist routing**: Set specialist to `EIA` (Integrator)
 
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "User Request: <review/integration task summary>",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EIA",
-      "task": "<review/integration task>",
-      "user_context": "<relevant context>",
-      "priority": "normal",
-      "success_criteria": "<review complete, merged, released>"
-    }
-  }'
-```
+Send a review/integration work request to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "User Request: <review/integration task summary>"
+- **Content**: work_request type with specialist "EIA", task description, user_context, priority, success_criteria
+- **Type**: `work_request`
+- **Priority**: `normal`
 
-**Example (code review)**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "User Request: Review API implementation",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EIA",
-      "task": "Review REST API implementation for code quality, security, performance",
-      "user_context": "EOA completed implementation. User wants thorough review before merging to main.",
-      "priority": "high",
-      "success_criteria": "Code review complete, all issues addressed, PR approved and merged"
-    }
-  }'
-```
+**Example (code review)**: Send a review work request using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "User Request: Review API implementation"
+- **Content**: work_request type, specialist "EIA", task "Review REST API implementation for code quality, security, performance", user_context "EOA completed implementation. User wants thorough review before merging to main.", priority "high", success_criteria "Code review complete, all issues addressed, PR approved and merged"
+- **Priority**: `normal`
 
-**Example (release)**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-inventory-system",
-    "subject": "User Request: Release version 2.0",
-    "priority": "normal",
-    "content": {
-      "type": "work_request",
-      "specialist": "EIA",
-      "task": "Create release 2.0 with all new features, update changelog, tag release",
-      "user_context": "All features complete, tests passing. User ready to release.",
-      "priority": "normal",
-      "success_criteria": "Release 2.0 tagged, changelog updated, release notes published"
-    }
-  }'
-```
+**Example (release)**: Send a release work request using the `agent-messaging` skill:
+- **Recipient**: `ecos-inventory-system`
+- **Subject**: "User Request: Release version 2.0"
+- **Content**: work_request type, specialist "EIA", task "Create release 2.0 with all new features, update changelog, tag release", user_context "All features complete, tests passing. User ready to release.", priority "normal", success_criteria "Release 2.0 tagged, changelog updated, release notes published"
+- **Priority**: `normal`
 
 ---
 
-## 5. Standard AI Maestro API Patterns
+## 5. Standard AI Maestro Messaging Patterns
 
-### 5.1 Base API format and authentication
+### 5.1 How to send and receive messages
 
-**Base URL**: `$AIMAESTRO_API` (default: `http://localhost:23000`)
+Use the `agent-messaging` skill for all messaging operations. The skill handles all connection details, authentication, and API formatting automatically.
 
-**Standard curl format**:
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{<message JSON>}'
-```
-
-**API environment variables**:
-- `AIMAESTRO_API`: API base URL (default: `http://localhost:23000`)
-- `AIMAESTRO_AGENT`: Agent identifier override
-- `AIMAESTRO_POLL_INTERVAL`: Poll interval in seconds (default: 10)
-
-**No authentication required** for local development (localhost).
+**No manual API configuration required** - the `agent-messaging` skill manages connection details internally.
 
 ---
 

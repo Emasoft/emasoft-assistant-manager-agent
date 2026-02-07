@@ -487,25 +487,14 @@ diff <(jq -S '.items' /tmp/kanban-snapshot-previous.json) \
 For each detected change:
 
 1. **Status Change Detected**
-   ```bash
-   # Notify ECOS of status change
-   curl -X POST "$AIMAESTRO_API/api/messages" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "from": "eama-assistant-manager",
-       "to": "ecos-<project>",
-       "subject": "Kanban Card Status Changed",
-       "priority": "normal",
-       "content": {
-         "type": "kanban_update",
-         "card_id": "<card-id>",
-         "card_title": "<title>",
-         "old_status": "<previous-status>",
-         "new_status": "<current-status>",
-         "changed_at": "<ISO-8601>"
-       }
-     }'
-   ```
+   Send a kanban update notification to ECOS using the `agent-messaging` skill:
+   - **Recipient**: `ecos-<project>`
+   - **Subject**: "Kanban Card Status Changed"
+   - **Content**: kanban_update type with card_id, card_title, old_status, new_status, changed_at
+   - **Type**: `kanban_update`
+   - **Priority**: `normal`
+
+   **Verify**: confirm message delivery via the skill's sent messages feature.
 
 2. **New Assignee Detected**
    - If assignee is a known specialist agent, notify that agent

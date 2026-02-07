@@ -260,57 +260,37 @@ EAMA must proactively monitor ECOS health and responsiveness to prevent communic
 
 ### Health Check Procedure
 
-```bash
-# Send ECOS health check every 10 minutes during active work
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "Periodic Health Check",
-    "priority": "low",
-    "content": {"type": "ping", "message": "Routine health check", "expect_reply": true, "timeout": 60}
-  }'
-```
+Send a periodic ECOS health check every 10 minutes during active work using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "Periodic Health Check"
+- **Content**: ping type, message "Routine health check", expect_reply true, timeout 60
+- **Type**: `ping`
+- **Priority**: `low`
+
+**Verify**: check inbox for a `pong` response within the timeout period.
 
 ### AI Maestro Inbox Check
 
-```bash
-# Check inbox every 2 minutes for approval requests
-curl -s "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread" | \
-  jq '.messages[] | select(.content.type == "approval_request")'
-```
+Check your inbox every 2 minutes for approval requests using the `agent-messaging` skill. Filter for messages with content type `approval_request`.
 
 ### Responsiveness Ping (15 Minute Timeout)
 
-If no response from ECOS after 15 minutes since last message sent:
-
-```bash
-# Send urgent ping
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "ecos-<project-name>",
-    "subject": "URGENT: Response Required",
-    "priority": "urgent",
-    "content": {"type": "ping", "message": "No response received for 15 minutes. Please acknowledge.", "expect_reply": true, "timeout": 30}
-  }'
-```
+If no response from ECOS after 15 minutes since last message sent, send an urgent ping using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "URGENT: Response Required"
+- **Content**: ping type, message "No response received for 15 minutes. Please acknowledge.", expect_reply true, timeout 30
+- **Type**: `ping`
+- **Priority**: `urgent`
 
 ### Actions When ECOS Unresponsive
 
 If ECOS fails to respond after the urgent ping (30 second timeout):
 
 1. **Verify ECOS Session Exists**
-   ```bash
-   tmux list-sessions | grep "ecos-<project-name>"
-   ```
+   Use the `ai-maestro-agents-management` skill to list agents and check if the ECOS session is still active.
 
 2. **Check AI Maestro Health**
-   ```bash
-   curl -s "$AIMAESTRO_API/health"
-   ```
+   Use the `agent-messaging` skill's health check feature to verify AI Maestro is running.
 
 3. **Notify User**
    ```

@@ -28,23 +28,19 @@ EAMA is the ONLY agent authorized to create ECOS. This ensures:
 
 ## 2. How to Create ECOS
 
-When a new ECOS instance is needed (first time setup or after termination), EAMA spawns it using:
+When a new ECOS instance is needed (first time setup or after termination), EAMA spawns it using the `ai-maestro-agents-management` skill:
 
-```bash
-# SESSION_NAME is chosen by EAMA to avoid collisions (e.g., ecos-chief-of-staff-one)
-SESSION_NAME="ecos-chief-of-staff-one"
+- **Agent name**: `ecos-chief-of-staff-one` (chosen by EAMA to avoid collisions)
+- **Working directory**: `~/agents/ecos-chief-of-staff-one/`
+- **Task**: "Coordinate agents across all projects. You are the Chief of Staff."
+- **Plugin**: load `emasoft-chief-of-staff` using the skill's plugin management features
+- **Main agent**: `ecos-chief-of-staff-main-agent` (REQUIRED - see below)
 
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents across all projects. You are the Chief of Staff." \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+**Verify**: confirm the agent appears in the agent list with correct status.
 
 **Session Name = AI Maestro Registry Name**
 
-The session name you pass to `aimaestro-agent.sh create` becomes the agent's identity in AI Maestro:
+The session name becomes the agent's identity in AI Maestro:
 - EAMA (Manager) chooses the session name for ECOS (e.g., `ecos-chief-of-staff-one`)
 - ECOS then chooses session names for subordinate agents (e.g., `eoa-svgbbox-orchestrator`)
 - Session names must be unique across all running agents
@@ -54,20 +50,20 @@ The session name you pass to `aimaestro-agent.sh create` becomes the agent's ide
 - Examples: `ecos-chief-of-staff-one`, `eoa-project-alpha-orchestrator`, `eia-main-integrator`
 
 **Notes:**
-- `--dir`: Uses FLAT agent folder structure: `~/agents/<session-name>/`
-- `--plugin-dir`: Points to LOCAL agent folder, NOT the development OUTPUT_SKILLS folder
-- No `--continue` flag for NEW spawn (only used when WAKING a hibernated agent)
+- Working directory uses FLAT agent folder structure: `~/agents/<session-name>/`
+- Plugin path points to LOCAL agent folder, NOT the development OUTPUT_SKILLS folder
+- For NEW spawn, do not use the continue/wake option (only used when WAKING a hibernated agent)
 - The plugin must be copied to the local agent folder before spawning
 
-### Critical: The `--agent` Flag
+### Critical: The Main Agent Entry Point
 
-The `--agent ecos-chief-of-staff-main-agent` flag is **REQUIRED**. It:
+Specifying the main agent entry point `ecos-chief-of-staff-main-agent` is **REQUIRED**. It:
 
 1. **Injects the ECOS main agent prompt** into the Claude Code system prompt
 2. **Enforces role constraints** - ECOS cannot violate its boundaries
 3. **Links to documentation** - ECOS automatically reads ROLE_BOUNDARIES.md
 
-**Without this flag, ECOS would be an unconstrained Claude Code instance!**
+**Without this entry point, ECOS would be an unconstrained Claude Code instance!**
 
 ---
 
@@ -85,33 +81,22 @@ The `--agent ecos-chief-of-staff-main-agent` flag is **REQUIRED**. It:
 
 After creating ECOS:
 
-1. Verify ECOS is running: `tmux list-sessions | grep ecos`
-2. Send initialization message via AI Maestro
+1. Verify ECOS is running using the `ai-maestro-agents-management` skill to list active agents
+2. Send an initialization message using the `agent-messaging` skill
 3. Confirm ECOS acknowledges its role constraints
 4. Register ECOS in the organization agent registry
 
-### Verification Command
+### Verification
 
-```bash
-tmux list-sessions | grep ecos
-# Expected output: ecos-chief-of-staff: 1 windows (...)
-```
+Use the `ai-maestro-agents-management` skill to list agents and confirm ECOS appears with active status.
 
 ### Initialization Message
 
-Send via AI Maestro to confirm ECOS is properly configured:
+Send an initialization check message to ECOS using the `agent-messaging` skill:
+- **Recipient**: The ECOS session name (e.g., `ecos-chief-of-staff-one`)
+- **Subject**: "EAMA Initialization Check"
+- **Content**: initialization-check type, with expected_role "chief-of-staff"
+- **Type**: `initialization-check`
+- **Priority**: `high`
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Initialization Check",
-  "priority": "high",
-  "content": {
-    "type": "initialization-check",
-    "expected_role": "chief-of-staff",
-    "requested_at": "ISO-8601 timestamp"
-  }
-}
-```
-
-ECOS should respond confirming its role constraints are loaded.
+**Verify**: ECOS should respond confirming its role constraints are loaded.

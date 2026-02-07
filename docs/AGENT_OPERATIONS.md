@@ -49,32 +49,22 @@ EAMA serves as the ONLY agent that interacts directly with the user in typical w
 
 ### ECOS Creation Procedure
 
-```bash
-# Define session name
-SESSION_NAME="ecos-chief-of-staff-one"
+Use the `ai-maestro-agents-management` skill to create the ECOS instance:
+- **Agent name**: `ecos-chief-of-staff-one` (or `ecos-<project-name>` for project-specific ECOS)
+- **Working directory**: `~/agents/<session-name>/`
+- **Task**: "Coordinate agents across all projects"
+- **Plugin**: load `emasoft-chief-of-staff` using the skill's plugin management features
+- **Main agent**: `ecos-chief-of-staff-main-agent` (must be specified to inject role constraints)
 
-# Step 1: Prepare plugin directory for ECOS
-PLUGIN_SOURCE="${CLAUDE_PLUGIN_ROOT}/../emasoft-chief-of-staff"
-PLUGIN_DEST="~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff"
-mkdir -p "$(dirname "$PLUGIN_DEST")"
-cp -r "$PLUGIN_SOURCE" "$PLUGIN_DEST"
-
-# Step 2: Spawn ECOS using AI Maestro
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents across all projects" \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+**Verify**: confirm the agent appears in the agent list with correct status.
 
 ### ECOS Creation Checklist
 
 - [ ] Copy emasoft-chief-of-staff plugin to ECOS agent directory
-- [ ] Use `aimaestro-agent.sh create` with proper flags
-- [ ] Specify `--agent ecos-chief-of-staff-main-agent` to load the correct entry point
-- [ ] Verify ECOS session appears in AI Maestro dashboard
-- [ ] Send initial coordination task via AI Maestro message
+- [ ] Create the ECOS agent using the `ai-maestro-agents-management` skill
+- [ ] Specify the main agent entry point to load the correct role constraints
+- [ ] Verify ECOS session appears in the agent list
+- [ ] Send initial coordination task using the `agent-messaging` skill
 
 ---
 
@@ -156,21 +146,14 @@ When referencing EAMA skills in logs, documentation, or messages:
 
 ### Sending Messages to ECOS
 
-```bash
-# Basic message structure
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-main-manager",
-    "to": "ecos-chief-of-staff-one",
-    "subject": "New Project Request",
-    "priority": "high",
-    "content": {
-      "type": "request",
-      "message": "User requests feature X for project Y"
-    }
-  }'
-```
+Send messages to ECOS using the `agent-messaging` skill:
+- **Recipient**: `ecos-chief-of-staff-one` (or the specific ECOS session name)
+- **Subject**: Descriptive subject (e.g., "New Project Request")
+- **Content**: Must include type and message body
+- **Type**: `request`, `work_request`, `approval_decision`, `status_query`, `ping`, etc.
+- **Priority**: Set according to urgency (see table below)
+
+**Verify**: confirm message delivery via the skill's sent messages feature.
 
 ### Message Priority Levels
 
@@ -182,10 +165,7 @@ curl -X POST "$AIMAESTRO_API/api/messages" \
 
 ### Reading Responses from ECOS
 
-```bash
-# Check for unread messages
-curl -s "$AIMAESTRO_API/api/messages?agent=$SESSION_NAME&action=list&status=unread" | jq '.messages'
-```
+Check your inbox using the `agent-messaging` skill. Process all unread messages before proceeding.
 
 ---
 
@@ -294,7 +274,7 @@ Before stopping:
 | Problem | Cause | Solution |
 |---------|-------|----------|
 | Cannot create ECOS | Plugin not found | Verify `${CLAUDE_PLUGIN_ROOT}/../emasoft-chief-of-staff` exists |
-| ECOS not responding | AI Maestro down | Check `curl $AIMAESTRO_API/api/health` |
+| ECOS not responding | AI Maestro down | Check AI Maestro health using the `agent-messaging` skill |
 | Skill not found | Wrong reference format | Use folder name only (e.g., `eama-user-communication`) |
 | User request ignored | Not routed to ECOS | Send AI Maestro message with priority |
 
@@ -303,13 +283,9 @@ Before stopping:
 ```bash
 # Check EAMA plugin loaded
 claude plugin list | grep emasoft-assistant-manager
-
-# Verify AI Maestro connection
-curl -s $AIMAESTRO_API/api/agents | jq '.agents[] | select(.name | startswith("ecos"))'
-
-# List pending messages
-curl -s "$AIMAESTRO_API/api/messages?agent=$SESSION_NAME&status=unread" | jq '.messages | length'
 ```
+
+For AI Maestro connection verification and pending message checks, use the `agent-messaging` skill's health check and inbox features.
 
 ---
 

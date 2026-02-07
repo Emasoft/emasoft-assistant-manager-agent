@@ -28,32 +28,27 @@ Use this format for ECOS session names:
 - `eoa-svgbbox-orchestrator` (Orchestrator for svgbbox project)
 - `eia-inventory-review` (Integrator for inventory review)
 
-## Spawn Command Template
+## Agent Creation Template
 
-```bash
-# EAMA picks a unique session name (this becomes the AI Maestro registry name)
-SESSION_NAME="ecos-chief-of-staff-one"
+Use the `ai-maestro-agents-management` skill to create the ECOS agent with the following parameters:
 
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents across all projects" \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+- **Agent name**: `ecos-chief-of-staff-one` (EAMA picks a unique name; this becomes the AI Maestro registry name)
+- **Working directory**: `~/agents/ecos-chief-of-staff-one/`
+- **Task**: "Coordinate agents across all projects"
+- **Plugin**: load `emasoft-chief-of-staff` using the skill's plugin management features
+- **Main agent**: `ecos-chief-of-staff-main-agent`
 
-## Command Flags Explained
+**Verify**: confirm the agent appears in the agent list with correct status.
 
-| Flag | Purpose | Example Value |
-|------|---------|---------------|
-| `SESSION_NAME` | AI Maestro registry identifier | `ecos-chief-of-staff-one` |
-| `--dir` | Working directory (flat structure) | `~/agents/ecos-chief-of-staff-one/` |
-| `--task` | Task description (for context) | `"Coordinate agents across all projects"` |
-| `--dangerously-skip-permissions` | Skip permission prompts | (flag only) |
-| `--chrome` | Enable Chrome DevTools MCP | (flag only) |
-| `--add-dir` | Additional working directory | `/tmp` |
-| `--plugin-dir` | Path to ECOS plugin | `~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff` |
-| `--agent` | Main agent prompt file | `ecos-chief-of-staff-main-agent` |
+## Required Parameters Explained
+
+| Parameter | Purpose | Example Value |
+|-----------|---------|---------------|
+| Agent name | AI Maestro registry identifier | `ecos-chief-of-staff-one` |
+| Working directory | Working directory (flat structure) | `~/agents/ecos-chief-of-staff-one/` |
+| Task | Task description (for context) | `"Coordinate agents across all projects"` |
+| Plugin | Plugin to load for the agent | `emasoft-chief-of-staff` |
+| Main agent | Main agent prompt file | `ecos-chief-of-staff-main-agent` |
 
 ## Critical Notes
 
@@ -64,18 +59,19 @@ aimaestro-agent.sh create $SESSION_NAME \
 
 ### Plugin Path
 
-- Use **LOCAL agent folder path**: `~/agents/$SESSION_NAME/.claude/plugins/`
+- Use **LOCAL agent folder path**: `~/agents/<session-name>/.claude/plugins/`
 - NOT development path: `./OUTPUT_SKILLS/emasoft-chief-of-staff/`
 
-### Spawn vs Wake
+### Create vs Wake
 
-- **NEW spawn**: Use command above (no `--continue` flag)
-- **Wake hibernated agent**: Add `--continue` flag
+- **NEW creation**: Standard creation (no continue/wake option)
+- **Wake hibernated agent**: Use the wake feature of the `ai-maestro-agents-management` skill
 
 ### Pre-requisite
 
-**Plugin files MUST be copied to target directory BEFORE spawning:**
+**Plugin files MUST be copied to target directory BEFORE creating the agent.**
 
+Prepare the agent's plugin directory:
 ```bash
 # Copy plugin to agent's local directory
 mkdir -p ~/agents/$SESSION_NAME/.claude/plugins/
@@ -109,78 +105,36 @@ mkdir -p ~/agents/$SESSION_NAME/.claude/plugins/
 cp -r /path/to/emasoft-chief-of-staff ~/agents/$SESSION_NAME/.claude/plugins/
 ```
 
-### Step 4: Execute Spawn Command
+### Step 4: Execute Agent Creation
 
-Run the `aimaestro-agent.sh create` command:
+Use the `ai-maestro-agents-management` skill to create the agent with the parameters prepared in Steps 1-3.
 
-```bash
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents across all projects" \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+**Verify**: the creation command succeeds (exit code 0).
 
-### Step 5: Verify Spawn Success
+### Step 5: Wait for Initialization
 
-Check the command exit code:
+Wait 5 seconds for ECOS to initialize.
 
-```bash
-echo $?  # Should return 0 for success
-```
+### Step 6: Health Check Ping
 
-### Step 6: Wait for Initialization
+Send a health check message using the `agent-messaging` skill:
+- **Recipient**: The ECOS session name chosen in Step 1
+- **Subject**: "Health Check"
+- **Content**: ping type, message "Verify ECOS alive", expect_reply true, timeout 10
+- **Type**: `ping`
+- **Priority**: `normal`
 
-Wait 5 seconds for ECOS to initialize:
+### Step 7: Verify Response
 
-```bash
-sleep 5
-```
+Check your inbox using the `agent-messaging` skill for a `pong` response from ECOS within 30 seconds.
 
-### Step 7: Health Check Ping
-
-Send a health check message via AI Maestro:
-
-```bash
-curl -X POST "$AIMAESTRO_API/api/messages" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "from": "eama-assistant-manager",
-    "to": "'"$SESSION_NAME"'",
-    "subject": "Health Check",
-    "priority": "normal",
-    "content": {
-      "type": "ping",
-      "message": "Verify ECOS alive",
-      "expect_reply": true,
-      "timeout": 10
-    }
-  }'
-```
-
-### Step 8: Verify Response
-
-Check AI Maestro inbox for ECOS response within 30 seconds:
-
-```bash
-curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread" \
-  | jq '.[] | select(.from == "'"$SESSION_NAME"'") | select(.content.type == "pong")'
-```
-
-Expected response:
-
+Expected response content:
 ```json
 {
-  "from": "ecos-chief-of-staff-one",
-  "to": "eama-assistant-manager",
-  "subject": "Re: Health Check",
-  "content": {
-    "type": "pong",
-    "status": "alive",
-    "uptime": "5",
-    "active_specialists": []
-  }
+  "type": "pong",
+  "status": "alive",
+  "uptime": "5",
+  "active_specialists": []
 }
 ```
 
@@ -218,9 +172,9 @@ ECOS is now available to coordinate specialist agents (EOA, EAA, EIA).
 
 A successful ECOS spawn meets ALL of the following criteria:
 
-- [ ] `aimaestro-agent.sh create` command succeeded (exit code 0)
-- [ ] ECOS session registered in AI Maestro (visible in session list)
-- [ ] ECOS main agent loaded via `--agent` flag
+- [ ] Agent creation via `ai-maestro-agents-management` skill succeeded (exit code 0)
+- [ ] ECOS session registered in AI Maestro (visible in agent list)
+- [ ] ECOS main agent loaded with correct role constraints
 - [ ] ECOS plugins loaded correctly
 - [ ] ECOS working directory set correctly
 - [ ] ECOS health check ping successful (pong received)
@@ -228,13 +182,13 @@ A successful ECOS spawn meets ALL of the following criteria:
 
 ## Troubleshooting
 
-### Spawn Fails with Exit Code 1
+### Creation Fails with Exit Code 1
 
 **Cause**: AI Maestro service may be down or session name collision
 
 **Solution**:
-1. Check AI Maestro health: `curl $AIMAESTRO_API/health`
-2. Check for existing session: `tmux list-sessions | grep $SESSION_NAME`
+1. Check AI Maestro health using the `agent-messaging` skill's health check feature
+2. Use the `ai-maestro-agents-management` skill to list agents and check for name collisions
 3. If collision, use different session name with suffix: `ecos-chief-of-staff-two`
 
 ### No Response to Health Ping

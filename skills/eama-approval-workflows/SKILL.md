@@ -239,24 +239,14 @@ For each expired approval:
    ```
 
 2. **Send rejection notice to requesting role**
-   ```bash
-   curl -X POST "$AIMAESTRO_API/api/messages" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "from": "eama-assistant-manager",
-       "to": "<requesting-role-session>",
-       "subject": "Approval Expired: <REQUEST-ID>",
-       "priority": "normal",
-       "content": {
-         "type": "approval_decision",
-         "request_id": "<REQUEST-ID>",
-         "decision": "rejected",
-         "reason": "EXPIRED: Request was pending for more than 24 hours without user response. Please resubmit if still needed.",
-         "expired_at": "<ISO-8601>",
-         "original_requested_at": "<original-timestamp>"
-       }
-     }'
-   ```
+   Send an expiry rejection notice using the `agent-messaging` skill:
+   - **Recipient**: `<requesting-role-session>`
+   - **Subject**: "Approval Expired: <REQUEST-ID>"
+   - **Content**: approval_decision type, request_id, decision "rejected", reason "EXPIRED: Request was pending for more than 24 hours without user response. Please resubmit if still needed.", expired_at, original_requested_at
+   - **Type**: `approval_decision`
+   - **Priority**: `normal`
+
+   **Verify**: confirm message delivery via the skill's sent messages feature.
 
 3. **Log to approval-log.md**
    ```markdown

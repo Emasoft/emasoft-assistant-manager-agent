@@ -143,7 +143,7 @@ Health: Yellow (blocked on external dependency)
 
 ## Example 5: ECOS Spawn Failure
 
-**Scenario**: `aimaestro-agent.sh create` exits with code 1
+**Scenario**: ECOS agent creation fails
 
 **Your Action**: Diagnose and report to user
 
@@ -151,13 +151,14 @@ Health: Yellow (blocked on external dependency)
 ```
 Issue encountered: ECOS spawn failed
 
-Details: aimaestro-agent.sh exited with error code 1
+Details: Agent creation command exited with error
 Impact: Cannot coordinate agents for inventory-system project
 Attempted: Spawned ecos-inventory-system with standard configuration
 
 Error output: [paste relevant error]
 
-I recommend: Check if AI Maestro is running (`curl http://localhost:23000/health`). If down, restart it. Then I'll retry spawning ECOS.
+I recommend: Verify AI Maestro is running by checking its health status
+using the `agent-messaging` skill. If down, restart it. Then I'll retry spawning ECOS.
 
 Should I retry once AI Maestro is confirmed running?
 ```
@@ -171,11 +172,8 @@ When ECOS spawn fails, follow this recovery procedure systematically before esca
 ### Recovery Steps
 
 **Step 1: Verify AI Maestro is Running**
-```bash
-# Check AI Maestro health
-curl -s "$AIMAESTRO_API/health"
-# Expected: {"status":"ok"} or similar
-```
+
+Check AI Maestro health using the `agent-messaging` skill's health check feature.
 
 If AI Maestro is down:
 - Alert user: "AI Maestro service is not responding. Please restart it."
@@ -194,17 +192,16 @@ If session name collision detected:
 - Use alternative session name with numeric suffix: `ecos-<project-name>-2`
 - Document the collision in session log
 
-**Step 3: Retry Spawn with Different Session Name**
-```bash
-# Retry with incremented session name
-SESSION_NAME="ecos-<project-name>-$(date +%s)"
-aimaestro-agent.sh create $SESSION_NAME \
-  --dir ~/agents/$SESSION_NAME \
-  --task "Coordinate agents for <project-name>" \
-  -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-  --plugin-dir ~/agents/$SESSION_NAME/.claude/plugins/emasoft-chief-of-staff \
-  --agent ecos-chief-of-staff-main-agent
-```
+**Step 3: Retry with Different Session Name**
+
+Use the `ai-maestro-agents-management` skill to create the agent with an incremented session name:
+- **Agent name**: `ecos-<project-name>-<timestamp>` (use timestamp to ensure uniqueness)
+- **Working directory**: `~/agents/<new-session-name>/`
+- **Task**: "Coordinate agents for <project-name>"
+- **Plugin**: load `emasoft-chief-of-staff` using the skill's plugin management features
+- **Main agent**: `ecos-chief-of-staff-main-agent`
+
+**Verify**: confirm the agent appears in the agent list with correct status.
 
 **Step 4: If 3 Retries Fail**
 

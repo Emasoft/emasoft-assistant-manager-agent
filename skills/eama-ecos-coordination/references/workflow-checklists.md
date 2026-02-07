@@ -26,7 +26,7 @@ When user requests a new project:
   git add -A
   git commit -m "Initial project structure"
   ```
-- [ ] **Spawn ECOS for this project** using `aimaestro-agent.sh create`
+- [ ] **Spawn ECOS for this project** using the `ai-maestro-agents-management` skill
 - [ ] **Verify ECOS responding** via health check ping
 - [ ] **Register project** in `docs_dev/projects/project-registry.md`
 - [ ] **Report to user** with project path and ECOS session name
@@ -41,26 +41,21 @@ When creating a new ECOS instance:
 - [ ] **Determine ECOS session name** (format: `ecos-<project-name>`)
 - [ ] **Identify working directory** (project root)
 - [ ] **Identify plugins to load** (emasoft-chief-of-staff required)
-- [ ] **Prepare spawn command** with all flags:
-  ```bash
-  aimaestro-agent.sh create ecos-<project-name> \
-    --dir ~/agents/ecos-<project-name> \
-    --task "Coordinate agents for <project-name> development" \
-    -- --dangerously-skip-permissions --chrome --add-dir /tmp \
-    --plugin-dir ~/agents/ecos-<project-name>/.claude/plugins/emasoft-chief-of-staff \
-    --agent ecos-chief-of-staff-main-agent
-  ```
-  Note: Copy plugin to `~/agents/ecos-<project-name>/.claude/plugins/` first!
-- [ ] **Execute spawn command** via Bash tool
-- [ ] **Verify exit code 0** (success)
+- [ ] **Prepare agent creation** using the `ai-maestro-agents-management` skill:
+  - **Agent name**: `ecos-<project-name>`
+  - **Working directory**: `~/agents/ecos-<project-name>/`
+  - **Task**: "Coordinate agents for <project-name> development"
+  - **Plugin**: load `emasoft-chief-of-staff` (must be copied to agent's local plugins directory first)
+  - **Main agent**: `ecos-chief-of-staff-main-agent`
+- [ ] **Execute agent creation** using the `ai-maestro-agents-management` skill
+- [ ] **Verify creation success** (exit code 0)
 - [ ] **Wait 5 seconds** for ECOS initialization
-- [ ] **Send health check ping** via AI Maestro
-  ```bash
-  curl -X POST "$AIMAESTRO_API/api/messages" \
-    -H "Content-Type: application/json" \
-    -d '{"from":"eama-assistant-manager","to":"ecos-<project-name>","subject":"Health Check","priority":"normal","content":{"type":"ping","message":"Verify ECOS alive"}}'
-  ```
-- [ ] **Verify ECOS response** (check inbox for pong within 30 seconds)
+- [ ] **Send health check ping** using the `agent-messaging` skill:
+  - **Recipient**: `ecos-<project-name>`
+  - **Subject**: "Health Check"
+  - **Type**: `ping`
+  - **Priority**: `normal`
+- [ ] **Verify ECOS response** (check inbox for pong within 30 seconds using the `agent-messaging` skill)
 - [ ] **Register ECOS session** in active sessions log
 - [ ] **Report ECOS ready** to user
 
@@ -70,10 +65,7 @@ When creating a new ECOS instance:
 
 When ECOS sends an approval request:
 
-- [ ] **Read approval request** from AI Maestro inbox
-  ```bash
-  curl "$AIMAESTRO_API/api/messages?agent=eama-assistant-manager&action=list&status=unread"
-  ```
+- [ ] **Read approval request** from inbox using the `agent-messaging` skill
 - [ ] **Parse request details**:
   - Request ID
   - Operation description
@@ -92,12 +84,12 @@ When ECOS sends an approval request:
   - [ ] Present request to user with risk assessment
   - [ ] Wait for user decision
   - [ ] Record user decision verbatim
-- [ ] **Send approval decision** to ECOS via AI Maestro
-  ```bash
-  curl -X POST "$AIMAESTRO_API/api/messages" \
-    -H "Content-Type: application/json" \
-    -d '{"from":"eama-assistant-manager","to":"ecos-<project>","subject":"Approval Decision: <REQUEST-ID>","priority":"high","content":{"type":"approval_decision","request_id":"<REQUEST-ID>","decision":"approve|deny","reason":"<explanation>"}}'
-  ```
+- [ ] **Send approval decision** to ECOS using the `agent-messaging` skill:
+  - **Recipient**: `ecos-<project>`
+  - **Subject**: "Approval Decision: <REQUEST-ID>"
+  - **Content**: approval_decision type with request_id, decision (approve/deny), and reason
+  - **Type**: `approval_decision`
+  - **Priority**: `high`
 - [ ] **Log approval** in `docs_dev/approvals/approval-log.md`
 - [ ] **Verify ECOS acknowledgment** (if expected)
 
@@ -118,12 +110,12 @@ When user gives a work request:
   - Send health ping if uncertain
   - Create ECOS if not exists
 - [ ] **Format work request** for ECOS
-- [ ] **Send request** to ECOS via AI Maestro
-  ```bash
-  curl -X POST "$AIMAESTRO_API/api/messages" \
-    -H "Content-Type: application/json" \
-    -d '{"from":"eama-assistant-manager","to":"ecos-<project>","subject":"User Request: <summary>","priority":"normal","content":{"type":"work_request","specialist":"<EOA|EAA|EIA>","task":"<task description>","user_context":"<relevant context>"}}'
-  ```
+- [ ] **Send request** to ECOS using the `agent-messaging` skill:
+  - **Recipient**: `ecos-<project>`
+  - **Subject**: "User Request: <summary>"
+  - **Content**: work_request type with specialist (EOA/EAA/EIA), task description, and user_context
+  - **Type**: `work_request`
+  - **Priority**: `normal`
 - [ ] **Acknowledge to user** that request routed
 - [ ] **Log interaction** in `docs_dev/sessions/user-interactions.md`
 
@@ -135,12 +127,12 @@ When user requests status:
 
 - [ ] **Parse status request** for scope (entire project? specific task?)
 - [ ] **Identify relevant agents** to query
-- [ ] **Send status query** to ECOS via AI Maestro
-  ```bash
-  curl -X POST "$AIMAESTRO_API/api/messages" \
-    -H "Content-Type: application/json" \
-    -d '{"from":"eama-assistant-manager","to":"ecos-<project>","subject":"Status Query","priority":"normal","content":{"type":"status_query","scope":"<scope>"}}'
-  ```
+- [ ] **Send status query** to ECOS using the `agent-messaging` skill:
+  - **Recipient**: `ecos-<project>`
+  - **Subject**: "Status Query"
+  - **Content**: status_query type with scope (full/milestone/task)
+  - **Type**: `status_query`
+  - **Priority**: `normal`
 - [ ] **Wait for responses** (30 second timeout per agent)
 - [ ] **Aggregate responses** into human-readable summary
 - [ ] **Format status report** for user:

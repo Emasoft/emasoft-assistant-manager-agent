@@ -273,13 +273,11 @@ def get_agent_address(agent_name: str, registry_path: str = ".emasoft/team-regis
 
     raise ValueError(f"Agent not found: {agent_name}")
 
-# Example: Send message to orchestrator
+# Example: Look up orchestrator address
 address = get_agent_address("svgbbox-orchestrator")
 # Returns: "svgbbox-orchestrator"
 
-# Use in curl:
-# curl -X POST "http://localhost:23000/api/messages" \
-#   -d '{"to": "svgbbox-orchestrator", ...}'
+# Then use the `agent-messaging` skill to send a message to this address.
 ```
 
 ---

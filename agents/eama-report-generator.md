@@ -101,10 +101,8 @@ gh issue list --repo <repo> --json number,title,state,labels,milestone
 gh pr view <number> --json reviewDecision,mergeable
 ```
 
-**AI Maestro (official CLI):**
-```bash
-check-aimaestro-messages.sh
-```
+**AI Maestro Messages:**
+Check your inbox using the `agent-messaging` skill. Process all unread messages before proceeding.
 
 **Local files:**
 - `docs_dev/TODO.md` - Task checklists
