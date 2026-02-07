@@ -50,25 +50,22 @@ ecos_delegation:
 
 ## 2. Granting Autonomous Mode
 
-EAMA grants autonomy via command or AI Maestro message:
+EAMA grants autonomy via command or AI Maestro message.
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Autonomous Mode Grant",
-  "priority": "high",
-  "content": {
-    "type": "autonomy-grant",
-    "operation_types": ["routine-operation", "minor-decision"],
-    "expires_at": "2025-02-02T18:00:00Z",
-    "scope_limits": {
-      "max_files_per_operation": 50,
-      "allowed_branches": ["feature/*"]
-    },
-    "notification_level": "important"
-  }
-}
-```
+Send an autonomy grant using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Autonomous Mode Grant"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `autonomy-grant`
+  - `operation_types`: List of operation types ECOS can perform autonomously (e.g., `routine-operation`, `minor-decision`)
+  - `expires_at`: ISO-8601 timestamp when autonomous mode ends (e.g., `2025-02-02T18:00:00Z`)
+  - `scope_limits`: A nested structure containing:
+    - `max_files_per_operation`: Maximum files per operation (e.g., 50)
+    - `allowed_branches`: List of branch patterns (e.g., `feature/*`)
+  - `notification_level`: Reporting frequency (`all`, `important`, or `critical-only`)
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### Grant Parameters
 
@@ -93,19 +90,17 @@ EAMA revokes autonomy when:
 
 ### Revocation Message
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Autonomous Mode Revoked",
-  "priority": "urgent",
-  "content": {
-    "type": "autonomy-revoke",
-    "reason": "User request|Scope exceeded|Security concern|Timeout",
-    "effective_immediately": true,
-    "revoked_at": "ISO-8601"
-  }
-}
-```
+Send an autonomy revocation using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Autonomous Mode Revoked"
+- **Priority**: `urgent`
+- **Content**: Include the following fields:
+  - `type`: `autonomy-revoke`
+  - `reason`: One of `User request`, `Scope exceeded`, `Security concern`, or `Timeout`
+  - `effective_immediately`: `true` (revocation always takes effect immediately)
+  - `revoked_at`: ISO-8601 timestamp of revocation
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### Revocation Reasons
 

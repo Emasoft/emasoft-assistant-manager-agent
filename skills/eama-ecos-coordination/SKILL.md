@@ -248,22 +248,16 @@ All messages sent to ECOS require acknowledgment (ACK) to ensure reliable commun
 
 ### ACK Message Format
 
-ECOS must respond with an ACK message within the timeout period:
+ECOS must respond with an ACK message within the timeout period. The ACK message arrives via the `agent-messaging` skill with the following structure:
 
-```json
-{
-  "from": "ecos-<project-name>",
-  "to": "eama-assistant-manager",
-  "subject": "ACK: <original-subject>",
-  "priority": "normal",
-  "content": {
-    "type": "ack",
-    "original_message_id": "<message-id>",
-    "status": "received|processing|completed",
-    "timestamp": "<ISO-8601>"
-  }
-}
-```
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "ACK: <original-subject>"
+- **Priority**: `normal`
+- **Content fields**:
+  - `type`: `ack`
+  - `original_message_id`: The message ID of the original message being acknowledged
+  - `status`: One of `received` (message received), `processing` (actively working on it), or `completed` (action done)
+  - `timestamp`: ISO-8601 timestamp of the acknowledgment
 
 ### Handling Missing ACK
 

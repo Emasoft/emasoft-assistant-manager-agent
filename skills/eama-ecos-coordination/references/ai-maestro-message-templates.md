@@ -37,23 +37,19 @@ This document provides all message templates and formats for AI Maestro inter-ag
 **Use this when**: ECOS requests permission for a critical operation
 
 **Incoming message format** (what you receive from ECOS):
-```json
-{
-  "from": "ecos-<project-name>",
-  "to": "eama-assistant-manager",
-  "subject": "Approval Request: <REQUEST-ID>",
-  "priority": "high",
-  "content": {
-    "type": "approval_request",
-    "request_id": "<unique-id>",
-    "operation": "<description of operation>",
-    "risk_level": "low|medium|high",
-    "justification": "<why ECOS needs this>",
-    "impact": "<what will happen>",
-    "reversible": true|false
-  }
-}
-```
+
+The message will arrive with the following structure:
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "Approval Request: <REQUEST-ID>"
+- **Priority**: `high`
+- **Content fields**:
+  - `type`: `approval_request`
+  - `request_id`: A unique identifier for this request
+  - `operation`: Description of the operation ECOS wants to perform
+  - `risk_level`: One of `low`, `medium`, or `high`
+  - `justification`: Why ECOS needs this approval
+  - `impact`: What will happen if the operation proceeds
+  - `reversible`: Whether the operation can be undone (`true` or `false`)
 
 **How to read it**:
 Check your inbox using the `agent-messaging` skill. Filter for messages with content type `approval_request`.
@@ -70,27 +66,18 @@ Check your inbox using the `agent-messaging` skill. Filter for messages with con
 **Use this when**: You requested status and ECOS responds
 
 **Incoming message format** (what you receive):
-```json
-{
-  "from": "ecos-<project-name>",
-  "to": "eama-assistant-manager",
-  "subject": "Status Report",
-  "priority": "normal",
-  "content": {
-    "type": "status_report",
-    "overall_progress": "67%",
-    "active_tasks": [
-      {"specialist": "EOA", "task": "Implement REST API", "status": "in_progress"},
-      {"specialist": "EIA", "task": "Code review", "status": "completed"}
-    ],
-    "blockers": [
-      {"description": "Waiting for OAuth keys", "assigned_to": "DevOps"}
-    ],
-    "next_milestone": "API v1.0 complete",
-    "health": "green|yellow|red"
-  }
-}
-```
+
+The message will arrive with the following structure:
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "Status Report"
+- **Priority**: `normal`
+- **Content fields**:
+  - `type`: `status_report`
+  - `overall_progress`: A percentage string (e.g., "67%")
+  - `active_tasks`: A list of tasks, each with `specialist` (EOA/EAA/EIA), `task` (description), and `status` (in_progress/completed/blocked)
+  - `blockers`: A list of blockers, each with `description` and `assigned_to`
+  - `next_milestone`: Description of the next milestone
+  - `health`: One of `green`, `yellow`, or `red`
 
 **How to read it**:
 Check your inbox using the `agent-messaging` skill. Filter for messages with content type `status_report`.
@@ -107,19 +94,15 @@ Check your inbox using the `agent-messaging` skill. Filter for messages with con
 **Use this when**: You sent a health check ping and ECOS responds
 
 **Expected response format**:
-```json
-{
-  "from": "ecos-<project-name>",
-  "to": "eama-assistant-manager",
-  "subject": "Re: Health Check",
-  "content": {
-    "type": "pong",
-    "status": "alive",
-    "uptime": "<seconds since spawn>",
-    "active_specialists": ["EOA", "EIA"]
-  }
-}
-```
+
+The response will arrive with the following structure:
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "Re: Health Check"
+- **Content fields**:
+  - `type`: `pong`
+  - `status`: `alive` (confirms ECOS is running)
+  - `uptime`: Number of seconds since ECOS was spawned
+  - `active_specialists`: List of currently active specialist roles (e.g., "EOA", "EIA")
 
 **How to read it**:
 Check your inbox using the `agent-messaging` skill. Filter for messages with content type `pong`.
@@ -374,22 +357,12 @@ Use the `agent-messaging` skill for all messaging operations. The skill handles 
 
 **CRITICAL**: The `content` field **MUST be an object**, NOT a string!
 
-**CORRECT**:
-```json
-{
-  "content": {
-    "type": "work_request",
-    "message": "Task description here"
-  }
-}
-```
+**CORRECT**: The `content` field must be structured with named fields:
+- `type`: The message type (e.g., `work_request`)
+- `message`: The human-readable message text
+- Additional fields specific to the message type
 
-**WRONG** (will fail):
-```json
-{
-  "content": "Task description here"
-}
-```
+**WRONG** (will fail): Passing `content` as a plain string instead of a structured object with named fields. Always include at minimum a `type` field inside `content`.
 
 **Standard content fields**:
 - `type`: Message type (required: `approval_request`, `approval_decision`, `status_query`, `status_report`, `work_request`, `ping`, `pong`, `user_decision`)

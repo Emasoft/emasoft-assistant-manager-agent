@@ -6,142 +6,126 @@ Standard message formats for inter-role communication via AI Maestro.
 
 ### 1. Task Assignment
 
-```json
-{
-  "to": "{target-agent-session}",
-  "subject": "[TASK] {brief_description}",
-  "priority": "high",
-  "content": {
-    "type": "task_assignment",
-    "message": "{detailed_instructions}",
-    "handoff_file": "docs_dev/handoffs/handoff-{uuid}-eama-to-{role}.md",
-    "github_issue": "#{issue_number}",
-    "deadline": "{ISO-8601 timestamp or null}"
-  }
-}
-```
+Send a task assignment using the `agent-messaging` skill:
+- **Recipient**: The target agent session name
+- **Subject**: "[TASK] <brief description>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `task_assignment`
+  - `message`: Detailed instructions for the task
+  - `handoff_file`: Path to the handoff file (format: `docs_dev/handoffs/handoff-<uuid>-eama-to-<role>.md`)
+  - `github_issue`: The associated GitHub issue number (format: `#<number>`)
+  - `deadline`: ISO-8601 timestamp, or `null` if no deadline
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 2. Status Request
 
-```json
-{
-  "to": "{target-agent-session}",
-  "subject": "[STATUS] Request for {project/task}",
-  "priority": "normal",
-  "content": {
-    "type": "status_request",
-    "message": "Please provide status update on {task_description}",
-    "fields_requested": ["progress_percent", "blockers", "eta", "next_steps"]
-  }
-}
-```
+Send a status request using the `agent-messaging` skill:
+- **Recipient**: The target agent session name
+- **Subject**: "[STATUS] Request for <project or task name>"
+- **Priority**: `normal`
+- **Content**: Include the following fields:
+  - `type`: `status_request`
+  - `message`: "Please provide status update on <task description>"
+  - `fields_requested`: List of fields to include in the response (e.g., `progress_percent`, `blockers`, `eta`, `next_steps`)
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 3. Status Update
 
-```json
-{
-  "to": "eama-session",
-  "subject": "[UPDATE] {task_name} - {status}",
-  "priority": "normal",
-  "content": {
-    "type": "status_update",
-    "message": "{summary}",
-    "progress_percent": 75,
-    "blockers": ["blocker1", "blocker2"],
-    "completed_items": ["item1", "item2"],
-    "next_steps": ["step1", "step2"],
-    "eta": "{ISO-8601 timestamp}"
-  }
-}
-```
+Send a status update using the `agent-messaging` skill:
+- **Recipient**: The EAMA session name (e.g., `eama-main-manager`)
+- **Subject**: "[UPDATE] <task name> - <status>"
+- **Priority**: `normal`
+- **Content**: Include the following fields:
+  - `type`: `status_update`
+  - `message`: Summary of the current status
+  - `progress_percent`: Numeric percentage of completion (e.g., 75)
+  - `blockers`: List of current blockers (if any)
+  - `completed_items`: List of items completed so far
+  - `next_steps`: List of planned next steps
+  - `eta`: Estimated completion time as ISO-8601 timestamp
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 4. Completion Signal
 
-```json
-{
-  "to": "eama-session",
-  "subject": "[COMPLETE] {task_name}",
-  "priority": "high",
-  "content": {
-    "type": "completion",
-    "message": "{summary_of_deliverables}",
-    "handoff_file": "docs_dev/handoffs/handoff-{uuid}-{role}-to-eama.md",
-    "github_issue": "#{issue_number}",
-    "artifacts": ["path/to/artifact1", "path/to/artifact2"],
-    "verification_status": "passed" | "failed" | "partial"
-  }
-}
-```
+Send a completion signal using the `agent-messaging` skill:
+- **Recipient**: The EAMA session name (e.g., `eama-main-manager`)
+- **Subject**: "[COMPLETE] <task name>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `completion`
+  - `message`: Summary of what was delivered
+  - `handoff_file`: Path to the handoff file (format: `docs_dev/handoffs/handoff-<uuid>-<role>-to-eama.md`)
+  - `github_issue`: The associated GitHub issue number (format: `#<number>`)
+  - `artifacts`: List of paths to deliverable artifacts
+  - `verification_status`: One of `passed`, `failed`, or `partial`
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 5. Approval Request
 
-```json
-{
-  "to": "eama-session",
-  "subject": "[APPROVAL] {approval_type} for {item}",
-  "priority": "high",
-  "content": {
-    "type": "approval_request",
-    "message": "{description_of_what_needs_approval}",
-    "approval_type": "push" | "merge" | "publish" | "security" | "release",
-    "affected_items": ["item1", "item2"],
-    "risk_assessment": "low" | "medium" | "high",
-    "rollback_plan": "{description}"
-  }
-}
-```
+Send an approval request using the `agent-messaging` skill:
+- **Recipient**: The EAMA session name (e.g., `eama-main-manager`)
+- **Subject**: "[APPROVAL] <approval type> for <item>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `approval_request`
+  - `message`: Description of what needs approval
+  - `approval_type`: One of `push`, `merge`, `publish`, `security`, or `release`
+  - `affected_items`: List of items affected by the operation
+  - `risk_assessment`: One of `low`, `medium`, or `high`
+  - `rollback_plan`: Description of how to undo the operation if needed
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 6. Approval Response
 
-```json
-{
-  "to": "{requesting-agent-session}",
-  "subject": "[APPROVED/REJECTED] {approval_type} for {item}",
-  "priority": "high",
-  "content": {
-    "type": "approval_response",
-    "message": "{user_feedback_if_any}",
-    "decision": "approved" | "rejected" | "needs_revision",
-    "conditions": ["condition1", "condition2"],
-    "user_comment": "{optional_user_comment}"
-  }
-}
-```
+Send an approval response using the `agent-messaging` skill:
+- **Recipient**: The agent session that sent the approval request
+- **Subject**: "[APPROVED/REJECTED] <approval type> for <item>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `approval_response`
+  - `message`: User feedback (if any)
+  - `decision`: One of `approved`, `rejected`, or `needs_revision`
+  - `conditions`: List of conditions that must be met (if approving with conditions)
+  - `user_comment`: Optional verbatim user comment
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 7. Question / Clarification
 
-```json
-{
-  "to": "eama-session",
-  "subject": "[QUESTION] {brief_topic}",
-  "priority": "normal",
-  "content": {
-    "type": "question",
-    "message": "{detailed_question}",
-    "context": "{relevant_context}",
-    "options": ["option1", "option2"],
-    "blocking": true | false
-  }
-}
-```
+Send a question or clarification request using the `agent-messaging` skill:
+- **Recipient**: The EAMA session name (e.g., `eama-main-manager`)
+- **Subject**: "[QUESTION] <brief topic>"
+- **Priority**: `normal`
+- **Content**: Include the following fields:
+  - `type`: `question`
+  - `message`: The detailed question being asked
+  - `context`: Relevant background context for the question
+  - `options`: List of possible answers or choices (if applicable)
+  - `blocking`: Whether work is blocked until the question is answered (`true` or `false`)
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 8. Error / Issue Report
 
-```json
-{
-  "to": "eama-session",
-  "subject": "[ERROR] {error_type} in {component}",
-  "priority": "urgent",
-  "content": {
-    "type": "error_report",
-    "message": "{error_description}",
-    "error_type": "build_failure" | "test_failure" | "integration_issue" | "blocker",
-    "affected_components": ["component1", "component2"],
-    "attempted_solutions": ["solution1", "solution2"],
-    "needs_user_input": true | false
-  }
-}
-```
+Send an error or issue report using the `agent-messaging` skill:
+- **Recipient**: The EAMA session name (e.g., `eama-main-manager`)
+- **Subject**: "[ERROR] <error type> in <component>"
+- **Priority**: `urgent`
+- **Content**: Include the following fields:
+  - `type`: `error_report`
+  - `message`: Description of the error
+  - `error_type`: One of `build_failure`, `test_failure`, `integration_issue`, or `blocker`
+  - `affected_components`: List of components affected by the error
+  - `attempted_solutions`: List of solutions already attempted
+  - `needs_user_input`: Whether user input is required to resolve (`true` or `false`)
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ## Session Name Convention
 

@@ -252,7 +252,7 @@ claude --plugin-dir /path/to/emasoft-assistant-manager-agent \
 ### Initialization Checklist
 
 When EAMA starts, it should:
-- [ ] Verify AI Maestro API is accessible (`$AIMAESTRO_API`)
+- [ ] Verify AI Maestro connectivity using the `agent-messaging` skill's health check feature
 - [ ] Check for existing ECOS instances
 - [ ] Load user preferences (if any)
 - [ ] Announce readiness to user

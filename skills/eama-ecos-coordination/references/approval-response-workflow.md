@@ -46,23 +46,20 @@ When ECOS sends an approval request, EAMA responds with one of:
 
 ## 2. Response Format
 
-EAMA sends responses via AI Maestro:
+EAMA sends responses using the `agent-messaging` skill:
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Approval Response: {request_id}",
-  "priority": "high",
-  "content": {
-    "type": "approval-response",
-    "request_id": "{request_id}",
-    "decision": "approved|rejected|needs-revision",
-    "comment": "Optional explanation for the decision",
-    "conditions": ["Optional list of conditions for approval"],
-    "responded_at": "ISO-8601 timestamp"
-  }
-}
-```
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Approval Response: <request_id>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `approval-response`
+  - `request_id`: Must match the original request ID from ECOS
+  - `decision`: One of `approved`, `rejected`, or `needs-revision`
+  - `comment`: Optional explanation for the decision
+  - `conditions`: Optional list of conditions ECOS must follow if approved
+  - `responded_at`: ISO-8601 timestamp of the response
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### Field Descriptions
 

@@ -126,24 +126,21 @@ When multiple tasks are blocked by the same issue:
 
 ### 3.2 AI Maestro message template for routing resolution
 
-```json
-{
-  "from": "eama-assistant-manager",
-  "to": "[original-escalator]",
-  "subject": "RESOLUTION: Blocker for task [task-id] resolved by user",
-  "priority": "high",
-  "content": {
-    "type": "blocker-resolution",
-    "message": "User has provided the following decision for the blocked task.",
-    "task_uuid": "[task-uuid]",
-    "issue_number": "[GitHub issue number]",
-    "user_decision": "[Exact user response — do not modify per RULE 14]",
-    "selected_option": "[If options were presented, which one was chosen]",
-    "additional_context": "[Any extra information the user provided]",
-    "resolved_at": "[ISO8601 timestamp]"
-  }
-}
-```
+Send a blocker resolution using the `agent-messaging` skill:
+- **Recipient**: The agent that originally escalated the blocker (EOA or ECOS session name)
+- **Subject**: "RESOLUTION: Blocker for task <task-id> resolved by user"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `blocker-resolution`
+  - `message`: "User has provided the following decision for the blocked task."
+  - `task_uuid`: The unique identifier of the blocked task
+  - `issue_number`: The GitHub issue number tracking the blocker
+  - `user_decision`: The user's exact response (do NOT modify per RULE 14)
+  - `selected_option`: Which option was chosen (if options were presented to the user)
+  - `additional_context`: Any extra information the user provided
+  - `resolved_at`: ISO-8601 timestamp of the resolution
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### 3.3 When user asks for more information
 
@@ -210,6 +207,8 @@ User provides blocker resolution
   └─ Was the blocker detected in status report?
       └─ YES → Route to the relevant role agent via ECOS
 ```
+
+**Verify**: after routing the resolution via the `agent-messaging` skill, confirm message delivery via the skill's sent messages feature.
 
 ### 5.2 Confirmation to user
 

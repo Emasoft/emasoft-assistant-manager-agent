@@ -2,7 +2,7 @@
 name: eama-respond-to-ecos
 description: "Respond to pending ECOS approval requests with approve, reject, or needs-revision decision"
 argument-hint: "--request-id <id> --decision <approved|rejected|needs-revision> [--comment <text>]"
-allowed-tools: ["Bash(curl:*)", "Bash(jq:*)", "Read", "Write"]
+allowed-tools: ["Read", "Write"]
 ---
 
 # Respond to ECOS Command
@@ -119,23 +119,20 @@ Check your inbox using the `agent-messaging` skill. Filter for messages from ECO
 
 ## Message Format Sent
 
-The command sends the following message to ECOS:
+The command sends an approval response to ECOS using the `agent-messaging` skill:
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Approval Response: {request_id}",
-  "priority": "high",
-  "content": {
-    "type": "approval-response",
-    "request_id": "{request_id}",
-    "decision": "{decision}",
-    "comment": "{comment}",
-    "conditions": [],
-    "responded_at": "{ISO-8601 timestamp}"
-  }
-}
-```
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Approval Response: <request_id>"
+- **Priority**: `high`
+- **Content**: Include the following fields:
+  - `type`: `approval-response`
+  - `request_id`: The request ID being responded to
+  - `decision`: The decision value (`approved`, `rejected`, or `needs-revision`)
+  - `comment`: The optional comment text
+  - `conditions`: List of conditions (empty list if none)
+  - `responded_at`: ISO-8601 timestamp of the response
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ## Error Conditions
 

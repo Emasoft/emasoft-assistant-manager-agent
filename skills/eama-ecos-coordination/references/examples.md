@@ -20,32 +20,18 @@ This example shows the complete flow of ECOS requesting approval for a staging d
 
 ### ECOS sends approval request
 
-```json
-{
-  "from": "ecos",
-  "to": "eama",
-  "subject": "ECOS Approval Request: Deploy v2.1.0 to staging",
-  "priority": "high",
-  "content": {
-    "type": "approval-request",
-    "request_id": "ecos-req-a1b2c3d4",
-    "category": "routine-operation",
-    "operation": {
-      "type": "deployment",
-      "description": "Deploy version 2.1.0 to staging environment",
-      "affected_resources": ["staging-server", "staging-db"],
-      "risk_level": "medium",
-      "reversible": true
-    },
-    "context": {
-      "triggered_by": "eoa",
-      "related_issues": ["#89", "#92"]
-    },
-    "recommendation": "approve",
-    "requested_at": "2025-02-02T14:30:00Z"
-  }
-}
-```
+ECOS sends the following message using the `agent-messaging` skill:
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "ECOS Approval Request: Deploy v2.1.0 to staging"
+- **Priority**: `high`
+- **Content**:
+  - `type`: `approval-request`
+  - `request_id`: `ecos-req-a1b2c3d4`
+  - `category`: `routine-operation`
+  - `operation`: type `deployment`, description "Deploy version 2.1.0 to staging environment", affected resources are `staging-server` and `staging-db`, risk level `medium`, reversible `true`
+  - `context`: triggered by `eoa`, related issues `#89` and `#92`
+  - `recommendation`: `approve`
+  - `requested_at`: `2025-02-02T14:30:00Z`
 
 ### EAMA evaluates the request
 
@@ -57,20 +43,18 @@ EAMA checks:
 
 ### EAMA responds with approval
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Approval Response: ecos-req-a1b2c3d4",
-  "priority": "high",
-  "content": {
-    "type": "approval-response",
-    "request_id": "ecos-req-a1b2c3d4",
-    "decision": "approved",
-    "comment": "Proceed with staging deployment",
-    "responded_at": "2025-02-02T14:32:00Z"
-  }
-}
-```
+Send an approval response using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Approval Response: ecos-req-a1b2c3d4"
+- **Priority**: `high`
+- **Content**:
+  - `type`: `approval-response`
+  - `request_id`: `ecos-req-a1b2c3d4`
+  - `decision`: `approved`
+  - `comment`: "Proceed with staging deployment"
+  - `responded_at`: `2025-02-02T14:32:00Z`
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ---
 
@@ -84,23 +68,18 @@ User tells EAMA: "Let ECOS handle routine development tasks for the next 4 hours
 
 ### EAMA sends autonomy grant
 
-```json
-{
-  "to": "ecos",
-  "subject": "EAMA Autonomous Mode Grant",
-  "priority": "high",
-  "content": {
-    "type": "autonomy-grant",
-    "operation_types": ["routine-operation", "minor-decision"],
-    "expires_at": "2025-02-02T22:00:00Z",
-    "scope_limits": {
-      "max_files_per_operation": 100,
-      "allowed_branches": ["feature/*", "fix/*"]
-    },
-    "notification_level": "important"
-  }
-}
-```
+Send an autonomy grant using the `agent-messaging` skill:
+- **Recipient**: `ecos-<project-name>`
+- **Subject**: "EAMA Autonomous Mode Grant"
+- **Priority**: `high`
+- **Content**:
+  - `type`: `autonomy-grant`
+  - `operation_types`: `routine-operation` and `minor-decision`
+  - `expires_at`: `2025-02-02T22:00:00Z`
+  - `scope_limits`: max 100 files per operation, allowed branches `feature/*` and `fix/*`
+  - `notification_level`: `important`
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ### What ECOS can now do autonomously
 
@@ -125,26 +104,16 @@ This example shows an autonomous operation completion notification.
 
 ### ECOS sends completion notification
 
-```json
-{
-  "from": "ecos",
-  "to": "eama",
-  "subject": "ECOS Operation Complete: Feature implementation",
-  "priority": "normal",
-  "content": {
-    "type": "operation-complete",
-    "request_id": "autonomous-x1y2z3",
-    "operation": {
-      "type": "implementation",
-      "description": "Implemented user profile page components",
-      "result": "success",
-      "details": "Created 5 components, 12 tests passing"
-    },
-    "autonomous_mode": true,
-    "completed_at": "2025-02-02T16:45:00Z"
-  }
-}
-```
+ECOS sends the following message using the `agent-messaging` skill:
+- **Sender**: `ecos-<project-name>`
+- **Subject**: "ECOS Operation Complete: Feature implementation"
+- **Priority**: `normal`
+- **Content**:
+  - `type`: `operation-complete`
+  - `request_id`: `autonomous-x1y2z3`
+  - `operation`: type `implementation`, description "Implemented user profile page components", result `success`, details "Created 5 components, 12 tests passing"
+  - `autonomous_mode`: `true`
+  - `completed_at`: `2025-02-02T16:45:00Z`
 
 ### EAMA processes the notification
 

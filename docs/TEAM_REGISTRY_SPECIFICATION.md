@@ -284,31 +284,26 @@ address = get_agent_address("svgbbox-orchestrator")
 
 ## Message Format with Agent Identity
 
-All AI Maestro messages must include full agent identity:
+All AI Maestro messages must include full agent identity. Send using the `agent-messaging` skill:
 
-```json
-{
-  "from": "svgbbox-impl-01",
-  "to": "svgbbox-orchestrator",
-  "subject": "[PROGRESS] Task #42: Login fix 80% complete",
-  "priority": "normal",
-  "content": {
-    "type": "progress-report",
-    "message": "Login fix implementation 80% complete. Running tests now.",
-    "sender_identity": {
-      "name": "svgbbox-impl-01",
-      "role": "implementer",
-      "plugin": "emasoft-implementer-agent",
-      "host": "macbook-dev-01",
-      "team": "svgbbox-library-team"
-    },
-    "task_reference": {
-      "issue_number": 42,
-      "issue_url": "https://github.com/Emasoft/svgbbox/issues/42"
-    }
-  }
-}
-```
+- **Sender**: The sending agent's name (e.g., `svgbbox-impl-01`)
+- **Recipient**: The target agent's name looked up from the team registry (e.g., `svgbbox-orchestrator`)
+- **Subject**: "[PROGRESS] Task #42: Login fix 80% complete"
+- **Priority**: `normal`
+- **Content**: Include the following fields:
+  - `type`: `progress-report`
+  - `message`: "Login fix implementation 80% complete. Running tests now."
+  - `sender_identity`: A nested structure containing:
+    - `name`: The sending agent's name (e.g., `svgbbox-impl-01`)
+    - `role`: The agent's role (e.g., `implementer`)
+    - `plugin`: The plugin name (e.g., `emasoft-implementer-agent`)
+    - `host`: The host machine identifier (e.g., `macbook-dev-01`)
+    - `team`: The team name (e.g., `svgbbox-library-team`)
+  - `task_reference`: A nested structure containing:
+    - `issue_number`: The GitHub issue number (e.g., 42)
+    - `issue_url`: Full URL to the GitHub issue
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ---
 
@@ -373,25 +368,22 @@ Fix login validation bug
 
 ### Registry Update Message
 
-When ECOS updates the registry, it sends:
+When ECOS updates the registry, it sends a notification to all team agents using the `agent-messaging` skill:
 
-```json
-{
-  "from": "ecos-chief-of-staff",
-  "to": "<all-team-agents>",
-  "subject": "[REGISTRY UPDATE] Team contacts updated",
-  "priority": "normal",
-  "content": {
-    "type": "registry-update",
-    "message": "Team registry has been updated. Please pull latest changes.",
-    "changes": [
-      {"action": "added", "agent": "svgbbox-impl-03"},
-      {"action": "status_change", "agent": "svgbbox-impl-02", "new_status": "hibernated"}
-    ],
-    "registry_commit": "abc123"
-  }
-}
-```
+- **Sender**: `ecos-chief-of-staff`
+- **Recipient**: Each team agent (sent individually to all agents in the registry)
+- **Subject**: "[REGISTRY UPDATE] Team contacts updated"
+- **Priority**: `normal`
+- **Content**: Include the following fields:
+  - `type`: `registry-update`
+  - `message`: "Team registry has been updated. Please pull latest changes."
+  - `changes`: List of changes made, each with:
+    - `action`: One of `added`, `removed`, or `status_change`
+    - `agent`: The affected agent name
+    - `new_status`: New status value (only for `status_change` actions)
+  - `registry_commit`: The git commit hash of the registry update
+
+**Verify**: confirm message delivery via the `agent-messaging` skill's sent messages feature.
 
 ---
 
