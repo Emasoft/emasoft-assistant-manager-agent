@@ -38,26 +38,12 @@ def get_memory_root(cwd: str) -> Path:
 def check_ai_maestro_inbox() -> tuple[int, list[str]]:
     """Check AI Maestro inbox for unread messages.
 
+    Note: amp-send is a send-only CLI. Message retrieval is not supported
+    by the AMP CLI, so this function always returns zero unread messages.
+
     Returns:
         Tuple of (unread_count, list of message subjects)
     """
-    api_url = os.environ.get("AIMAESTRO_API", "http://localhost:23000")
-    agent_name = os.environ.get("SESSION_NAME", "assistant-manager")
-
-    try:
-        result = subprocess.run(
-            ["curl", "-s", f"{api_url}/api/messages?agent={agent_name}&action=list&status=unread"],
-            capture_output=True,
-            text=True,
-            timeout=5
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            data = json.loads(result.stdout)
-            messages = data.get("messages", [])
-            subjects = [msg.get("subject", "No subject") for msg in messages]
-            return len(messages), subjects
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, subprocess.SubprocessError):
-        pass
     return 0, []
 
 
@@ -79,7 +65,16 @@ def check_claude_tasks(memory_root: Path) -> tuple[int, list[str]]:
             # Look for tasks marked as pending or in-progress
             for line in content.split("\n"):
                 line_lower = line.lower()
-                if any(marker in line_lower for marker in ["[ ]", "[pending]", "[in-progress]", "status: pending", "status: in-progress"]):
+                if any(
+                    marker in line_lower
+                    for marker in [
+                        "[ ]",
+                        "[pending]",
+                        "[in-progress]",
+                        "status: pending",
+                        "status: in-progress",
+                    ]
+                ):
                     # Extract task description
                     task_desc = line.strip().lstrip("-").lstrip("*").strip()
                     if task_desc and len(task_desc) < 100:
@@ -128,7 +123,9 @@ def check_pending_approvals(memory_root: Path) -> tuple[int, list[str]]:
             content = approvals_path.read_text(encoding="utf-8")
             for line in content.split("\n"):
                 line_lower = line.lower()
-                if "pending" in line_lower and ("approval" in line_lower or "[ ]" in line):
+                if "pending" in line_lower and (
+                    "approval" in line_lower or "[ ]" in line
+                ):
                     desc = line.strip().lstrip("-").lstrip("*").strip()
                     if desc and len(desc) < 100:
                         pending_approvals.append(desc[:80])
@@ -173,7 +170,10 @@ def check_active_handoffs(memory_root: Path) -> tuple[int, list[str]]:
             try:
                 content = handoff_file.read_text(encoding="utf-8")
                 # Check if handoff is pending (not acknowledged)
-                if "status: pending" in content.lower() or "acknowledged: false" in content.lower():
+                if (
+                    "status: pending" in content.lower()
+                    or "acknowledged: false" in content.lower()
+                ):
                     # Extract handoff target from filename or content
                     desc = f"Handoff: {handoff_file.stem}"
                     pending_handoffs.append(desc)
@@ -193,7 +193,10 @@ def check_active_handoffs(memory_root: Path) -> tuple[int, list[str]]:
                 if in_section:
                     if line.startswith("##"):
                         break
-                    if line.strip().startswith("-") and "acknowledged" not in line.lower():
+                    if (
+                        line.strip().startswith("-")
+                        and "acknowledged" not in line.lower()
+                    ):
                         desc = line.strip().lstrip("-").strip()
                         if desc and desc not in pending_handoffs:
                             pending_handoffs.append(desc[:80])
@@ -216,10 +219,22 @@ def check_github_issues() -> tuple[int, list[str]]:
     try:
         # Query open issues assigned to current user with assistant-manager label
         result = subprocess.run(
-            ["gh", "issue", "list", "--state", "open", "--label", "assistant-manager", "--json", "title,number", "--limit", "10"],
+            [
+                "gh",
+                "issue",
+                "list",
+                "--state",
+                "open",
+                "--label",
+                "assistant-manager",
+                "--json",
+                "title,number",
+                "--limit",
+                "10",
+            ],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=10,
         )
         if result.returncode == 0 and result.stdout.strip():
             issues = json.loads(result.stdout)
@@ -227,7 +242,12 @@ def check_github_issues() -> tuple[int, list[str]]:
                 title = issue.get("title", "Untitled")
                 number = issue.get("number", "?")
                 open_issues.append(f"#{number}: {title[:60]}")
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, subprocess.SubprocessError, FileNotFoundError):
+    except (
+        subprocess.TimeoutExpired,
+        json.JSONDecodeError,
+        subprocess.SubprocessError,
+        FileNotFoundError,
+    ):
         pass
 
     return len(open_issues), open_issues
@@ -264,9 +284,9 @@ def build_blocking_response(issues: dict[str, Any]) -> dict[str, Any]:
         "hookSpecificOutput": {
             "hookEventName": "Stop",
             "permissionDecision": "deny",
-            "permissionDecisionReason": "Incomplete coordination work"
+            "permissionDecisionReason": "Incomplete coordination work",
         },
-        "details": issues
+        "details": issues,
     }
 
 

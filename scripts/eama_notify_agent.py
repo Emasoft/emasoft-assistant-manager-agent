@@ -9,14 +9,12 @@ Usage:
 """
 
 import argparse
-import json
-import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 import yaml
-from typing import Any, cast
 
 # State file location
 EXEC_STATE_FILE = Path("design/exec-phase.local.md")
@@ -64,35 +62,22 @@ def send_ai_maestro_message(
 ) -> bool:
     """Send a message via AI Maestro."""
     try:
-        payload = {
-            "to": session_name,
-            "subject": subject,
-            "priority": priority,
-            "content": {"type": msg_type, "message": message},
-        }
-
-        api_url = os.getenv("AIMAESTRO_API", "http://localhost:23000")
         result = subprocess.run(
             [
-                "curl",
-                "-s",
-                "-X",
-                "POST",
-                f"{api_url}/api/messages",
-                "-H",
-                "Content-Type: application/json",
-                "-d",
-                json.dumps(payload),
+                "amp-send",
+                session_name,
+                subject,
+                message,
+                "--priority",
+                priority,
+                "--type",
+                msg_type,
             ],
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=30,
         )
-
-        if result.returncode == 0:
-            response: dict[str, Any] = json.loads(result.stdout)
-            return cast(bool, response.get("success", False))
-        return False
+        return result.returncode == 0
     except Exception as e:
         print(f"Error: {e}")
         return False
