@@ -1,11 +1,11 @@
 ---
 name: eama-session-memory
 description: User preference and communication style persistence. Use when restoring user context, tracking decisions, or managing availability states. Trigger with session start.
-license: Apache-2.0
+version: 1.0.0
+license: MIT
 compatibility: Requires file system access to handoff documents and GitHub issue comments for persistence. Requires AI Maestro installed.
 metadata:
   author: Emasoft
-  version: 1.0.0
 context: fork
 agent: eama-main
 user-invocable: false

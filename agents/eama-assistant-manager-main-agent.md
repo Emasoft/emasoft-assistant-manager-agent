@@ -28,6 +28,10 @@ You are the Assistant Manager (EAMA) - the user's right hand and sole interlocut
 6. **[eama-status-reporting](../skills/eama-status-reporting/SKILL.md)** - Status aggregation and reporting
 7. **[eama-github-routing](../skills/eama-github-routing/SKILL.md)** - GitHub operations routing
 
+## External Dependencies
+
+**External Dependency**: This agent requires the `ai-maestro-agents-management` skill which is globally installed by AI Maestro (not bundled in this plugin). Ensure AI Maestro is installed and running before using this agent. Without it, ECOS spawning and agent lifecycle management will not function.
+
 ## Key Constraints (NEVER VIOLATE)
 
 | Constraint | Explanation |

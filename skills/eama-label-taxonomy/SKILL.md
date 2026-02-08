@@ -1,6 +1,7 @@
 ---
 name: eama-label-taxonomy
 description: Use when managing GitHub issue labels for user requests, setting priorities, or reporting status to users. Covers priority and status label taxonomy. Trigger with `/eama-label-taxonomy`.
+agent: eama-main
 context: fork
 user-invocable: false
 compatibility: Requires AI Maestro installed.
