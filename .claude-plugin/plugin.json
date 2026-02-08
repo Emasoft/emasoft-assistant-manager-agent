@@ -6,14 +6,8 @@
     "name": "Emasoft",
     "email": "713559+Emasoft@users.noreply.github.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Emasoft/emasoft-assistant-manager-agent"
-  },
+  "repository": "https://github.com/Emasoft/emasoft-assistant-manager-agent",
   "license": "MIT",
-  "engines": {
-    "claude-code": ">=1.0.0"
-  },
   "agents": [
     "./agents/eama-assistant-manager-main-agent.md",
     "./agents/eama-report-generator.md"
