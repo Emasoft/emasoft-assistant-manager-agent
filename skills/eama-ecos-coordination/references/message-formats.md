@@ -39,7 +39,7 @@ This is the format ECOS uses when sending approval requests to EAMA. The message
     - `triggered_by`: Which role or event initiated this request
     - `related_issues`: List of related GitHub issue numbers
     - `related_handoffs`: List of related handoff UUIDs
-  - `recommendation`: ECOS's own recommendation (`approve`, `reject`, or `needs-review`)
+  - `recommendation`: ECOS's own recommendation (`approve`, `reject`, or `ai-review`)
   - `requested_at`: ISO-8601 timestamp of when the request was made
 
 ### Field Descriptions

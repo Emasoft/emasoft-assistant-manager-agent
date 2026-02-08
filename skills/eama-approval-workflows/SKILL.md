@@ -5,6 +5,7 @@ version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main
+user-invocable: false
 triggers:
   - Any role sends an approval request via AI Maestro
   - User needs to make a decision about code, releases, or security

@@ -52,7 +52,7 @@ def main():
         sys.exit(1)
 
     # Read state file (minimal parsing)
-    state_content = exec_state_file.read_text()
+    state_content = exec_state_file.read_text(encoding="utf-8")
 
     # Extract basic info (simple parsing)
     plan_id = "plan-unknown"

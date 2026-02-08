@@ -5,7 +5,7 @@ eama_stop_check.py - Stop hook to block exit until coordination work is complete
 Stop hook that prevents assistant-manager from exiting with incomplete work:
 1. Pending user approvals not yet obtained
 2. Active handoffs to other roles not acknowledged
-3. Claude Tasks with pending/in_progress status
+3. Claude Tasks with pending/in-progress status
 4. Unread AI Maestro messages requiring response
 5. GitHub Issues assigned to assistant-manager not closed
 
@@ -76,10 +76,10 @@ def check_claude_tasks(memory_root: Path) -> tuple[int, list[str]]:
     if tasks_path.exists():
         try:
             content = tasks_path.read_text(encoding="utf-8")
-            # Look for tasks marked as pending or in_progress
+            # Look for tasks marked as pending or in-progress
             for line in content.split("\n"):
                 line_lower = line.lower()
-                if any(marker in line_lower for marker in ["[ ]", "[pending]", "[in_progress]", "status: pending", "status: in_progress"]):
+                if any(marker in line_lower for marker in ["[ ]", "[pending]", "[in-progress]", "status: pending", "status: in-progress"]):
                     # Extract task description
                     task_desc = line.strip().lstrip("-").lstrip("*").strip()
                     if task_desc and len(task_desc) < 100:

@@ -1,6 +1,8 @@
 ---
 name: eama-label-taxonomy
 description: Use when managing GitHub issue labels for user requests, setting priorities, or reporting status to users. Covers priority and status label taxonomy. Trigger with `/eama-label-taxonomy`.
+context: fork
+user-invocable: false
 compatibility: Requires AI Maestro installed.
 version: 1.0.0
 ---
@@ -23,12 +25,13 @@ This skill provides the label taxonomy relevant to the Assistant Manager Agent (
 Follow these steps to manage labels as EAMA:
 
 1. **Analyze user request** to determine appropriate priority and type labels
-2. **Create issue** with initial labels (`status:needs-triage`, `priority:*`, `type:*`)
+2. **Create issue** with initial labels (`status:backlog`, `priority:*`, `type:*`)
 3. **Monitor status changes** from other agents and translate to user-friendly messages
 4. **Update priorities** when user expresses urgency or changes priority
-5. **Set hold status** when user requests pause (`status:on-hold`)
+5. **Set blocked status** when user requests pause (`status:blocked`)
 6. **Report status** by querying issues with relevant labels
 7. **Explain labels** to user in clear, non-technical language
+8. **Facilitate human review** when Integrator (EIA) escalates significant tasks for user testing/review
 
 **Checklist for label management**:
 
@@ -36,9 +39,10 @@ Copy this checklist and track your progress:
 
 - [ ] Determine priority from user request context
 - [ ] Apply appropriate type label (bug/feature/etc)
-- [ ] Set initial status to `needs-triage`
+- [ ] Set initial status to `backlog`
 - [ ] Monitor for status changes by other agents
 - [ ] Update labels when user changes requirements
+- [ ] Facilitate human review when `status:human-review` is set
 - [ ] Generate user-friendly status reports
 
 ---
@@ -61,12 +65,34 @@ Copy this checklist and track your progress:
 - Escalate priority when user expresses urgency
 - De-escalate when user indicates reduced urgency
 
+### Kanban Columns (Canonical 8-Column System)
+
+The full workflow uses these 8 status columns:
+
+| # | Column Code | Display Name | Label | Description |
+|---|-------------|-------------|-------|-------------|
+| 1 | `backlog` | Backlog | `status:backlog` | Entry point for new tasks |
+| 2 | `todo` | Todo | `status:todo` | Ready to start |
+| 3 | `in-progress` | In Progress | `status:in-progress` | Active work |
+| 4 | `ai-review` | AI Review | `status:ai-review` | Integrator agent reviews ALL tasks |
+| 5 | `human-review` | Human Review | `status:human-review` | User reviews BIG tasks only (via EAMA) |
+| 6 | `merge-release` | Merge/Release | `status:merge-release` | Ready to merge |
+| 7 | `done` | Done | `status:done` | Completed |
+| 8 | `blocked` | Blocked | `status:blocked` | Blocked at any stage |
+
+**Task Routing Rules:**
+- **Small tasks**: In Progress -> AI Review -> Merge/Release -> Done
+- **Big tasks**: In Progress -> AI Review -> Human Review -> Merge/Release -> Done
+- **Human Review** is requested via EAMA (Assistant Manager asks user to test/review)
+- Not all tasks go through Human Review -- only significant changes requiring human judgment
+
 ### Status Labels EAMA Updates
 
 | Label | When EAMA Sets It |
 |-------|------------------|
-| `status:needs-triage` | When creating new issue from user request |
-| `status:on-hold` | When user requests pause |
+| `status:backlog` | When creating new issue from user request |
+| `status:human-review` | When EIA escalates a significant task for user review |
+| `status:blocked` | When user requests pause or issue cannot proceed |
 
 ---
 
@@ -75,9 +101,13 @@ Copy this checklist and track your progress:
 ### Status Labels (`status:*`)
 
 EAMA reports status to user:
+- `status:backlog` - "Your request has been logged"
+- `status:todo` - "Your request is queued and ready to start"
 - `status:in-progress` - "Work has started on your request"
+- `status:ai-review` - "The AI integrator is reviewing the work"
+- `status:human-review` - "This needs your review and testing"
+- `status:merge-release` - "Code is approved and ready to merge"
 - `status:blocked` - "There's a blocker, may need your input"
-- `status:needs-review` - "Code is ready for review"
 - `status:done` - "Your request is complete"
 
 ### Assignment Labels (`assign:*`)
@@ -98,7 +128,7 @@ EAMA explains assignments to user:
 gh issue create \
   --title "$USER_REQUEST_TITLE" \
   --body "$USER_REQUEST_BODY" \
-  --label "status:needs-triage" \
+  --label "status:backlog" \
   --label "priority:$PRIORITY" \
   --label "type:$TYPE"
 ```
@@ -113,8 +143,19 @@ gh issue edit $ISSUE_NUMBER --remove-label "priority:normal" --add-label "priori
 ### When User Puts on Hold
 
 ```bash
-# Mark on hold
-gh issue edit $ISSUE_NUMBER --remove-label "status:in-progress" --add-label "status:on-hold"
+# Mark blocked
+gh issue edit $ISSUE_NUMBER --remove-label "status:in-progress" --add-label "status:blocked"
+```
+
+### When Facilitating Human Review
+
+```bash
+# Present the task to the user for review (escalated from AI Review)
+gh issue view $ISSUE_NUMBER --json title,body,labels
+# After user approves:
+gh issue edit $ISSUE_NUMBER --remove-label "status:human-review" --add-label "status:merge-release"
+# After user requests changes:
+gh issue edit $ISSUE_NUMBER --remove-label "status:human-review" --add-label "status:in-progress"
 ```
 
 ### When Generating Status Report
@@ -122,6 +163,12 @@ gh issue edit $ISSUE_NUMBER --remove-label "status:in-progress" --add-label "sta
 ```bash
 # Get all active issues for user
 gh issue list --label "status:in-progress" --json number,title,labels
+
+# Get issues in AI review
+gh issue list --label "status:ai-review" --json number,title,labels
+
+# Get issues awaiting human review
+gh issue list --label "status:human-review" --json number,title,labels
 
 # Get blocked issues needing attention
 gh issue list --label "status:blocked" --json number,title,labels
@@ -157,8 +204,8 @@ The implementation agent is actively working on this task.
 | "When you get a chance..." | `priority:low` |
 | "Something is broken" | `type:bug`, `priority:high` |
 | "Can you add..." | `type:feature` |
-| "Put this on hold" | `status:on-hold` |
-| "Resume this" | Remove `status:on-hold`, add `status:ready` |
+| "Put this on hold" | `status:blocked` |
+| "Resume this" | Remove `status:blocked`, add `status:todo` |
 
 ---
 
@@ -168,10 +215,11 @@ The implementation agent is actively working on this task.
 
 | Action | Labels Involved |
 |--------|-----------------|
-| Create issue | `status:needs-triage`, `priority:*`, `type:*` |
+| Create issue | `status:backlog`, `priority:*`, `type:*` |
 | Change priority | Update `priority:*` |
-| Pause work | Add `status:on-hold` |
-| Resume work | Remove `status:on-hold` |
+| Pause work | Add `status:blocked` |
+| Resume work | Remove `status:blocked`, add `status:todo` |
+| Facilitate human review | Manage `status:human-review` transitions |
 | Report to user | Read all labels for status |
 
 ### Labels EAMA Never Sets
@@ -227,7 +275,7 @@ gh issue create \
   --body "User reported urgent login page issue" \
   --label "type:bug" \
   --label "priority:critical" \
-  --label "status:needs-triage"
+  --label "status:backlog"
 ```
 
 **User response**: "Created issue #123 with critical priority. The orchestrator will triage this shortly."

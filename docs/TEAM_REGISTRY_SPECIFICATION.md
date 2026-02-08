@@ -1,7 +1,7 @@
 # Team Registry Specification
 
-**Version**: 1.0.0
-**Last Updated**: 2026-02-03
+**Version**: 1.1.0
+**Last Updated**: 2026-02-07
 
 This document specifies the format and location of team registries, agent contacts, and naming conventions.
 
@@ -199,9 +199,9 @@ Team names must be **globally unique** across all projects managed by ECOS. ECOS
 |------|--------|----------------|-------------|
 | `manager` | emasoft-assistant-manager-agent | 0 (org-wide) | User interface, approvals |
 | `chief-of-staff` | emasoft-chief-of-staff | 0 (org-wide) | Agent lifecycle |
-| `orchestrator` | emasoft-orchestrator-agent | **Exactly 1** | Task management, kanban |
+| `orchestrator` | emasoft-orchestrator-agent | **Exactly 1** | Task management, kanban, agent replacement, remote coordination, messaging templates |
 | `architect` | emasoft-architect-agent | **Exactly 1** | Design documents |
-| `integrator` | emasoft-integrator-agent | 1+ (can be shared) | PR review, merge |
+| `integrator` | emasoft-integrator-agent | 1+ (can be shared) | PR review, merge, CI/CD pipeline, release management, quality gates, kanban sync |
 | `implementer` | emasoft-implementer-agent | 1+ | Code implementation |
 | `tester` | emasoft-tester-agent | 0+ | Testing, QA |
 | `devops` | emasoft-devops-agent | 0+ | CI/CD, deployment |
@@ -253,7 +253,7 @@ import json
 
 def get_agent_address(agent_name: str, registry_path: str = ".emasoft/team-registry.json") -> str:
     """Get AI Maestro address for an agent."""
-    with open(registry_path) as f:
+    with open(registry_path, encoding="utf-8") as f:
         registry = json.load(f)
 
     # Check team agents
@@ -396,6 +396,25 @@ When ECOS updates the registry, it sends a notification to all team agents using
 5. **At least one implementer** per team
 6. **All agents must have valid AI Maestro addresses**
 7. **Organization agents cannot be assigned to teams**
+
+---
+
+## Kanban System Reference
+
+All projects use the canonical **8-column kanban system** on GitHub Projects:
+
+| Column | Code | Label |
+|--------|------|-------|
+| Backlog | `backlog` | `status:backlog` |
+| Todo | `todo` | `status:todo` |
+| In Progress | `in-progress` | `status:in-progress` |
+| AI Review | `ai-review` | `status:ai-review` |
+| Human Review | `human-review` | `status:human-review` |
+| Merge/Release | `merge-release` | `status:merge-release` |
+| Done | `done` | `status:done` |
+| Blocked | `blocked` | `status:blocked` |
+
+For full kanban workflow details, task routing rules, and code format rules, see **FULL_PROJECT_WORKFLOW.md**.
 
 ---
 

@@ -5,6 +5,7 @@ version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main
+user-invocable: false
 triggers:
   - User submits a new request or task
   - Assistant Manager needs to delegate work

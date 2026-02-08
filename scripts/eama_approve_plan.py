@@ -76,15 +76,15 @@ Plan Approved: true
 
 ## Agents
 (No agents registered yet)
-""")
+""", encoding="utf-8")
 
     # Update plan state to mark as complete
-    plan_content = plan_state_file.read_text()
+    plan_content = plan_state_file.read_text(encoding="utf-8")
     if "plan_phase_complete: false" in plan_content:
         plan_content = plan_content.replace(
             "plan_phase_complete: false", "plan_phase_complete: true"
         )
-        plan_state_file.write_text(plan_content)
+        plan_state_file.write_text(plan_content, encoding="utf-8")
 
     # Output success message
     print("╔════════════════════════════════════════════════════════════════╗")

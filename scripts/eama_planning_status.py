@@ -48,7 +48,7 @@ def get_status_icon(status: str) -> str:
     """Return an icon for the given status."""
     icons = {
         "complete": "✓",
-        "in_progress": "→",
+        "in-progress": "→",
         "pending": " ",
         "planned": "○",
         "drafting": "○",

@@ -74,7 +74,7 @@ The message will arrive with the following structure:
 - **Content fields**:
   - `type`: `status_report`
   - `overall_progress`: A percentage string (e.g., "67%")
-  - `active_tasks`: A list of tasks, each with `specialist` (EOA/EAA/EIA), `task` (description), and `status` (in_progress/completed/blocked)
+  - `active_tasks`: A list of tasks, each with `specialist` (EOA/EAA/EIA), `task` (description), and `status` (in-progress/completed/blocked)
   - `blockers`: A list of blockers, each with `description` and `assigned_to`
   - `next_milestone`: Description of the next milestone
   - `health`: One of `green`, `yellow`, or `red`

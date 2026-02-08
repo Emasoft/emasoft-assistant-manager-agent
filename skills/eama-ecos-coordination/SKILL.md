@@ -5,6 +5,7 @@ version: 1.0.0
 compatibility: Requires AI Maestro installed.
 context: fork
 agent: eama-main
+user-invocable: false
 triggers:
   - ECOS sends an approval request via AI Maestro
   - EAMA needs to grant or revoke autonomous mode for ECOS

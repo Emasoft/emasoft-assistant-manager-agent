@@ -308,6 +308,49 @@ For AI Maestro connection verification and pending message checks, use the `agen
 
 ---
 
+## Kanban Column System
+
+All projects use the canonical **8-column kanban system** on GitHub Projects:
+
+| Column | Code | Label |
+|--------|------|-------|
+| Backlog | `backlog` | `status:backlog` |
+| Todo | `todo` | `status:todo` |
+| In Progress | `in-progress` | `status:in-progress` |
+| AI Review | `ai-review` | `status:ai-review` |
+| Human Review | `human-review` | `status:human-review` |
+| Merge/Release | `merge-release` | `status:merge-release` |
+| Done | `done` | `status:done` |
+| Blocked | `blocked` | `status:blocked` |
+
+**Task routing**:
+- Small tasks: In Progress → AI Review → Merge/Release → Done
+- Big tasks: In Progress → AI Review → Human Review → Merge/Release → Done
+- EAMA requests Human Review by asking the user to test/review
+
+---
+
+## Scripts Reference
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/pre-push-hook.py` | Pre-push validation (manifest, hooks, lint, Unicode compliance) |
+| `scripts/eama_approve_plan.py` | Plan approval workflow |
+| `scripts/eama_orchestration_status.py` | Orchestration status reporting |
+| `scripts/eama_validate_plugin.py` | Plugin structure validation |
+| `scripts/eama_download.py` | Plugin download utility |
+
+---
+
+## Recent Changes (2026-02-07)
+
+- Added 8-column canonical kanban system across all shared docs
+- Added Unicode compliance check (step 4) to pre-push hook
+- Added `encoding="utf-8"` to all Python file operations
+- Synchronized FULL_PROJECT_WORKFLOW.md, TEAM_REGISTRY_SPECIFICATION.md, ROLE_BOUNDARIES.md across all plugins
+
+---
+
 ## 13. Version History
 
 | Version | Date | Changes |
